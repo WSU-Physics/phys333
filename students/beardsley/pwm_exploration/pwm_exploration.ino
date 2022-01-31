@@ -3,7 +3,7 @@
 // PWM function
 
 const int yLED = 9;
-// constant for my blue LED
+const int bLED = 8; // constant for my blue LED
 
 /* function: pwm
  *  
@@ -17,10 +17,10 @@ const int yLED = 9;
  *             0 is off, 255 is maximum.
  * period: period of pulse in microseconds
 */
-void pwm(int pin, int brightness, int period){
+void pwm(int pin, double brightness, double period){
   // Calculate Ton and Toff
-  int Ton;
-  int Toff;
+  double Ton;  // using double precision to avoid overflow
+  double Toff;
   Ton = (brightness * period) / 255;
   Toff = period - Ton;
   
@@ -38,10 +38,15 @@ void setup() {
   // set pin mode to output
   pinMode(yLED, OUTPUT);
   // set blue LED pin to output
+  pinMode(bLED, OUTPUT);
 }
 
 void loop() {
+  double brightness = 100;
+  double period = 2040;
+  
   // Set yLED brightness
-  analogWrite(yLED, 100);
+  analogWrite(yLED, brightness);
   // call self-made PWM function
+  pwm(bLED, brightness, period);
 }
