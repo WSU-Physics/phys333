@@ -15,7 +15,7 @@ const int bLED = 8;
  **/
 
 void PWM(int pin, double brightness, double period) {
-  int duty_cycle;
+  double duty_cycle;
   double T_on;
   double T_off;
 
@@ -50,14 +50,13 @@ void setup() {
 }
 
 void loop() {
+  double brightness = 100;
+  double period = 2040;
 
-  int brightness = 255;
-  int period = 2040000;
-  // Set yLED brightness
-  analogWrite(yLED, brightness);
-  // call self-made PWN function
-  for(int i=0; i<255; i++){
-  PWM(bLED, i, period);
+  for (int i = 0; i < 255; i += 5) {
+    // Set yLED brightness
+    analogWrite(yLED, i);
+    // call self-made PWM function
+    PWM(bLED, i, period);
   }
-
 }
