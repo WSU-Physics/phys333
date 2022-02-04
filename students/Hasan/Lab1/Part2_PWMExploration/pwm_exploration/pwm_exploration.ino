@@ -14,7 +14,7 @@ const int yLED = 9;
  *    none 
  */
 
-void pwm(int pin, int brightness, int period) {
+void pwm(double pin, double brightness, double period) {
   //Calculate Ton
 
   int Ton; 
