@@ -3,45 +3,70 @@ const int gLED = 10;
 
 void setup() {
   // put your setup code here, to run once:
+   Serial.begin(9600); 
    pinMode(gLED, OUTPUT); 
+
 }
 
 void pwm(int pin, double duty_cycle, double duration) {
 
-  double Current_time = millis()/1000; 
+  unsigned long On_time = 0; 
   
-  if (Current_time < duration){
+  while((millis() - On_time) < duration){
       //Calculate Ton
-  int Ton; 
-  //Calculate Toff
-  int Toff; 
 
-  Ton = duty_cycle * .01; 
+    Serial.println(millis()/1000);
+    double Ton; 
+    //Calculate Toff
+    double Toff; 
 
-  Toff = abs(Ton - .01); 
-
-
-  digitalWrite(pin, HIGH); 
-
-  delayMicroseconds(Ton); 
-
-  digitalWrite(pin, LOW); 
-
-  delayMicroseconds(Toff); 
-
+    if(duty_cycle == 0){
+      digitalWrite(pin, LOW); 
   
-
+      delayMicroseconds(Toff*1000); 
+    }
+    
+    else if(duty_cycle == 1){
+      digitalWrite(pin, HIGH); 
   
-}
+      delayMicroseconds(Ton*1000); 
+    }
+    
+    else{
+      
+    Ton = (duty_cycle * double(.01)); 
+
+
+    
+    Toff = abs(Ton - double(.01)); 
+  
+    digitalWrite(pin, HIGH); 
+  
+    delayMicroseconds(Ton*1000000); 
+
+    
+    
+    digitalWrite(pin, LOW); 
+  
+    delayMicroseconds(Toff*1000000); 
+     
+
+    }
+  
+  }
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   
-  double duration = 1; 
+  double duration = 30; 
   
-  double dutycycle = 0; 
+  double dutycycle = .5; 
  
-  pwm(gLED, dutycycle, duration ); 
+  pwm(gLED, dutycycle, duration); 
+  
+  delay(50); 
+
 
 }

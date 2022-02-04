@@ -60,7 +60,7 @@ void setMode(int mode)
  {
 
    
-  for (int i=0; i<127; i++)
+  for (int i=0; i<130; i++)
  {
  analogWrite(RLED, i);
  analogWrite(BLED, i); 
@@ -128,6 +128,25 @@ void setMode(int mode)
  
  
  }
+
+ else if(mode == 4)
+ {
+
+  while(true){
+  
+  if(debounce(lastButton == true)){
+    break;
+  }
+  
+  int i = random(0, 255); 
+  int j = random(0, 255); 
+  int k = random(0, 255); 
+
+  analogWrite(RLED, i); 
+  analogWrite(GLED, j); 
+  analogWrite(BLED, k); 
+  }
+ }
   
  
  //OFF (mode = 0)
@@ -151,7 +170,7 @@ void loop()
  lastButton = currentButton; // Reset button value
  // If you've cycled through the different options,
  // reset the counter to 0
- if (ledMode == 4) {
+ if (ledMode == 5) {
   ledMode = 0;
  }
  setMode(ledMode); // Change the LED state
