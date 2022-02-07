@@ -6,8 +6,8 @@
  *   - How long do digitalRead() and analogRead() take?
  */
 
-const dPin=8;  // Digital input pin
-const aPin=0;  // Analog input pin
+const int dPin=13;  // Digital input pin
+const int aPin=0;  // Analog input pin
 int dval = 0;  // Digital value
 int aval = 0;  // Analog value
 unsigned long starttime;
@@ -17,19 +17,19 @@ unsigned long atime;
 void setup() {
   pinMode(dPin, INPUT);
   Serial.begin(9600);
-  Serial.println("Digital Value\tAnalog Value\tDigital Time\tAnalog Time");
+  Serial.println("D. Val\tA. Val\tD. Time\tA. Time");
 }
 
 void loop() {
   // Read digital value, and time how long it takes
-  starttime = millis();
+  starttime = micros();
   dval = digitalRead(dPin);
-  dtime = millis() - starttime;
+  dtime = micros() - starttime;
 
   // Read analog value, and time how long it takes
-  starttime = millis();
+  starttime = micros();
   aval = analogRead(aPin);
-  atime = millis() - starttime;
+  atime = micros() - starttime;
 
   // Print the results
   Serial.print(dval);
