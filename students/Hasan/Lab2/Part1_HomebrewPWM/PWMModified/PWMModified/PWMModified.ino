@@ -19,9 +19,10 @@ void pwm(int pin, double duty_cycle, double duration) {
   //Calculate Toff
   double Toff; 
 
-  Ton = duty_cycle * 10/100.0; 
+// Remember microseconds must be divided by 1000
+  Ton = duty_cycle * 10/1000.0; 
 
-  Toff = abs(Ton - (10/100.0)); 
+  Toff = abs(Ton - (10/1000.0)); 
 
 
  //boolean logic
