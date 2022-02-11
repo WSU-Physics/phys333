@@ -25,13 +25,14 @@ void pwm(int pin, double duty_cycle, double duration) {
 
 
  //boolean logic
+ // Need to multiply seconds by 1000000
   digitalWrite(pin, duty_cycle && HIGH); 
 
-  delayMicroseconds(Ton); 
+  delayMicroseconds(Ton*1000000); 
 
   digitalWrite(pin, duty_cycle && LOW); 
 
-  delayMicroseconds(Toff); 
+  delayMicroseconds(Toff*1000000); 
 
   
 
