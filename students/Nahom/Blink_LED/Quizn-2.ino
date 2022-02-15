@@ -2,6 +2,7 @@ const int FSR= 0;
 float fsr_read;
 float fsr_volt;
 float fsr_resis;
+float fsr_force;
 
 float R1=10000.0;
 float Vc= 5000.0;
