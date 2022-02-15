@@ -1,28 +1,36 @@
-const int gLED = 10; 
 
+//instantiate variable for PWM Pin 
+const int pwmPin = 10; 
+
+double period = 10/1000.0;
 
 void setup() {
   // put your setup code here, to run once:
-   pinMode(gLED, OUTPUT); 
-   Serial.begin(9600);
+
+  //Sets the pwmPin to output mode
+   pinMode(pwmPin, OUTPUT); 
+
+   //Uncomment Below line if using debug statements 
+   //Serial.begin(9600);
 }
 
 void pwm(int pin, double duty_cycle, double duration) {
 
-// In seconds
+// Current time is in seconds
   double Current_time = millis()/1000; 
 
-  // Check if the time is less than the duration 
+  // Check if the time is less than the duration for each loop 
   if (Current_time < duration){
       //Calculate Ton
-      
+
+  //Calculate Ton and Toff 
   double Ton; 
-  //Calculate Toff
+  
   double Toff; 
+  
+  Ton = duty_cycle * period; 
 
-  Ton = duty_cycle * 10/1000.0; 
-
-  Toff = abs(Ton - (10/1000.0)); 
+  Toff = abs(Ton - period); 
 
   // Debug statements use these when necessary 
   /* 
@@ -32,7 +40,8 @@ void pwm(int pin, double duty_cycle, double duration) {
   Serial.println(Toff,10); 
   */
   
- //boolean logic
+ //boolean logic: Courtesy of professor beardsley, if duty cycle is 0, will not turn on
+ //delayMicroseconds 
   digitalWrite(pin, duty_cycle && HIGH); 
 
   delayMicroseconds(Ton*1000000); 
@@ -53,9 +62,9 @@ void loop() {
   
   double duration = 10000; 
   
-  double dutycycle = .5; 
+  double dutycycle = .48; 
 
-  pwm(gLED, dutycycle, duration ); 
+  pwm(pwmPin, dutycycle, duration ); 
 
  
 
