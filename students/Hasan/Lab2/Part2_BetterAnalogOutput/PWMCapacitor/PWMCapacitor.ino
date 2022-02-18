@@ -1,4 +1,3 @@
-
 //instantiate variable for PWM Pin 
 const int pwmPin = 10; 
 
@@ -11,16 +10,18 @@ void setup() {
    pinMode(pwmPin, OUTPUT); 
 
    //Uncomment Below line if using debug statements 
-   //Serial.begin(9600);
+   Serial.begin(9600);
 }
 
 void pwm(int pin, double duty_cycle, double duration) {
 
 // Current time is in seconds
-  double Current_time = millis()/1000; 
+  double Current_time = millis()/1000.0; 
+
+  Serial.println(Current_time); 
 
   // Check if the time is less than the duration for each loop 
-  if (Current_time < duration){
+  while ((millis()/1000.0 - Current_time) < duration){
       //Calculate Ton
 
   //Calculate Ton and Toff 
@@ -49,9 +50,6 @@ void pwm(int pin, double duty_cycle, double duration) {
   digitalWrite(pin, duty_cycle && LOW); 
 
   delayMicroseconds(Toff*1000000); 
-
-  
-
   
   }
 
@@ -59,12 +57,15 @@ void pwm(int pin, double duty_cycle, double duration) {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  double duration = .005;
   
-  double duration = 10000; 
-  
-  double dutycycle = .48; 
+  //double dutycycle = .50; 
 
-  pwm(pwmPin, dutycycle, duration ); 
+ for(double dutycycle = 0; dutycycle <=1; dutycycle+=.0025){ 
+   
+  pwm(pwmPin, dutycycle, duration);
+ }
+   
 
  
 
