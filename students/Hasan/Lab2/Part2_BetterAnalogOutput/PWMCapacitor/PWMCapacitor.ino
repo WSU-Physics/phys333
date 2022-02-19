@@ -1,6 +1,7 @@
 //instantiate variable for PWM Pin 
 const int pwmPin = 10; 
 
+//set up period variable
 double period = 10/1000.0;
 
 void setup() {
@@ -10,12 +11,12 @@ void setup() {
    pinMode(pwmPin, OUTPUT); 
 
    //Uncomment Below line if using debug statements 
-   Serial.begin(9600);
+   //Serial.begin(9600);
 }
 
 void pwm(int pin, double duty_cycle, double duration) {
 
-// Current time is in seconds
+// Current time is in seconds and double 
   double Current_time = millis()/1000.0; 
 
   Serial.println(Current_time); 
@@ -41,8 +42,7 @@ void pwm(int pin, double duty_cycle, double duration) {
   Serial.println(Toff,10); 
   */
   
- //boolean logic: Courtesy of professor beardsley, if duty cycle is 0, will not turn on
- //delayMicroseconds 
+ //boolean logic: Courtesy of professor beardsley, if duty cycle is 0, will not activate digitalWrite 
   digitalWrite(pin, duty_cycle && HIGH); 
 
   delayMicroseconds(Ton*1000000); 
@@ -57,10 +57,11 @@ void pwm(int pin, double duty_cycle, double duration) {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  double duration = .005;
-  
-  //double dutycycle = .50; 
 
+  // choose value that creates sawtooth waveform with 2 second period
+  double duration = .005;
+
+  // Loop through duty cycles at the resolution rate found average resolution section 
  for(double dutycycle = 0; dutycycle <=1; dutycycle+=.0025){ 
    
   pwm(pwmPin, dutycycle, duration);
