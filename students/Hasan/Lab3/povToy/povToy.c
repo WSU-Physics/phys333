@@ -1,3 +1,5 @@
+//Source AVR:Make Programming Eliot Williams 
+
 // POV toy demo framework //
 // ------- Preamble -------- //
 #include <avr/io.h>
@@ -15,16 +17,18 @@ int main(void) {
  POVDisplay(0b00001110);
  POVDisplay(0b00011000);
  POVDisplay(0b10111101);
+ _delay_ms(1000);
  POVDisplay(0b01110110);
  POVDisplay(0b00111100);
  POVDisplay(0b00111100);
  POVDisplay(0b00111100);
  POVDisplay(0b01110110);
+ _delay_ms(1000);
  POVDisplay(0b10111101);
  POVDisplay(0b00011000);
  POVDisplay(0b00001110);
  PORTD = 0;
- _delay_ms(10000);
+ _delay_ms(1000);
  } /* end mainloop */
  return (0);
 }
