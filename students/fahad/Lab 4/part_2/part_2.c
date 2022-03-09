@@ -7,8 +7,6 @@
 #define RIGHT_BUTTON PB1
 #define BUTTON_PORT PORTB
 #define LED_DDR DDRD
-//#define LEFT_LED 0b11110000
-//#define RIGHT_LED 0b00001111
 #define LED_PORT PORTD
 
 //Challenge 2: Really spelling out the code
@@ -38,7 +36,7 @@ int main(void) {
   BUTTON_PORT |= (1 << LEFT_BUTTON); /* enable the pullup on the button */
   BUTTON_PORT |= (1 << RIGHT_BUTTON); /* enable the pullup on the button */
   LED_DDR = 0xff; /* set up LED for output */
-  int _delay_ = 50;
+  int _delay_ = 150;
   // ------ Event loop ------ //
   while (1) {
     if (debounceLeft()) { /* debounced button press */
@@ -46,15 +44,26 @@ int main(void) {
         while (buttonWasPressed != 1) {
           LED_PORT = 0b00010000;
           _delay_ms(_delay_);
+          if (debounceLeft()) {
+            buttonWasPressed = 1 ;
+          }
           LED_PORT = 0b00110000;
           _delay_ms(_delay_);
+          if (debounceLeft()) {
+            buttonWasPressed = 1 ;
+          }
           LED_PORT = 0b01110000;
           _delay_ms(_delay_);
+          if (debounceLeft()) {
+            buttonWasPressed = 1 ;
+          }
           LED_PORT = 0b11110000;
           _delay_ms(_delay_);
+          if (debounceLeft()) {
+            buttonWasPressed = 1 ;
+          }
           LED_PORT = 0;
           _delay_ms(_delay_);
-
           if (debounceLeft()) {
             buttonWasPressed = 1 ;
           }
@@ -66,15 +75,26 @@ int main(void) {
         while (buttonWasPressed != 1) {
           LED_PORT = 0b00001000;
           _delay_ms(_delay_);
+          if (debounceRight()) {
+            buttonWasPressed = 1; /* update the state */
+          }
           LED_PORT = 0b00001100;
           _delay_ms(_delay_);
+          if (debounceRight()) {
+            buttonWasPressed = 1; /* update the state */
+          }
           LED_PORT = 0b00001110;
           _delay_ms(_delay_);
+          if (debounceRight()) {
+            buttonWasPressed = 1; /* update the state */
+          }
           LED_PORT = 0b00001111;
           _delay_ms(_delay_);
+          if (debounceRight()) {
+            buttonWasPressed = 1; /* update the state */
+          }
           LED_PORT = 0;
           _delay_ms(_delay_);
-
           if (debounceRight()) {
             buttonWasPressed = 1; /* update the state */
           }
