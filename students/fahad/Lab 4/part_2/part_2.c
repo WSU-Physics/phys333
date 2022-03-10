@@ -139,7 +139,7 @@ void turn(uint8_t oneByte) {
     buttonWasPressed = 1;
   }
 }
-
+uint8_t turnBits[] = {0x10, 0x30, 0x70, 0xF0, 0, 0x8, 0xC, 0xE, 0xF, 0};
 int main(void) {
   // -------- Inits --------- //
 
@@ -152,22 +152,18 @@ int main(void) {
     if (debounce() == 1) { /* debounced button press */
       if (buttonWasPressed == 0) { /* but wasn't last time through */
         while (buttonWasPressed != 1) {
-          turn(0b00010000);
-          turn(0b00110000);
-          turn(0b01110000);
-          turn(0b11110000);
-          turn(0);
+          for (int i = 0; i < 5; i++) {
+            turn(turnBits[i]);
+          }
         }
       }
     }
     else if (debounce() == 2) { /* debounced button press */
       if (buttonWasPressed == 0) { /* but wasn't last time through */
         while (buttonWasPressed != 1) {
-          turn(0b00001000);
-          turn(0b00001100);
-          turn(0b00001110);
-          turn(0b00001111);
-          turn(0);
+          for (int i = 5; i < 10; i++) {
+            turn(turnBits[i]);
+          }
         }
       }
     }
