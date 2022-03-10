@@ -112,19 +112,12 @@
 uint8_t buttonWasPressed; /* state */ // global variable in order to use it in turn method
 
 // debounce method consisting of left button and right button
-uint8_t debounce(void) {
-  // left signal button
-  if (bit_is_clear(BUTTON_PIN, LEFT_BUTTON)) { /* button is pressed now */
+uint8_t debounce(int state) {
+  if (bit_is_clear(BUTTON_PIN, state)) { /* button is pressed now */
     _delay_us(DEBOUNCE_TIME);
-    if (bit_is_clear(BUTTON_PIN, LEFT_BUTTON)) { /* still pressed */
+    if (bit_is_clear(BUTTON_PIN, state)) { /* still pressed */
+      buttonWasPressed = 1;
       return (1);
-    }
-  }
-  // right signal button
-  if (bit_is_clear(BUTTON_PIN, RIGHT_BUTTON)) { /* button is pressed now */
-    _delay_us(DEBOUNCE_TIME);
-    if (bit_is_clear(BUTTON_PIN, RIGHT_BUTTON)) { /* still pressed */
-      return (2);
     }
   }
   return (0);
@@ -134,36 +127,30 @@ uint8_t debounce(void) {
 void turn(uint8_t oneByte) {
   LED_PORT = oneByte;
   _delay_ms(150);
-
-  if (debounce() == 1 | debounce() == 2) {
-    buttonWasPressed = 1;
+  
+  if (debounce(LEFT_BUTTON) | debounce(RIGHT_BUTTON)) {
+    buttonWasPressed = 0;
   }
 }
 uint8_t turnBits[] = {0x10, 0x30, 0x70, 0xF0, 0, 0x8, 0xC, 0xE, 0xF, 0};
 int main(void) {
   // -------- Inits --------- //
-
   BUTTON_PORT |= (1 << LEFT_BUTTON); /* enable the pullup on the button */
   BUTTON_PORT |= (1 << RIGHT_BUTTON); /* enable the pullup on the button */
   LED_DDR = 0xff; /* set up LED for output */
-
   // ------ Event loop ------ //
   while (1) {
-    if (debounce() == 1) { /* debounced button press */
-      if (buttonWasPressed == 0) { /* but wasn't last time through */
-        while (buttonWasPressed != 1) {
-          for (int i = 0; i < 5; i++) {
-            turn(turnBits[i]);
-          }
+    if (debounce(LEFT_BUTTON)) { /* debounced button press */
+      while (buttonWasPressed != 0) {
+        for (int i = 0; i < 5; i++) {
+          turn(turnBits[i]);
         }
       }
     }
-    else if (debounce() == 2) { /* debounced button press */
-      if (buttonWasPressed == 0) { /* but wasn't last time through */
-        while (buttonWasPressed != 1) {
-          for (int i = 5; i < 10; i++) {
-            turn(turnBits[i]);
-          }
+    else if (debounce(RIGHT_BUTTON)) { /* debounced button press */
+      while (buttonWasPressed != 0) {
+        for (int i = 5; i < 10; i++) {
+          turn(turnBits[i]);
         }
       }
     }
