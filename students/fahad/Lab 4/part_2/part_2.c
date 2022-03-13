@@ -112,10 +112,10 @@
 uint8_t buttonWasPressed; /* state */ // global variable in order to use it in turn method
 
 // debounce method consisting of left button and right button
-uint8_t debounce(int state) {
-  if (bit_is_clear(BUTTON_PIN, state)) { /* button is pressed now */
+uint8_t debounce(int button) {
+  if (bit_is_clear(BUTTON_PIN, button)) { /* button is pressed now */
     _delay_us(DEBOUNCE_TIME);
-    if (bit_is_clear(BUTTON_PIN, state)) { /* still pressed */
+    if (bit_is_clear(BUTTON_PIN, button)) { /* still pressed */
       buttonWasPressed = 1;
       return (1);
     }
@@ -127,14 +127,14 @@ uint8_t debounce(int state) {
 void turn(uint8_t oneByte) {
   LED_PORT = oneByte;
   _delay_ms(150);
-  
+
   if (debounce(LEFT_BUTTON) | debounce(RIGHT_BUTTON)) {
     buttonWasPressed = 0;
   }
 }
-uint8_t turnBits[] = {0x10, 0x30, 0x70, 0xF0, 0, 0x8, 0xC, 0xE, 0xF, 0};
 int main(void) {
   // -------- Inits --------- //
+  uint8_t turnBits[] = {0x10, 0x30, 0x70, 0xF0, 0, 0x8, 0xC, 0xE, 0xF, 0}; //declaring and creating an array with hex digits of the bits to turn LEDs on.
   BUTTON_PORT |= (1 << LEFT_BUTTON); /* enable the pullup on the button */
   BUTTON_PORT |= (1 << RIGHT_BUTTON); /* enable the pullup on the button */
   LED_DDR = 0xff; /* set up LED for output */
