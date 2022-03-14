@@ -14,10 +14,14 @@ int main2(void){
 
 
   // -------- Event loop ------- // 
-  
+
+  //Start count
   int count = 0; 
+
+  
   while(1) {
 
+    // If count is less than 3 
     if(count < 3){
       
     //Test each of the lED's
@@ -32,9 +36,6 @@ int main2(void){
     PORTB = 0b00000000; 
     _delay_ms(1000);
     count = 0; 
-
-     
-   
     }
   }
 }
