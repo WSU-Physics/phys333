@@ -3,7 +3,6 @@
 #include <avr/io.h> 
 #include <util/delay.h> 
 
-
 int main(void){
 
   //-------- Inits -------- // 
@@ -11,61 +10,65 @@ int main(void){
   DDRB = 0xff;
 
   DDRD = 0xff; 
-
-
   // -------- Event loop ------- // 
   
   int count = 0;
 
-  char state = 'L'; 
+  char state = 'L';
 
-  //Serial.begin(9600); 
- 
-  while(1) {
+  int on; 
 
-      // if count is less than 6 light up LEDS
-      if(state == 'L') {
-        if(count < 4){
+  while(1){
+    
+    on = (count < 4) ? 1:0; 
+    switch(state){
+      case 'L':
+        
+        switch(on){
+         
+          case 1:
+            while(on == 1){
+            
+              PORTB = (0b00000100 << count); 
+              _delay_ms(1000); 
+              count+=1;
+
+              }
+          }
           
-        //Test each of the lED's
+          default:
+            
+              PORTB = 0b00000000; 
+              _delay_ms(1000);
+              count = 0;
+           
+            
         
-        PORTB = (0b00000100 << count); 
-        _delay_ms(1000); 
-        count+=1;
-        
-        }
-        else{
-          PORTB = 0b00000000; 
-          _delay_ms(1000);
-          count = 0; 
-        }
-  }
-    else if(state == 'R'){
-      if(count < 4){
-      
-      // Light up 3 LEDS in the right direction 
-      PORTD = (0b00100000 >> count); 
-      _delay_ms(1000); 
-      count+=1;
 
-      
-    
+      case 'R':
+         on = (count < 4) ? 1:0;
+         
+         switch(on){
+          
+          case 1:         
+            // Light up 3 LEDS in the right direction
+            while(1){
+              PORTD = (0b00100000 >> count); 
+              _delay_ms(1000); 
+              count+=1;
+              on = (count < 4) ? 1:0;
+              
+            }
+            
+          default:
+           
+               PORTD = 0b00000000; 
+              _delay_ms(1000);
+              count = 0;
+                
+         }
       }
-      else{
-        PORTD = 0b00000000; 
-        _delay_ms(1000);
-        count = 0; ; 
-      }
-      
     }
-
-    else{
-      state = 'L';  
-    }
-    
-  
-    
-  }
-
-  return (0); 
+    return (0); 
 }
+  
