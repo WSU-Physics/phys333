@@ -21,8 +21,8 @@ int main2(void){
   
   while(1) {
 
-    // If count is less than 3 
-    if(count < 3){
+    // If count is less than 4 
+    if(count < 4){
       
     //Test each of the lED's
     
