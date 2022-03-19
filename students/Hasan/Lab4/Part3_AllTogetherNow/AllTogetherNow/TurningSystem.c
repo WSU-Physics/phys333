@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <util/delay.h> 
 
+//Button 1
 #define BUTTON_PIN PINB  
 #define BUTTON PB0 
 #define LED_DDR DDRB 
@@ -20,6 +21,7 @@
 #define BUTTON_PORT_2 PORTD
 #define DEBOUNCE_TIME 10
 
+// Debounce function for button 1 
 uint8_t debounce1(void) {
  if (bit_is_clear(BUTTON_PIN, BUTTON)) { /* button is pressed now */
  _delay_us(DEBOUNCE_TIME);
@@ -30,6 +32,7 @@ uint8_t debounce1(void) {
  return (0);
 }
 
+//Debounce function for part 2 
 uint8_t debounce2(void) {
  if (bit_is_clear(BUTTON_PIN_2, BUTTON_2)) { /* button is pressed now */
  _delay_us(DEBOUNCE_TIME);
@@ -60,7 +63,7 @@ int main(void) {
 
   while(1) {
 
-   //button 1 
+   //button 1 code - runs the left bank of LEDS's 
   if(debounce1()) {
     state = 1; 
     
@@ -102,7 +105,7 @@ int main(void) {
     buttonWasPressed = 0; 
   }
 
-  //button 2 
+  //button 2 runs the right bank of LEDs
 
   if(debounce2()) {
     state = 2;
