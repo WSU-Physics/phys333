@@ -1,8 +1,6 @@
 
-char incomingByte1;
-char incomingByte2;
-char incomingByte3;
-char incomingByte4;
+char incomingData[4];
+int nBytes;
 
   void setup() {
 
@@ -14,19 +12,17 @@ void loop() {
 
   if (Serial.available() > 0) {
 
-  incomingByte1 = Serial.read(); // read the incoming byte:
-  incomingByte2 = Serial.read();
-  incomingByte3 = Serial.read();
-  incomingByte4 = Serial.read();
-  Serial.print(" I received:");
+    if (Serial.read() == 82) {
+      
+       nBytes = Serial.readBytes(incomingData,3); // read the incoming byte:
 
-  Serial.print(incomingByte1);
-  Serial.print(incomingByte2);
-  Serial.print(incomingByte3);
-  Serial.println(incomingByte4);
+       Serial.print(" I received:");
 
-  while(!Serial.available());
-  delay(100);
+       Serial.print(incomingData);
+
+       Serial.println(" inches");
+  
+    }
   
   }
 
