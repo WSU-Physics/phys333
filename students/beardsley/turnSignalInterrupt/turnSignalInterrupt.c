@@ -1,3 +1,12 @@
+/*
+ * The following is my solution to Lab 4
+ * where we created R and L turn signals.
+ * It is now our task to rewrite this
+ * to use interrupts.
+ * You may choose to rewrite your own solution
+ * if you prefer.
+ */
+
 // ------- Preamble -------- //
 #include <avr/io.h>
 #include <util/delay.h>
