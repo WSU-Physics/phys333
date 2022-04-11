@@ -4,7 +4,7 @@
  * Goals for this code:
  * X transmit a single character "a"
  * X Create function to transmit arbitrary byte 
- * - Create function to transmit arbitrary message
+ * X Create function to transmit arbitrary message
  * - Read a byte, loopback to computer
  */
 
