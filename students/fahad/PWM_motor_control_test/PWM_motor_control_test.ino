@@ -4,7 +4,6 @@ int val;
 void setup() {
   Serial.begin(9600);
   pinMode(out1, OUTPUT);
-//  pinMode(out1, OUTPUT);
 }
 
 void loop() {
