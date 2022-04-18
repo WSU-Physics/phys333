@@ -8,7 +8,7 @@ void setup() {
 
 void loop() {
   lcd.setCursor(0, 0);
-  lcd.print("Fan Status:");
+  lcd.print(String("Fan Status:") + String(5));
   lcd.setCursor(0, 1);
   lcd.print("Light Status:");
 }
