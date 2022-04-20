@@ -246,6 +246,6 @@ void loop() {
         break;
     }
     receiver.resume(); // resume receiving signal from the remote
-    Serial.println(value);
+    // Serial.println(value); //debug to see if the remote is sending correct signals and if the signals are producing the correct result
   }
 }
