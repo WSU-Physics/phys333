@@ -12,6 +12,7 @@
    through an LCD screen
 */
 
+// defining macros for the remote keys
 #define on_off_key 41565
 #define fan_on_off_key 36975
 #define light_on_off_key 57375
@@ -32,10 +33,13 @@ LiquidCrystal lcd = LiquidCrystal(2, 3, 4, 5, 6, 7);
 int fan_speed[] = {0, 70, 180, 255};
 int led_brightness[] = {0, 50, 127, 255};
 
-//counters
+// counters
 int on_off = 0;
 int fan_on_off = 0;
 int light_on_off = 0;
+int lcd_on_off = 0;
+
+// initializing the current speed of fan to medium, stores the current speed based on methods
 int current_fan_speed = fan_speed[2];
 int current_light_status = led_brightness[2];
 
@@ -94,8 +98,9 @@ void lcdOutput(int fanSpeed, int brightness) {
 }
 void loop() {
   if (receiver.decode(&output)) {
-    unsigned int value = output.value;
+    unsigned int value = output.value; // decoded output value of the IR remote signal
     switch (value) {
+      // on/off case to turn the system on and off
       case on_off_key:
         if (on_off == 1) {
           analogWrite(fan_pin, fan_speed[0]);
@@ -123,36 +128,59 @@ void loop() {
           lcdOutput(current_fan_speed, current_light_status);
         }
         break;
+      // turning only the fan on/off
       case fan_on_off_key:
         if (on_off == 1) {
           if (fan_on_off == 1) {
             analogWrite(fan_pin, fan_speed[0]);
             fan_on_off = 0;
-            lcdOutput(fan_speed[0], current_light_status);
+            if (light_on_off == 0) {
+              lcdOutput(fan_speed[0], led_brightness[0]);
+            }
+            else {
+              lcdOutput(fan_speed[0], current_light_status);
+            }
           }
           else {
             analogWrite(fan_pin, fan_speed[3]);
             delay(10);
             analogWrite(fan_pin, current_fan_speed);
             fan_on_off = 1;
-            lcdOutput(current_fan_speed, current_light_status);
+            if (light_on_off == 0) {
+              lcdOutput(current_fan_speed, led_brightness[0]);
+            }
+            else {
+              lcdOutput(current_fan_speed, current_light_status);
+            }
           }
         }
         break;
+      // turning only the light on/off
       case light_on_off_key:
         if (on_off == 1) {
           if (light_on_off == 1) {
             analogWrite(led_pin, led_brightness[0]);
             light_on_off = 0;
-            lcdOutput(current_fan_speed, led_brightness[0]);
+            if (fan_on_off == 0) {
+              lcdOutput(fan_speed[0], led_brightness[0]);
+            }
+            else {
+              lcdOutput(current_fan_speed, led_brightness[0]);
+            }
           }
           else {
             analogWrite(led_pin, current_light_status);
             light_on_off = 1;
-            lcdOutput(current_fan_speed, current_light_status);
+            if (fan_on_off == 0) {
+              lcdOutput(fan_speed[0], current_light_status);
+            }
+            else {
+              lcdOutput(current_fan_speed, current_light_status);
+            }
           }
         }
         break;
+      // increasing the fan speed from the current state, if the current state is max, stay in that state
       case fan_speed_up:
         if (on_off == 1) {
           if (current_fan_speed == fan_speed [1]) {
@@ -169,6 +197,7 @@ void loop() {
           }
         }
         break;
+      // decreasing the fan speed from the current state, if the current state is min, stay in that state
       case fan_speed_down:
         if (on_off == 1) {
           if (current_fan_speed == fan_speed [3]) {
@@ -177,12 +206,15 @@ void loop() {
             lcdOutput(current_fan_speed, current_light_status);
           }
           else {
+            analogWrite(fan_pin, fan_speed[3]);
+            delay(100);
             analogWrite(fan_pin, fan_speed[1]);
             current_fan_speed = fan_speed[1];
             lcdOutput(current_fan_speed, current_light_status);
           }
         }
         break;
+      // increasing the brightness of LED from the current state, if the current state is max, stay in that state
       case bright_light:
         if (on_off == 1) {
           if (current_light_status == led_brightness [1]) {
@@ -197,6 +229,7 @@ void loop() {
           }
         }
         break;
+      // decreasing the brightness of LED from the current state, if the current state is min, stay in that state
       case dim_light:
         if (on_off == 1) {
           if (current_light_status == led_brightness [3]) {
@@ -212,7 +245,7 @@ void loop() {
         }
         break;
     }
+    receiver.resume(); // resume receiving signal from the remote
     Serial.println(value);
-    receiver.resume();
   }
 }
