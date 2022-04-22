@@ -1,16 +1,16 @@
 /*
- * Use timeAudio from Williams as a starting point.
- * But use a compare match to set the tone duration.
- * Goal is to play a song completely in the background.
+ * Use timeAudio from Williams as a starting point,
+ * But extend it to play a song completely in the background.
+ * 
+ * I did this using timer/counter2 to count the number
+ * of ms since the note started. I interrupt on an overflow,
+ * and increment the ms count. Once the time reaches the
+ * note length, the next note is played.
+ * 
+ * I use the same trick as millis() to approximate the
+ * 8-bit timer overflow as 1ms (except I don't do any
+ * corrections because it's close enough for me).
  */
-
-// Need a second timer to keep track of tone duration
-// using 64 prescalar, I get about a quarter second
-// per 16-bit overflow.
-// or, just over 1 ms for the 8-bit.
-// maybe use one 8-bit for the waveform, second
-// 8-bit to count up to a ms, have that increment
-// a global variable (ie, recreate a simplified millis())
 
 // ------- Preamble -------- //
 #include <avr/io.h>         /* Defines pins, ports, etc */
