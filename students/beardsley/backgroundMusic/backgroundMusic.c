@@ -18,10 +18,10 @@
 #include <avr/interrupt.h>
 #include "songs.h"
 
-#define SPEAKER                 PD6 /* OC0A */
-#define SPEAKER_PORT            PORTD
-#define SPEAKER_PIN             PIND
-#define SPEAKER_DDR             DDRD
+#define SPEAKER                 PB3 /* OC2A */
+#define SPEAKER_PORT            PORTB
+#define SPEAKER_PIN             PINB
+#define SPEAKER_DDR             DDRB
 
 // Define song up here (tones and durations)
 //       Needs to be global so interrupts can use
@@ -32,14 +32,16 @@ int nms=0; // Number of ms since started playing song
 int nnotes = sizeof(notes) / sizeof(notes[0]);
 
 static inline void initTimers(void) {
-  TCCR0A |= (1 << WGM01);              /* CTC mode */
-  TCCR0A |= (1 << COM0A0);             /* Toggles pin each cycle through */
+  // User Timer/Counter0 to track ms
   TCCR0B |= (1 << CS00) | (1 << CS01); /* CPU clock / 64 */
-
-  // Timer/Counter2. Defaults to Normal mode
-  TCCR2B |= (1 << CS22); // CPU / 64. Can go up to 1024 if needed
-  TIMSK2 |= (1 << TOIE2); // enable overflow interrupt
+  TIMSK0 |= (1 << TOIE0); // enable overflow interrupt
   sei();  // global interrupt enable
+
+  // Timer/Counter2 has larger range for prescalar,
+  // so it can handle wider range of pitches
+  TCCR2A |= (1 << WGM21);   /* CTC mode */
+  TCCR2A |= (1 << COM2A0);  /* Toggles pin each cycle through */
+  TCCR2B |= (1 << CS22) | (1 << CS20);    /* CPU / 128. */
 }
 
 static inline void playNote(uint8_t period, uint16_t duration) {
@@ -57,7 +59,7 @@ static inline void playNote(uint8_t period, uint16_t duration) {
 
 
 
-ISR(TIMER2_OVF_vect){
+ISR(TIMER0_OVF_vect){
   nms += 1;
   if (nms >= lengths[notei]){
     // Reached end of note, update
