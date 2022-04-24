@@ -16,6 +16,7 @@
 #include <avr/io.h>         /* Defines pins, ports, etc */
 #include "scale_16MHz.h"    /* Map notes to number of clock cycles */
 #include <avr/interrupt.h>
+#include "songs.h"
 
 #define SPEAKER                 PD6 /* OC0A */
 #define SPEAKER_PORT            PORTD
@@ -24,14 +25,8 @@
 
 // Define song up here (tones and durations)
 //       Needs to be global so interrupts can use
-int notes[] = {E5, D5, C5, D5, E5, E5, E5, REST,
-               D5, D5, D5, REST, E5, G5, G5, REST,
-               E5, D5, C5, D5, E5, E5, E5, E5,
-               D5, D5, E5, D5, C5, REST};
-int lengths[] = {500, 500, 500, 500, 500, 500, 500, 500,
-                 500, 500, 500, 500, 500, 500, 500, 500,
-                 500, 500, 500, 500, 500, 500, 500, 500,
-                 500, 500, 500, 500, 1000, 1000};
+int notes[] = MARYNOTES;
+int lengths[] = MARYLENGTHS;
 int notei=0; // Note we are currently playing
 int nms=0; // Number of ms since started playing song
 int nnotes = sizeof(notes) / sizeof(notes[0]);
