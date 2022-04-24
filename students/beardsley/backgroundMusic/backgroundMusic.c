@@ -2,7 +2,7 @@
  * Use timeAudio from Williams as a starting point,
  * But extend it to play a song completely in the background.
  * 
- * I did this using timer/counter2 to count the number
+ * I did this using timer/counter0 to count the number
  * of ms since the note started. I interrupt on an overflow,
  * and increment the ms count. Once the time reaches the
  * note length, the next note is played.
