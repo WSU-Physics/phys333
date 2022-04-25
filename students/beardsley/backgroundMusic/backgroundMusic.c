@@ -25,10 +25,10 @@
 
 // Define song up here (tones and durations)
 //       Needs to be global so interrupts can use
-int notes[] = MARYNOTES;
-int lengths[] = MARYLENGTHS;
+int notes[] = MARIONOTES;
+int lengths[] = MARIOLENGTHS;
 int notei=0; // Note we are currently playing
-int nms=0; // Number of ms since started playing song
+int nms=0; // Number of ms since started playing note
 int nnotes = sizeof(notes) / sizeof(notes[0]);
 
 static inline void initTimers(void) {
@@ -45,8 +45,8 @@ static inline void initTimers(void) {
 }
 
 static inline void playNote(uint8_t period, uint16_t duration) {
-  TCNT0 = 0;         /* reset the counter */
-  OCR0A = period;    /* set pitch */
+  TCNT2 = 0;         /* reset the counter */
+  OCR2A = period;    /* set pitch */
 
   if (period == REST){
     // Disable if rest
