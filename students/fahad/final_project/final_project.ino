@@ -37,7 +37,6 @@ int led_brightness[] = {0, 50, 127, 255};
 int on_off = 0;
 int fan_on_off = 0;
 int light_on_off = 0;
-int lcd_on_off = 0;
 
 // initializing the current speed of fan to medium, stores the current speed based on methods
 int current_fan_speed = fan_speed[2];
@@ -47,7 +46,7 @@ IRrecv receiver(receiver_pin);
 decode_results output;
 
 void setup() {
-  Serial.begin(9600); // need to print out the values from the remote in order to make it work
+  // Serial.begin(9600); // need to print out the values from the remote in order to debug remote signals
   receiver.enableIRIn();
   lcd.begin(16, 2);
   pinMode(fan_pin, OUTPUT);
@@ -106,6 +105,8 @@ void loop() {
           analogWrite(fan_pin, fan_speed[0]);
           analogWrite(led_pin, led_brightness[0]);
           on_off = 0;
+          fan_on_off = 0;
+          light_on_off = 0;
           lcd.clear();
           delay(500);
           lcd.setCursor(5, 0);
@@ -114,11 +115,13 @@ void loop() {
           lcd.print("OFF!");
         }
         else {
-          analogWrite(fan_pin, fan_speed[3]);
+          analogWrite(fan_pin, fan_speed[3]); //when the propellers are attached the fan needs a little speed boost before going to the current speed
           delay(10);
           analogWrite(fan_pin, current_fan_speed);
           analogWrite(led_pin, current_light_status);
           on_off = 1;
+          fan_on_off = 1;
+          light_on_off = 1;
           lcd.clear();
           delay(500);
           lcd.setCursor(5, 0);
