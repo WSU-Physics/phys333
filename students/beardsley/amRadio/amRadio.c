@@ -20,7 +20,7 @@ with slight modifications to work directly on Arduino Uno board.
 #define COUNTER_VALUE   7              /* determines carrier frequency */
 
 // From f = f_cpu / ( 2* N* (1 + OCRnx) )
-// Good values for the AM band from 2 to 6: pick one that's clear
+// Good values for the AM band from 5 to 15: pick one that's clear
 // Divide by two b/c we're toggling on or off each loop;
 //  a full cycle of the carrier takes two loops.
 // 16MHz / (2 * 1 * (1+5)) = 1333 kHz
