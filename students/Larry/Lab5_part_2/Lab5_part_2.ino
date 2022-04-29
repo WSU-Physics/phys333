@@ -129,21 +129,35 @@ void loop()
     // To read from the gyroscope,  first call the
     // readGyro() function. When it exits, it'll update the
     // gx, gy, and gz variables with the most current data.
+
+
+    /*
+     * 
+     * using the gryo function
+     * I put the code to determine the output of the LED's
+     * under the if statement that determines if the gyro of the sensor
+     * is available.
+     * 
+     */
     imu.readGyro();
-    if(degree() < 5 && degree() > 1){
+    if(degree() <= 5 && degree() > 1){
       digitalWrite(LEDR, HIGH);
       digitalWrite(LEDW,LOW);
       Serial.println("Average");
       degree();
       
     }
-    if(degree() < 1){
+    
+    if(degree() <= 1){
       digitalWrite(LEDR,LOW);
       digitalWrite(LEDW, HIGH);
       Serial.println("Average");
       degree();
       
     }
+    /*
+     * if values it greater than 5 no LED will light up;
+     */
     else{
       digitalWrite(LEDR, LOW);
       digitalWrite(LEDW, LOW);
@@ -214,7 +228,7 @@ void printGyro()
  */
 float degree(){
   float average;
-  average = (imu.calcGyro(imu.gx)+ imu.calcGyro(imu.gy) +imu.calcGyro(imu.gz))/ 3;
+  average = (imu.calcGyro(imu.gx)+ imu.calcGyro(imu.gy) +imu.calcGyro(imu.gz));
   Serial.println(average);
   return average;
   delay(500);
