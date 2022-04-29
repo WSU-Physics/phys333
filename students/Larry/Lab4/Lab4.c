@@ -24,6 +24,21 @@ uint8_t debounce (void){
   return(0);
 }
 
+uint8_t debounce2 (void){
+  if(bit_is_clear(BUTTON_PIN, BUTTON2)){
+    
+    _delay_us(DEBOUNCE_TIME);
+    
+    if(bit_is_clear(BUTTON_PIN, BUTTON2)){
+      
+      return(1);
+      
+    }
+  }
+  
+  return(0);
+}
+
 int main(void) {
   uint8_t buttonWasPressed;
   uint8_t button2WasPressed;
@@ -40,7 +55,7 @@ int main(void) {
     if(debounce()){
       if(buttonWasPressed ==0){      
     
-    PORTD = 0b11111111;
+    PORTD = 0b11110000;
 
     buttonWasPressed =1;
       }
@@ -51,11 +66,11 @@ int main(void) {
       }
     }
 
-    if(debounce()){
+    if(debounce2()){
       button2WasPressed = 0;
       if(button2WasPressed == 0){
 
-        PORTD = 0b11110000;
+        PORTD = 0b00001111;
         
         
 
