@@ -12,12 +12,12 @@
   uint8_t buttonWasPressed = 0;
   uint8_t button2WasPressed = 0;
 
-uint8_t debounce (button){
-  if(bit_is_clear(BUTTON_PIN, button)){
+uint8_t debounce (b){
+  if(bit_is_clear(BUTTON_PIN, b)){
     
     _delay_us(DEBOUNCE_TIME);
     
-    if(bit_is_clear(BUTTON_PIN, button)){
+    if(bit_is_clear(BUTTON_PIN, b)){
       
       return(1);
       
