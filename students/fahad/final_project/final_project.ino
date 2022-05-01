@@ -42,7 +42,7 @@ int light_on_off = 0;
 int current_fan_speed = fan_speed[2];
 int current_light_status = led_brightness[2];
 
-IRrecv receiver(receiver_pin);
+IRrecv receiver(receiver_pin); //recevier object connecting to receiver pin
 decode_results output;
 
 void setup() {
@@ -57,6 +57,7 @@ void setup() {
   lcd.print("OFF!");
 }
 
+// creating a function to take in an int and convert them to string to print out in LCD screen
 String fanStatus(int fan) {
   if (fan == fan_speed[1]) {
     return "LOW";
@@ -72,6 +73,7 @@ String fanStatus(int fan) {
   }
 }
 
+// creating a function to take in an int and convert them to string to print out in LCD screen
 String lightStatus(int light) {
   if (light == led_brightness[1]) {
     return "LOW";
@@ -87,6 +89,7 @@ String lightStatus(int light) {
   }
 }
 
+// creating a function to decrease redunancy for the lcd output
 void lcdOutput(int fanSpeed, int brightness) {
   delay(1000);
   lcd.clear();
@@ -95,6 +98,7 @@ void lcdOutput(int fanSpeed, int brightness) {
   lcd.setCursor(0, 1);
   lcd.print(String("Brightness: ") + String(lightStatus(brightness)));
 }
+
 void loop() {
   if (receiver.decode(&output)) {
     unsigned int value = output.value; // decoded output value of the IR remote signal
