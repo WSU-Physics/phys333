@@ -279,7 +279,7 @@ void loop() {
 
   //open file. Only one can be open at a time 
 
-  File datafile = SD.open("snek.csv", FILE_WRITE); 
+  File datafile = SD.open("snek2.csv", FILE_WRITE); 
 
   // if the file is available, write to it
    

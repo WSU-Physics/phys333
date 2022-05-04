@@ -21,11 +21,7 @@
   int header = 0; 
 
   //data array 
-  //int myStrings[2][9]; 
-
-  String myStrings[30][2]; 
-
-  float myFloats[30][7]; 
+  String myStrings[2][9]; 
   
    //Variable for RTC Clock 
  char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -126,9 +122,8 @@ void loop() {
      Serial.println("Entering program 2"); 
      DateTime now2 = rtc.now();
 
+     //define column header for csv 
      String columnHeader = "# Date, Time, gx, gy, gz, Ax, Ay, Az,  Pitch";
-
-    //define array of values, 50 rows, 9 columns 
 
 
            // Update the sensor values whenever new data is available
@@ -154,11 +149,11 @@ void loop() {
         // mx, my, and mz variables with the most current data.
         imu.readMag();
       }
-        
-        
-      
-        for(int i = 0; i < 50; i++){
-          for(int k = 0; k < 9; k++){
+
+  
+        // for all rows in csv, copy contents of imu method calls 
+        for(int i = 0; i < 3; i++){
+     
           String date = String(now2.day()) + "/" + String(now2.month())+ "/" + String(now2.year())+ " ";  
           
         
@@ -180,38 +175,20 @@ void loop() {
           pitch =  (pitch*= 180.0/PI);
         
 
-          Serial.println(date); //+ "," + time_2 + "," + String(float(pitch))); 
-
-          if(k < 2){
-            myStrings[i][k] = date;
-            myStrings[i][k] = time_2; 
-            myFloats[i][k] = float(Gx);
-            myFloats[i][k] = float(Gy); 
-            myFloats[i][k] = float(Gz); 
-            myFloats[i][k] = float(Ax); 
-            myFloats[i][k] = float(Ay); 
-            myFloats[i][k] = float(Az); 
-            myFloats[i][k] = float(pitch);
-             
-          }
-
-          else{
-            myFloats[i][k] = float(Gx);
-            myFloats[i][k] = float(Gy); 
-            myFloats[i][k] = float(Gz); 
-            myFloats[i][k] = float(Ax); 
-            myFloats[i][k] = float(Ay); 
-            myFloats[i][k] = float(Az); 
-            myFloats[i][k] = float(pitch);
-            
-          }
-     
-          
+          //Serial.println(date); //+ "," + time_2 + "," + String(float(pitch))); 
         
           
           
           
-         
+          myStrings[i][0] = date;
+          myStrings[i][1] = time_2; 
+          myStrings[i][2] = String(float(Gx));
+          myStrings[i][3] = String(float(Gy)); 
+          myStrings[i][4] = String(float(Gz)); 
+          myStrings[i][5] = String(float(Ax)); 
+          myStrings[i][6] = String(float(Ay)); 
+          myStrings[i][7] = String(float(Az)); 
+          myStrings[i][8] = String(float(pitch));
       
           
           /*
@@ -220,7 +197,6 @@ void loop() {
             dataOut = 0;   
           }
           */
-        }
         }
 
         
@@ -248,32 +224,17 @@ void loop() {
 
   
   
-        for(int i = 0; i < 50; i++){
-          for(int k = 0; k < 9; k++){
+        for(int i = 0; i < 3; i++){
 
           String dataString = ""; 
 
-          if(k < 2){
-            dataString += (myStrings[i][k] + ","); 
-          }
-
-          else if(k < 8){
-            dataString += (String(float(myFloats[i][k])) + ",");
-          }
-
-          else{
-            dataString += myFloats[i][k]; 
-          }
-          
-          
+          dataString += (myStrings[i][0] + "," + myStrings[i][1] + "," + myStrings[i][2] + "," + myStrings[i][3]+ "," + myStrings[i][4]+ "," + myStrings[i][5]+ "," + myStrings[i][6]+ "," + myStrings[i][7]+ "," + myStrings[i][8]); 
 
           datafile2.println(dataString); 
           delay(10); 
            
           //print to the Serial port
           //Serial.println(dataString);
-          
-          }
         }
 
         datafile2.close();
