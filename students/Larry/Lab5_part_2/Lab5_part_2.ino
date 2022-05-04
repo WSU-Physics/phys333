@@ -56,6 +56,11 @@ Distributed as-is; no warranty is given.
 #include <SPI.h>
 #include <SparkFunLSM9DS1.h>
 
+bool xfive;
+bool yfive;
+bool xone;
+bool yone;
+
 //////////////////////////
 // LSM9DS1 Library Init //
 //////////////////////////
@@ -124,7 +129,7 @@ void setup()
 void loop()
 {
   // Update the sensor values whenever new data is available
-  if ( imu.gyroAvailable() )
+  if ( imu.accelAvailable() )
   {
     // To read from the gyroscope,  first call the
     // readGyro() function. When it exits, it'll update the
@@ -133,37 +138,48 @@ void loop()
 
     /*
      * 
-     * using the gryo function
-     * I put the code to determine the output of the LED's
-     * under the if statement that determines if the gyro of the sensor
-     * is available.
+     * each function returns a true and false value for each loop
      * 
      */
-    imu.readGyro();
-    if(degree() <= 5 && degree() > 1){
+     xfive = xdegree();
+     yfive = ydegree();
+     xone = xdegreeOne();
+     yone = ydegreeOne();
+     
+   // imu.readGyro();
+    imu.readAccel();
+    if(yfive && xfive){
       digitalWrite(LEDR, HIGH);
       digitalWrite(LEDW,LOW);
-      Serial.println("Average");
-      degree();
+      Serial.println(yfive);
+      Serial.println("Red LED");
+     // degree();
       
     }
     
-    if(degree() <= 1){
+    if(xone && yone){
       digitalWrite(LEDR,LOW);
       digitalWrite(LEDW, HIGH);
-      Serial.println("Average");
-      degree();
+      Serial.println(xone);
+      Serial.println("White LED");
+      //degree();
+      
+    }
+    if(imu.calcAccel(imu.az)< 0){
+      Serial.println("device is upside down");
       
     }
     /*
      * if values it greater than 5 no LED will light up;
      */
-    else{
+    if(!xone && !yone && !xfive && !yfive){
       digitalWrite(LEDR, LOW);
       digitalWrite(LEDW, LOW);
-      Serial.println("Average");
-      degree();
+      Serial.println("No Lights");
+      xdegree();
+      ydegree();
     }
+    delay(1000);
   }
   if ( imu.accelAvailable() )
   {
@@ -195,6 +211,7 @@ void loop()
     Serial.println();
     
     lastPrint = millis(); // Update lastPrint time
+    delay(100);
   }
 }
 
@@ -226,12 +243,72 @@ void printGyro()
  * 
  * 
  */
-float degree(){
-  float average;
-  average = (imu.calcGyro(imu.gx)+ imu.calcGyro(imu.gy) +imu.calcGyro(imu.gz));
-  Serial.println(average);
-  return average;
+ 
+bool xdegree(){
+ // float average;
+ // abs turns negative value positive so it can be easily compared .5 degree and .1 degree value
+ if(abs(imu.calcAccel(imu.ax))< 0.5 && abs(imu.calcAccel(imu.ax))> .1){
+  xfive = true;
+  xone = false;
+  Serial.println(imu.calcAccel(imu.ax));
+
+  return true;
+ }
+ else{
+
+    return false;
+    
+ }
   delay(500);
+}
+bool xdegreeOne(){
+  if(abs(imu.calcAccel(imu.ax))< .1){
+
+  return true;
+  
+  
+ }
+ else{
+
+    return false;
+    
+ }
+  delay(500);
+  
+}
+
+bool ydegree(){
+  if(abs(imu.calcAccel(imu.ay))< .5 && abs(imu.calcAccel(imu.ay))> .1){
+
+    return true;
+    
+  }
+  else{
+
+    
+    return false;
+  }
+  delay(500);
+  
+}
+
+bool ydegreeOne(){
+    if(abs(imu.calcAccel(imu.ay))< .1){
+    yone  = true;
+    yfive = false;
+    return true;;
+
+    
+  }
+  else{
+    yone = false;
+    yfive = false;
+    
+    return false;
+  }
+  delay(500);
+  
+  
 }
 
 void printAccel()
