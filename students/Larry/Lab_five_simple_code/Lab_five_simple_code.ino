@@ -1,5 +1,6 @@
 //const int read = 9;
 char dis[4];
+int bytes;
 
 void setup() {
   // put your setup code here, to run once:
@@ -9,6 +10,7 @@ void setup() {
   
 
 }
+//determines if there is a connection for the wire
 bool WaitForWire(){
   /*
    * if wire is detect return True
@@ -24,9 +26,11 @@ bool WaitForWire(){
   }
 }
 
+
 void loop() {
 
   //char sensor = Serial.read();
+ 
   if(WaitForWire()){
     while(Serial.available()){
       Serial.read();
@@ -38,6 +42,10 @@ void loop() {
     int bytes = Serial.readBytes(dis,3);
     Serial.println(dis);
   }
+
+  // old code used to read the values from the distance sensor
+  // the values it would read were rather glitchy and instead of buffering adn reading the desired value it 
+  // would be all over the place when reading values it would sometimes read the inital R sending data
   /*
   //int true_val = map(sensor, 0, 1023, 0, 255);
   if (sensor == 'R'){
@@ -56,10 +64,6 @@ void loop() {
   */
   delay(1000);
   
-  
-  
-  
-  
-  // put your main code here, to run repeatedly:
+
 
 }
