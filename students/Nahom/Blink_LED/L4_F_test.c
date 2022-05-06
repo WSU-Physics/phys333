@@ -27,7 +27,8 @@ uint8_t debounce(void) {
 int main(void){
   uint8_t buttonWasPressed =0; /* state */
   uint8_t lastState = 0;
-  uint8_t LedState = 0;
+  uint8_t coumt = 0;
+  
   
   
   ButtonPort |= (1<< Button);      // enable pullup resistor 
