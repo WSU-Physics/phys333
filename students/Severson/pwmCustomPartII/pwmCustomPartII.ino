@@ -11,9 +11,9 @@ void pwm(int pin, double dutyCycle, double duration) { //custom pwm function wit
   double nLoops = duration / T; //number of loops needed to run during a full duration
 
   for (int i = 0.; i < nLoops; i++) { //incrementing the number of loops from zero to nLoops
-    digitalWrite(ledBlue, HIGH);  //set pinOut high
+    digitalWrite(pinOut, HIGH);  //set pinOut high
     delayMicroseconds(Ton); //pinOut is on
-    digitalWrite(ledBlue, LOW); //set pinOut low
+    digitalWrite(pinOut, LOW); //set pinOut low
     delayMicroseconds(Toff);  //pinOut is off
   }
 }
