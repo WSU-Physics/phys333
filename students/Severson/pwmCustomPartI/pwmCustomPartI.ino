@@ -5,7 +5,7 @@
 const int ledBlue = 2;  //set pin 2 as ledBlue
 
 void pwm(int pin, double dutyCycle, double duration) { //custom pwm function with the arguments pin, dutyCycle, and duration
-  const double T = 10000.;  //sets the period to 10000
+  const double T = 10000.;  //sets the period to 10000 (microseconds)
   double Ton = dutyCycle * T; //calculate time ledBlue is on
   double Toff = T - Ton;  //calculate time ledBlue is off
   double nLoops = duration / T; //number of loops needed to run during a full duration
