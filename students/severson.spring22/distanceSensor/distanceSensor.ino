@@ -1,6 +1,7 @@
 /*
    This sketch uses an IR distance sensor to vary the brightness of a LED.
    Brightness increases as you get closer to an object as a warning.
+   getDistance() is a predefined function from the SharpIR library which was written by Giuseppe Masino.
 */
 
 #include <SharpIR.h>                              //imports the IR library for the sketch
