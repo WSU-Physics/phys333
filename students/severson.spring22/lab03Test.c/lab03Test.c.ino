@@ -5,7 +5,7 @@ int main(void) {
   DDRD = 0xff;
 
   while (1) {
-    for (int i = 0; i < 8; i++) {
+    for (uint8_t i = 0; i < 8; i++) {
       PORTD = (1 << i);
       _delay_ms(100);
     }
