@@ -1,5 +1,11 @@
 /*
-  Buttons can suck it.
+  has button been pressed?
+  y: do the thing
+  n: do nothing
+
+  has button been pressed?
+  y: stop doing the thing
+  n: do nothing
 */
 
 #include <avr/io.h>
@@ -38,11 +44,10 @@ uint8_t rightDebounce(void) {
 
 uint8_t leftTurn(void) {
   uint8_t L;
-  
-    for (L = 3; L < 255; L--) {
-      signalPort = (1 << L);
-      _delay_ms(127);
-    }
+  for (L = 3; L < 255; L--) {
+    signalPort = (1 << L);
+    _delay_ms(127);
+  }
 }
 
 uint8_t rightTurn(void) {
@@ -65,10 +70,14 @@ int main(void) {
     if (leftDebounce()) {
       if (leftSignal == 0) {
         leftSignal = 1;
-        }
       }
-      else {
+    }
+    else {
       leftSignal = 0;
+    }
+    while(leftSignal == 1) {
+      leftTurn();
+      
     }
   }
 
