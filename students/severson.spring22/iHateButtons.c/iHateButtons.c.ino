@@ -75,10 +75,8 @@ int main(void) {
     else {
       leftSignal = 0;
     }
-    while(leftSignal == 1) {
+    while (leftSignal == 1) {
       leftTurn();
-      
     }
   }
-
 }
