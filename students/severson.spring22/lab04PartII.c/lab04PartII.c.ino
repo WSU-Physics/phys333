@@ -5,7 +5,7 @@
 #include <avr/io.h>               //fetch avr/io library
 #include <util/delay.h>           //fetch util/delay library
 
-#define signalDelay 125           //define signal delay time milliseconds
+#define signalDelay 100           //define signal delay time milliseconds
 
 #define signalDDR  DDRD           //ddrd used for signals
 #define signalPort PORTD          //portd used for signals
