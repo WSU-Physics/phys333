@@ -23,24 +23,7 @@
 uint8_t leftButtonPressed;                              //integer for left button state
 uint8_t rightButtonPressed;                             //integer for right button state
 
-uint8_t leftSignal(void) {                              //left signal function
-  uint8_t l;                                            //variable for the function
-  leftButtonPressed = 1;
-  if(leftTurn()) {
-    if(leftButtonPressed == 1){
-      for (l = 3; l < 255; l--) {                           //for loop
-    signalPort |= (1 << l);                             //pattern in which the LEDs light up
-    _delay_ms(signalDelay);                             //delay
-    signalPort = 0x00;
-    leftButtonPressed = 0;
-      }
-  }
-  else {
-    leftButtonPressed = 1;
-  }
-  
-  }
-}
+
 
 uint8_t rightSignal(void) {                             //right signal function
   uint8_t r;                                            //variable for function
@@ -69,6 +52,23 @@ uint8_t rightTurn(void) {                               //right button debounce 
     }
   }
   return (0);
+}
+
+uint8_t leftSignal(void) {                              //left signal function
+  uint8_t l;                                            //variable for the function
+  if(leftTurn()) {
+  if (leftButtonPressed == 1) {
+    for (l = 3; l < 255; l--) {                           //for loop
+    signalPort |= (1 << l);                             //pattern in which the LEDs light up
+    _delay_ms(signalDelay);                             //delay
+    signalPort = 0x00;
+  }
+    leftButtonPressed = 0;
+  }
+  else {
+    leftButtonPressed = 1;
+  }
+}
 }
 
 int main(void) {                                        //main function
