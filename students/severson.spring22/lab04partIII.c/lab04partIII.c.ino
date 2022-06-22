@@ -45,7 +45,7 @@ uint8_t rightTurn(void) {                               //right button debounce 
 
 uint8_t leftSignal(void) {                              //left signal function
   uint8_t l;                                            //variable for the function
-  for (l = 3; l < 255; l--) {                         //for loop
+  for (l = 3; l < 255; l--) {                           //for loop
     signalPort |= (1 << l);                             //pattern in which the LEDs light up
     _delay_ms(signalDelay);                             //delay
   }
@@ -53,11 +53,20 @@ uint8_t leftSignal(void) {                              //left signal function
 
 uint8_t rightSignal(void) {                             //right signal function
   uint8_t r;                                            //variable for function
-  for (r = 4; r < 8; r++) {                             //for loop
+  
+  if(rightTurn()) {
+    if(rightButtonPressed == 1) {
+      rightButtonPressed = 0;
+      return(0);
+    }
+   else {
+    rightButtonPressed = 1;
+    for (r = 4; r < 8; r++) {                             //for loop
     signalPort |= (1 << r);                             //right signal pattern
     _delay_ms(signalDelay);                             //delay
   }
-  signalPort = 0x00;
+   }
+  }
 }
 
 int main(void) {                                        //main function
@@ -67,6 +76,7 @@ int main(void) {                                        //main function
   while (1) {                                           //loop start
     if (leftTurn()) {                                   //if left button pressed
       if (leftButtonPressed == 0) {                     //but wasn't previously
+        //do the thing
         leftButtonPressed = 1;                          //update left button state
       }
     }
@@ -76,6 +86,7 @@ int main(void) {                                        //main function
 
     if (rightTurn()) {                                   //everything is similar, just for the right button & LEDs
       if (rightButtonPressed == 0) {
+        rightSignal();
         rightButtonPressed = 1;
       }
       else {
