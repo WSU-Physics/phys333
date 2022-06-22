@@ -53,19 +53,23 @@ uint8_t leftSignal(void) {                              //left signal function
 
 uint8_t rightSignal(void) {                             //right signal function
   uint8_t r;                                            //variable for function
-  
-  if(rightTurn()) {
-    if(rightButtonPressed == 1) {
-      rightButtonPressed = 0;
-      return(0);
+  while(rightButtonPressed == 1) {
+    if(rightTurn()) {
+      if(rightButtonPressed == 1) {
+        rightButtonPressed = 0;
+        return(0);
+      }
+      else {
+        for (r = 4; r < 8; r++) {                           //for loop
+        signalPort |= (1 << r);                             //right signal pattern
+        _delay_ms(signalDelay);                             //delay
+      }
+      signalPort = 0x00;
+      _delay_ms(5*signalDelay);
+      return(1);
     }
-   else {
-    rightButtonPressed = 1;
-    for (r = 4; r < 8; r++) {                             //for loop
-    signalPort |= (1 << r);                             //right signal pattern
-    _delay_ms(signalDelay);                             //delay
-  }
-   }
+
+    }
   }
 }
 
