@@ -54,27 +54,22 @@ uint8_t leftSignal(void) {                              //left signal function
 uint8_t rightSignal(void) {                             //right signal function
   uint8_t r;                                            //variable for function
 
-  while (1) {
-    for (r = 4; r < 8; r++) {                           //for loop
-      signalPort |= (1 << r);                             //right signal pattern
-      _delay_ms(signalDelay);                             //delay
-      if (rightTurn()) {
-        if (rightButtonPressed == 1) {
-          rightButtonPressed = 0;
-        }
-        else {
-
-          rightButtonPressed = 1;
-        }
-
-
+  for (r = 4; r < 8; r++) {                           //for loop
+    signalPort |= (1 << r);                             //right signal pattern
+    _delay_ms(signalDelay);                             //delay
+    if (rightTurn()) {
+      if (rightButtonPressed == 1) {
+        rightButtonPressed = 0;
+      }
+      else {
+        rightButtonPressed = 1;
       }
     }
-    signalPort = 0x00;
-    _delay_ms(5 * signalDelay);
   }
-
+  signalPort = 0x00;
+  _delay_ms(5 * signalDelay);
 }
+
 
 
 
@@ -88,6 +83,9 @@ int main(void) {                                        //main function
       if (leftButtonPressed == 0) {                     //but wasn't previously
         //do the thing
         leftButtonPressed = 1;                          //update left button state
+        while (leftButtonPressed == 1) {
+          leftSignal();
+        }
       }
     }
     else {                                              //left button not pressed now
@@ -96,8 +94,10 @@ int main(void) {                                        //main function
 
     if (rightTurn()) {                                   //everything is similar, just for the right button & LEDs
       if (rightButtonPressed == 0) {
-        rightSignal();
         rightButtonPressed = 1;
+        while (rightButtonPressed == 1) {
+          rightSignal();
+        }
       }
       else {
         rightButtonPressed = 0;
