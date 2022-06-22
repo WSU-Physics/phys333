@@ -56,20 +56,13 @@ uint8_t rightTurn(void) {                               //right button debounce 
 
 uint8_t leftSignal(void) {                              //left signal function
   uint8_t l;                                            //variable for the function
-  if(leftTurn()) {
-  if (leftButtonPressed == 1) {
-    for (l = 3; l < 255; l--) {                           //for loop
+    for (l = 3; l < 255; l--) {                         //for loop
     signalPort |= (1 << l);                             //pattern in which the LEDs light up
     _delay_ms(signalDelay);                             //delay
     signalPort = 0x00;
   }
-    leftButtonPressed = 0;
-  }
-  else {
-    leftButtonPressed = 1;
-  }
 }
-}
+
 
 int main(void) {                                        //main function
   buttonPort |= (1 << leftButton) | (1 << rightButton); //enable pullup on buttons
