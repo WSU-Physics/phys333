@@ -60,9 +60,7 @@ uint8_t rightSignal(void) {                             //right signal function
       _delay_ms(signalDelay);                             //delay
       if (rightTurn()) {
         if (rightButtonPressed == 1) {
-          signalPort = 0x00;
           rightButtonPressed = 0;
-          return (0);
         }
         else {
 
@@ -78,9 +76,12 @@ uint8_t rightSignal(void) {                             //right signal function
 
 }
 
+
+
 int main(void) {                                        //main function
   buttonPort |= (1 << leftButton) | (1 << rightButton); //enable pullup on buttons
   signalDDR = 0xff;                                     //prepare LEDs for output
+  signalPort = 0x00;
 
   while (1) {                                           //loop start
     if (leftTurn()) {                                   //if left button pressed
