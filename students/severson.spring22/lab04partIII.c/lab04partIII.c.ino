@@ -23,17 +23,6 @@
 uint8_t leftButtonPressed;                              //integer for left button state
 uint8_t rightButtonPressed;                             //integer for right button state
 
-
-
-uint8_t rightSignal(void) {                             //right signal function
-  uint8_t r;                                            //variable for function
-  for (r = 4; r < 8; r++) {                             //for loop
-    signalPort |= (1 << r);                             //right signal pattern
-    _delay_ms(signalDelay);                             //delay
-    signalPort = 0x00;
-  }
-}
-
 uint8_t leftTurn(void) {                                //debounce function for left button
   if ((buttonPin & (1 << leftButton)) == 0) {           //left button is pressed
     _delay_us(debounceTime);                            //delay
@@ -56,13 +45,20 @@ uint8_t rightTurn(void) {                               //right button debounce 
 
 uint8_t leftSignal(void) {                              //left signal function
   uint8_t l;                                            //variable for the function
-    for (l = 3; l < 255; l--) {                         //for loop
+  for (l = 3; l < 255; l--) {                         //for loop
     signalPort |= (1 << l);                             //pattern in which the LEDs light up
     _delay_ms(signalDelay);                             //delay
-    signalPort = 0x00;
   }
 }
 
+uint8_t rightSignal(void) {                             //right signal function
+  uint8_t r;                                            //variable for function
+  for (r = 4; r < 8; r++) {                             //for loop
+    signalPort |= (1 << r);                             //right signal pattern
+    _delay_ms(signalDelay);                             //delay
+  }
+  signalPort = 0x00;
+}
 
 int main(void) {                                        //main function
   buttonPort |= (1 << leftButton) | (1 << rightButton); //enable pullup on buttons
@@ -71,24 +67,21 @@ int main(void) {                                        //main function
   while (1) {                                           //loop start
     if (leftTurn()) {                                   //if left button pressed
       if (leftButtonPressed == 0) {                     //but wasn't previously
-        leftSignal();
         leftButtonPressed = 1;                          //update left button state
       }
     }
     else {                                              //left button not pressed now
       leftButtonPressed = 0;                            //update state
     }
-  }
 
-  if (rightTurn()) {                                   //everything is similar, just for the right button & LEDs
-    if (rightButtonPressed == 0) {
-      rightSignal();
-      rightButtonPressed = 1;
+    if (rightTurn()) {                                   //everything is similar, just for the right button & LEDs
+      if (rightButtonPressed == 0) {
+        rightButtonPressed = 1;
+      }
+      else {
+        rightButtonPressed = 0;
+      }
     }
   }
-  else {
-    rightButtonPressed = 0;
-  }
-
   return (0);
 }
