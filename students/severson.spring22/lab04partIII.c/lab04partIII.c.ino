@@ -9,7 +9,7 @@
 #include <util/delay.h>
 
 #define signalDelay 100                                 //define signal delay time milliseconds
-#define debounceTime 1000                               //debounce time in microseconds
+#define debounceTime 10000                              //debounce time in microseconds
 
 #define buttonPort PORTB                                //port b is used for the buttons
 #define buttonPin PINB                                  //pin b is used for the buttons
