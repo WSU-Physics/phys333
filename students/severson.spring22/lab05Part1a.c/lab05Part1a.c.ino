@@ -22,8 +22,8 @@ void setup() {
 
 void loop() {
   if (sonarSensor.available() > 0) {
-    delay(96);                                 //LV-EZ1 datasheet states RS232 data can be read every 49 ms and needs to calibrate on startup
+    delay(49);                                 //LV-EZ1 datasheet states RS232 data can be read every 49 ms and needs to calibrate on startup
     sensorVal = sonarSensor.read();            //read the pin value
-    sonarSensor.println(sensorVal, BIN);       //print the value in binary
+    sonarSensor.println(sensorVal);            //print the sensor value in the serial monitor
   }
 }
