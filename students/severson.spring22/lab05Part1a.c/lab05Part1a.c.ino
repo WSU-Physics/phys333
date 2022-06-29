@@ -12,6 +12,7 @@
 #define txPin 1                               //(unused) define Tx pin (1 is default value on the Arduino Uno R3) (unused)
 
 uint8_t sensorVal;                            //variable for sensor value
+int distance[4];
 
 SoftwareSerial sonarSensor (rxPin, txPin);    //define your serial and Rx and Tx pins
 
@@ -29,8 +30,7 @@ void loop() {
   while(sonarSensor.read() !=82) {
     _delay_us(1);
   }
-    sensorVal = sonarSensor.readBytes(dist, 3);           //read the pin value
+    sensorVal = sonarSensor.read();           //read the pin value
     sonarSensor.println(sensorVal);           //print the sensor value in the serial monitor
                                               //LV-EZ1 datasheet states RS232 data can be read every 49 ms
-  }
 }
