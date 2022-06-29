@@ -4,7 +4,7 @@
    Will address the gibberish in part 1b.
 */
 
-#include <SoftwareSerial.h>                   //include serial library
+//#include <SoftwareSerial.h>                   //include serial library
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -19,8 +19,8 @@ int distance[4];
 void setup() {
   pinMode(rxPin, INPUT);                      //set your sensor pin as input
   Serial.begin(9600);                    //begin serial communication, LV-EZ1 uses 9600 baud
-  while (!Serial) {                           //wait for the serial port to connect
-  }
+  //while (!Serial) {                           //wait for the serial port to connect
+  //}
 }
 
 void loop() {
