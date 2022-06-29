@@ -23,15 +23,11 @@ void loop() {
   while (Serial.available()) {
     Serial.read();
   }
-  while(Serial.read() !=82) {
-    _delay_us(1);
+  while (Serial.read() != 82) {
+    _delay_us(50);
   }
-    Serial.readBytes(distance, 3);           //read the pin value
-    Serial.print(distance[0]);
-    Serial.print("\t\t");
-    Serial.print(distance[1]);
-    Serial.print("\t\t");
-    Serial.print(distance[2]);
-    Serial.print("\t\t");
-    Serial.println(distance[3]);
+  Serial.readBytes(distance, 3);           //read the pin value
+  Serial.print(distance[0]);
+  Serial.print(distance[1]);
+  Serial.println(distance[2]);
 }
