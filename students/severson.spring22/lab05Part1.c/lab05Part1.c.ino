@@ -3,31 +3,25 @@
    Tx from sensor will be RS232 format.
 */
 
-
-#include <avr/io.h>
 #include <util/delay.h>
-#include <SoftwareSerial.h>
 
-int sensorVal;                            //variable for sensor value
-char distance[4];
-
-//SoftwareSerial Serial (rxPin, txPin);    //define your serial and Rx and Tx pins
+char distance[4];                          //array for sensor value
 
 void setup() {
-  Serial.begin(9600);                         //begin serial communication, LV-EZ1 uses 9600 baud
-  while (!Serial) {                           //wait for the serial port to connect
+  Serial.begin(9600);                      //begin serial communication, LV-EZ1 uses 9600 baud
+  while (!Serial) {                        //wait for the serial port to connect
   }
 }
 
 void loop() {
-  while (Serial.available()) {
-    Serial.read();
+  while (Serial.available()) {             //get number of characters available for read from serial port
+    Serial.read();                         //read the serial port
   }
-  while (Serial.read() != 82) {
-    _delay_us(50);
+  while (Serial.read() != 82) {            //as long as not reading 82 (which is R)
+    _delay_us(1);                          //delay
   }
-  Serial.readBytes(distance, 3);           //read the pin value
-  Serial.print(distance[0]);
-  Serial.print(distance[1]);
-  Serial.println(distance[2]);
-}
+  Serial.readBytes(distance, 3);           //read the Arduino Rx pin value and assign to distance array
+  Serial.print(distance[0]);               //print the first number
+  Serial.print(distance[1]);               //print second number
+  Serial.println(distance[2]);             //print third number then go to a new line
+}                                          //repeat loop()
