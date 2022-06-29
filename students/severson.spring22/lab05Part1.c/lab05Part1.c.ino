@@ -27,10 +27,7 @@ void loop() {
     _delay_us(1);
   }
     Serial.readBytes(distance, 3);           //read the pin value
-    int x = distance[0];
-    int y = distance[1];
-    int z = distance[2];
-    Serial.print(x);
-    Serial.print(y);
-    Serial.println(z);
+    Serial.print(distance[0]);
+    Serial.print(distance[1]);
+    Serial.println(distance[2]);
 }
