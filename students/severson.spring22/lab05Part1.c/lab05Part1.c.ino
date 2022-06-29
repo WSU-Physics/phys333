@@ -9,7 +9,7 @@
 #include <SoftwareSerial.h>
 
 int sensorVal;                            //variable for sensor value
-byte distance[4];
+char distance[4];
 
 //SoftwareSerial Serial (rxPin, txPin);    //define your serial and Rx and Tx pins
 
@@ -28,6 +28,10 @@ void loop() {
   }
     Serial.readBytes(distance, 3);           //read the pin value
     Serial.print(distance[0]);
+    Serial.print("\t\t");
     Serial.print(distance[1]);
-    Serial.println(distance[2]);
+    Serial.print("\t\t");
+    Serial.print(distance[2]);
+    Serial.print("\t\t");
+    Serial.println(distance[3]);
 }
