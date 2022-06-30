@@ -13,6 +13,8 @@
 
 LSM9DS1 imu;
 
+#define DECLINATION 1.
+
 int ledG = 2;
 int ledY = 3;
 
@@ -53,9 +55,11 @@ void loop() {
     if (abs(pitchDegree) < 5 && abs(pitchDegree) >= 1) {
       digitalWrite(ledG, LOW);
       digitalWrite(ledY, HIGH);
-      if ( abs(rollDegree) < 1 && abs(pitchDegree) < 1) {
+      if ( abs(rollDegree) < 1 && abs(rollDegree) >= 0) {
+        if ( abs(pitchDegree) < 1 && abs(pitchDegree) >=0) {
         digitalWrite(ledG, HIGH);
         digitalWrite(ledY, LOW);
+        }
       }
     }
   }
