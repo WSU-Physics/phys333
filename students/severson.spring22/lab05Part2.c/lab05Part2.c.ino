@@ -45,7 +45,8 @@ void loop() {
   float mX = imu.calcMag(imu.mx);
   float mY = imu.calcMag(imu.my);
   float mZ = imu.calcMag(imu.mz);
-  
+
+  while(1) {
   float roll = atan2(aY, aZ);
   roll *= 180.0 / PI;
   float pitch = atan2(-aX, sqrt(aY * aY + aZ * aZ));
@@ -56,6 +57,8 @@ void loop() {
   }
   while (( 0. <= abs(roll) < 1.) && ( 0. <= abs(pitch) < 1.)) {
     digitalWrite(ledGreen, HIGH);
+  }
+  return(1);
   }
   
   
