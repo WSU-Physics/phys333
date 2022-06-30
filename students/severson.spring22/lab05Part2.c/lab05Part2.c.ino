@@ -51,10 +51,10 @@ void loop() {
   float pitch = atan2(-aX, sqrt(aY * aY + aZ * aZ));
   pitch *= 180.0 / PI;
 
-  if (( 1 <= abs(roll) < 5) &&  (1 <= abs(pitch) < 5)) {
+  while (( 1. <= abs(roll) < 5.) &&  (1. <= abs(pitch) < 5.)) {
     digitalWrite(ledYellow, HIGH);
   }
-  if (( 0 <= abs(roll) < 1) && ( 0 <= abs(pitch) < 1)) {
+  while (( 0. <= abs(roll) < 1.) && ( 0. <= abs(pitch) < 1.)) {
     digitalWrite(ledGreen, HIGH);
   }
   
