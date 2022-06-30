@@ -21,8 +21,6 @@ LSM9DS1 imu;
 void setup() {
   pinMode(ledGreen, OUTPUT);
   pinMode(ledYellow, OUTPUT);
-  Serial.begin(115200);
-  Wire.begin();
 
 }
 
@@ -31,11 +29,12 @@ void loop() {
     imu.readGyro();
   }
   if (imu.accelAvailable()) {
-    imu.readAccel();
+    
   }
   if (imu.magAvailable()) {
-    imu.readMag();
+    
   }
+  
   float gX = imu.calcGyro(imu.gx);
   float gY = imu.calcGyro(imu.gy);
   float gZ = imu.calcGyro(imu.gz);
@@ -47,18 +46,18 @@ void loop() {
   float mZ = imu.calcMag(imu.mz);
 
   float roll = atan2(aY, aZ);
-  roll *= 180.0 / PI;
   float pitch = atan2(-aX, sqrt(aY * aY + aZ * aZ));
-  pitch *= 180.0 / PI;
+  float rollDegrees = roll *= 180.0 / PI;
+  float pitchDegrees = pitch *= 180.0 / PI;
 
-  while (( 1. <= abs(roll)) && (abs(roll) < 5.)) {
-    while ((1. <= abs(pitch)) && (abs(pitch) < 5.)) {
+  while (( 1. <= abs(rollDegrees)) && (abs(rollDegrees) < 5.)) {
+    while ((1. <= abs(pitchDegrees)) && (abs(pitchDegrees) < 5.)) {
       digitalWrite(ledYellow, HIGH);
     }
   }
   
-   while (( 0. <= abs(roll)) && (abs(roll) < 1.)) {
-    while (( 0. <= abs(pitch)) && (abs(pitch) < 1.)) {
+   while (( 0. <= abs(rollDegrees)) && (abs(rollDegrees) < 1.)) {
+    while (( 0. <= abs(pitchDegrees)) && (abs(pitchDegrees) < 1.)) {
       digitalWrite(ledGreen, HIGH);
    }
   }
