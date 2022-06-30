@@ -36,19 +36,19 @@ void loop() {
   if (imu.magAvailable()) {
     imu.readMag();
   }
-  imu.calcGyro(imu.gx);
-  imu.calcGyro(imu.gy);
-  imu.calcGyro(imu.gz);
-  imu.calcAccel(imu.ax);
-  imu.calcAccel(imu.ay);
-  imu.calcAccel(imu.az);
-  imu.calcMag(imu.mx);
-  imu.calcMag(imu.my);
-  imu.calcMag(imu.mz);
+  float gX = imu.calcGyro(imu.gx);
+  float gY = imu.calcGyro(imu.gy);
+  float gZ = imu.calcGyro(imu.gz);
+  float aX = imu.calcAccel(imu.ax);
+  float aY = imu.calcAccel(imu.ay);
+  float aZ = imu.calcAccel(imu.az);
+  float mX = imu.calcMag(imu.mx);
+  float mY = imu.calcMag(imu.my);
+  float mZ = imu.calcMag(imu.mz);
   
-  float roll = atan2(imu.ay, imu.az);
+  float roll = atan2(aY, aZ);
   roll *= 180.0 / PI;
-  float pitch = atan2(-imu.ax, sqrt(imu.ay * imu.ay + imu.az * imu.az));
+  float pitch = atan2(-aX, sqrt(aY * aY + aZ * aZ));
   pitch *= 180.0 / PI;
 
   while (( 1 <= abs(roll) < 5) &&  (1 < abs(pitch) < 5)) {
