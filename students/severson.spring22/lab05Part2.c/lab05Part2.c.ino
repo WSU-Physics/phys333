@@ -46,21 +46,21 @@ void loop() {
   float mY = imu.calcMag(imu.my);
   float mZ = imu.calcMag(imu.mz);
 
-  while(1) {
   float roll = atan2(aY, aZ);
   roll *= 180.0 / PI;
   float pitch = atan2(-aX, sqrt(aY * aY + aZ * aZ));
   pitch *= 180.0 / PI;
 
-  while (( 1. <= abs(roll) < 5.) &&  (1. <= abs(pitch) < 5.)) {
-    digitalWrite(ledYellow, HIGH);
-  }
-  while (( 0. <= abs(roll) < 1.) && ( 0. <= abs(pitch) < 1.)) {
-    digitalWrite(ledGreen, HIGH);
-  }
-  return(1);
+  for ( 1. <= abs(roll); abs(roll) < 5.;) {
+    for (1. <= abs(pitch); abs(pitch) < 5.;) {
+      digitalWrite(ledYellow, HIGH);
+    }
   }
   
+   for ( 0. <= abs(roll); abs(roll) < 1.;) {
+    for ( 0. <= abs(pitch); abs(pitch) < 1.;) {
+      digitalWrite(ledGreen, HIGH);
+   }
+  }
   
-
 }
