@@ -26,14 +26,11 @@ void setup() {
 void loop() {
   if ( imu.accelAvailable() ) {
     imu.readAccel(); 
-  }
+  //}
+  float ax = imu.calcAccel(imu.ax);
+  float ay = imu.calcAccel(imu.ay);
+  float az = imu.calcAccel(imu.az);
   
-}
-
-void calcAttitude(float ax, float ay, float az) {
-  ax = imu.calcAccel(imu.ax);
-  ay = imu.calcAccel(imu.ay);
-  az = imu.calcAccel(imu.az);
   float roll = atan2(ay, az);
   float pitch = atan2(-ax, sqrt(ay * ay + az * az));
 
@@ -54,4 +51,5 @@ void calcAttitude(float ax, float ay, float az) {
     digitalWrite(ledG, LOW);
     digitalWrite(ledY, LOW);
   }
+  } 
 }
