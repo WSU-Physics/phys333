@@ -27,10 +27,13 @@ void loop() {
   if ( imu.accelAvailable() ) {
     imu.readAccel(); 
   }
-
+  
 }
 
 void calcAttitude(float ax, float ay, float az) {
+  ax = imu.calcAccel(imu.ax);
+  ay = imu.calcAccel(imu.ay);
+  az = imu.calcAccel(imu.az);
   float roll = atan2(ay, az);
   float pitch = atan2(-ax, sqrt(ay * ay + az * az));
 
