@@ -2,6 +2,7 @@
  * Create a level (tool) using Sparkfun's LSM9DS1 IMU.
  * Light up a yellow LED when between five degrees and one degree of level.
  * Light up a green LED when within one degree of and while level.
+ * Parts of this code were borrowed from Sparkfun's LSMDS1_Basic_I2C.ino.
 */
 
 #include <SPI.h>
@@ -24,14 +25,7 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
   
-  if (imu.begin() == false) // with no arguments, this uses default addresses (AG:0x6B, M:0x1E) and i2c port (Wire).
-  {
-    Serial.println("Failed to communicate with LSM9DS1.");
-    Serial.println("float-check wiring.");
-    Serial.println("Default settings in this sketch will " \
-                   "work for an out of the box LSM9DS1 " \
-                   "Breakout, but may need to be modified " \
-                   "if the board jumpers are.");
+  if (imu.begin() == false) { // with no arguments, this uses default addresses (AG:0x6B, M:0x1E) and i2c port (Wire).
     while (1);
   }
 }
@@ -51,28 +45,19 @@ void loop() {
   float rollDegree = roll *= 180.0 / PI;
   float pitchDegree = pitch *= 180.0 / PI;
 
-  if ( abs(rollDegree) < 5 && abs(rollDegree) >= 1) {
-    if (abs(pitchDegree) < 5 && abs(pitchDegree) >= 1) {
+  if ( abs(rollDegree) < 5 && abs(rollDegree) >= 1.) {
+    if (abs(pitchDegree) < 5 && abs(pitchDegree) >= 1.) {
       digitalWrite(ledG, LOW);
       digitalWrite(ledY, HIGH);
-      if ( abs(rollDegree) < 1 && abs(rollDegree) >= 0) {
-        if ( abs(pitchDegree) < 1 && abs(pitchDegree) >=0) {
-        digitalWrite(ledG, HIGH);
-        digitalWrite(ledY, LOW);
-        }
-      }
     }
+  }
+  else if ( abs(rollDegree) < 1 && abs(pitchDegree) < 1) {
+    digitalWrite(ledG, HIGH);
+    digitalWrite(ledY, LOW);
   }
   else {
     digitalWrite(ledG, LOW);
     digitalWrite(ledY, LOW);
   }
-
-
-  Serial.println(aX);
-  Serial.println(aY);
-  Serial.println(aZ);
-  Serial.println(rollDegree);
-  Serial.println(pitchDegree);
    
 }
