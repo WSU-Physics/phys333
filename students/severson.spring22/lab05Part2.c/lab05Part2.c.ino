@@ -15,9 +15,6 @@
 //create an object using LSM9DS1, does not need to be labeled imu
 LSM9DS1 imu;
 
-//declination of Winona, MN is 1 degree, 11 feet W (-1 11'). magnetometer x and y axis are flipped  so (+) instead of (-)
-#define DECLINATION 1.
-
 //define LED pins
 int ledG = 2;
 int ledY = 3;
