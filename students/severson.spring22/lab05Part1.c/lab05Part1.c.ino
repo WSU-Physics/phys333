@@ -1,6 +1,6 @@
 /*
    Test the serial Rx/Tx between Arduino Uno R3 and the LV-EZ1 ultrasonic distance sensor.
-   Tx from sensor will be RS232 format.
+   Tx from sensor is RS232 format.
 */
 
 #include <util/delay.h>
