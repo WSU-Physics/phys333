@@ -56,12 +56,14 @@ void loop() {
 
   if (currentMillis - previousMillis >= interval) {
     // save the last time you blinked the LED
-    previousMillis = millis(); 
+    previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
-    [...] // Fill in - relevant variable is ledState
-    if(ledState == LOW){
-      ledState = HIGH;  
+    if (ledState == LOW) {
+      ledState = HIGH;
+    }
+    else {
+      ledState = LOW;
     }
 
     else{
