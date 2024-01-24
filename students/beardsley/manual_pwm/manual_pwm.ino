@@ -1,8 +1,10 @@
 int pin = 3;
+int man_pin = 2;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(pin, OUTPUT);
+  pinMode(man_pin, OUTPUT);
 }
 
 // function to do manual pwm
@@ -22,5 +24,5 @@ void loop() {
   analogWrite(pin, 127);
 
   // TODO: call our manual pwm function
-  pwm(2, 50000, 150000);
+  pwm(man_pin, 500, 1500);
 }
