@@ -23,6 +23,6 @@ void loop() {
   // put your main code here, to run repeatedly:
   analogWrite(pin, 127);
 
-  // TODO: call our manual pwm function
-  pwm(man_pin, 500, 1500);
+  // call our manual pwm function
+  pwm(man_pin, 1010, 1010);
 }
