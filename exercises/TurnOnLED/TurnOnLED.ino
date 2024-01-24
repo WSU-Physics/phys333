@@ -9,11 +9,4 @@ void setup() {
 
 void loop() {
   // Nothing to loop over
-  for (int i=100; i<=1000; i=i+100)
-{
-  digitalWrite(LED, HIGH); 
-  delay(i); 
-  digitalWrite(LED, LOW); 
-  delay(i);
-}
 }
