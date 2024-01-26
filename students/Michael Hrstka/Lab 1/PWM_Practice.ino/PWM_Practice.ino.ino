@@ -1,6 +1,8 @@
 int led = 3;
 int btn = 2;
 bool cycleColors = true;
+bool fadeIn = true;
+int value = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -9,30 +11,38 @@ void setup() {
 }
 
 void chkBtn() {
-  if (!digitalRead(btn)) {
+  if (digitalRead(btn) == HIGH) {
     cycleColors = !cycleColors;
+    analogWrite(led, 0);  // Shut off right away, otherwise it will hold brightness... Which could be a cool feature, but not a desired one
+        while (digitalRead(btn) == HIGH){ // Debounce to prevent flickering (this isn't supposed to be a strobe light -_-)
+      delay(10);
+    }
   }
 }
 
 void loop() {
-  int value = 0;
-  if(cycleColors) while (value < 256) {
-    analogWrite(led, value);
+  if(fadeIn)
     value++;
-    delay(3);
-  }
-
-  chkBtn();
-
-  if(cycleColors) while (value > 0) {
+  else
     value--;
+
+  if(cycleColors)
     analogWrite(led, value);
-    delay(3);
+  else {
+    analogWrite(led, 0);
+    fadeIn = true;
+    value = 0;
+  }
+
+  if (value <= 0) {
+    fadeIn = true;
+    value = 0;
+  } else if (value >= 255) {
+    fadeIn = false;
+    value = 255;
   }
 
   chkBtn();
-
-  if(!cycleColors) {  // Button would read random inputs, adding a delay fixed this.
-    delay(3);
-  }
+  delay(3);
 }
+
