@@ -50,7 +50,7 @@ void purpleLED() {
     fadePurpleIn = true;
   }
 
-  delay(3);
+  delay(1);
 }
 
 int policeFade = 0;
@@ -86,7 +86,7 @@ void gamerLED() {
   gamerFadeState++;
 
   if (gamerFadeState >= 256) {
-    gamerColorState = gamerColorState >= 3 ? 0 : gamerColorState + 1;
+    gamerColorState = gamerColorState >= 2 ? 0 : gamerColorState + 1;
     gamerFadeState = 0;
   }
 
