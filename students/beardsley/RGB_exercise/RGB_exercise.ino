@@ -33,8 +33,26 @@ void loop() {
   }
   lastButton = currentButton;
 
-  digitalWrite(RLED, LOW);
-  digitalWrite(GLED, LOW);
-  digitalWrite(BLED, LOW);
-  digitalWrite(state + BLED, HIGH);
+  switch(state){
+    case 0:
+      // Light is blue
+      digitalWrite(RLED, LOW);
+      digitalWrite(GLED, LOW);
+      digitalWrite(BLED, HIGH);
+      break;
+
+    case 1:
+      // Light is green
+      digitalWrite(RLED, LOW);
+      digitalWrite(GLED, HIGH);
+      digitalWrite(BLED, LOW);
+      break;
+
+    case 2:
+      // Light is red
+      digitalWrite(RLED, HIGH);
+      digitalWrite(GLED, LOW);
+      digitalWrite(BLED, LOW);
+      break;
+  }
 }
