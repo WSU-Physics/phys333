@@ -14,7 +14,7 @@ void setup() {
 
 void chkBtn() {
   if (digitalRead(btn) == HIGH) {
-    state = state > numState ? 0 : state + 1;
+    state = state >= numState ? 0 : state + 1;
         while (digitalRead(btn) == HIGH){ // Debounce!
       delay(10);
     }
@@ -80,10 +80,34 @@ void policeLED() {
   delayMicroseconds(50);
 }
 
-
+int gamerColorState = 0;
+int gamerFadeState = 0;
 void gamerLED() {
+  gamerFadeState++;
 
+  if (gamerFadeState >= 256) {
+    gamerColorState = gamerColorState >= 3 ? 0 : gamerColorState + 1;
+    gamerFadeState = 0;
+  }
 
+  switch(gamerColorState) {
+    case 0:
+      analogWrite(ledR, 255 - gamerFadeState);
+      analogWrite(ledG, 0);
+      analogWrite(ledB, gamerFadeState);
+      break;
+    case 1:
+      analogWrite(ledR, 0);
+      analogWrite(ledG, gamerFadeState);
+      analogWrite(ledB, 255 - gamerFadeState);
+      break;
+    default:
+      analogWrite(ledR, gamerFadeState);
+      analogWrite(ledG, 255 - gamerFadeState);
+      analogWrite(ledB, 0);
+      break;
+  }
+  delay(1);
 }
 
 void offLED() {
