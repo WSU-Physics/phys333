@@ -1,5 +1,4 @@
 // This code is broken. See if you can fix it.
-// missing semi colon on line 7
 
 const int LED=9;  // Define LED for pin 9
 
