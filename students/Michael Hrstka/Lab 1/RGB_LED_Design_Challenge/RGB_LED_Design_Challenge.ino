@@ -3,6 +3,7 @@ int ledG = 5;
 int ledB = 6;
 int btn = 12;
 int state = 0;
+int numState = 4;
 
 void setup() {
   pinMode(ledR, OUTPUT);
@@ -13,7 +14,7 @@ void setup() {
 
 void chkBtn() {
   if (digitalRead(btn) == HIGH) {
-    state = state > 4 ? 0 : state + 1;
+    state = state > numState ? 0 : state + 1;
         while (digitalRead(btn) == HIGH){ // Debounce!
       delay(10);
     }
@@ -56,8 +57,13 @@ int policeFade = 0;
 bool policeFadeIn = true;
 void policeLED() {
   analogWrite(ledR, 255 - policeFade);
-  digitalWrite(ledG, LOW);
   analogWrite(ledB, policeFade);
+  
+  if (policeFade < 128){
+    analogWrite(ledG, policeFade);
+  } else {
+    analogWrite(ledG, 255 - policeFade);
+  }
 
   if(policeFadeIn) {
       policeFade++;
@@ -71,11 +77,12 @@ void policeLED() {
     policeFadeIn = true;
   }
 
-  delay(1);
+  delayMicroseconds(50);
 }
 
 
 void gamerLED() {
+
 
 }
 
