@@ -42,10 +42,13 @@ void loop() {
       break;
 
     case 1:
-      // Light is green
+      // Flash green on/off
       digitalWrite(RLED, LOW);
       digitalWrite(GLED, HIGH);
       digitalWrite(BLED, LOW);
+      delay(1000);
+      digitalWrite(GLED, LOW);
+      delay(1000);
       break;
 
     case 2:
