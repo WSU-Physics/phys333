@@ -1,20 +1,14 @@
-const int RLED = 11;  // Red LED pin
 const int GLED = 10;  // Green LED pin
-const int BLED = 9;  // Blue LED pin
 const int BUTTON = 2;  // Button pin
-int state = 0;  // variable for which mode we're in
-
 boolean lastButton = LOW;
 boolean currentButton = HIGH;
 
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(RLED, OUTPUT);
   pinMode(GLED, OUTPUT);
-  pinMode(BLED, OUTPUT);
-  pinMode(BUTTON, INPUT);
-}
+  Serial.begin(9600);
+  }
 
 boolean debounce(boolean last){
   boolean current = digitalRead(BUTTON);
@@ -29,33 +23,13 @@ void loop() {
   // Check for button press
   currentButton = debounce(lastButton);
   if (lastButton == LOW && currentButton == HIGH){
-    state = (state + 1) % 3;
+    Serial.println("Button pushed!");
   }
   lastButton = currentButton;
+  
+  digitalWrite(GLED, HIGH);
+  delay(1000);
+  digitalWrite(GLED, LOW);
+  delay(1000);
 
-  switch(state){
-    case 0:
-      // Light is blue
-      digitalWrite(RLED, LOW);
-      digitalWrite(GLED, LOW);
-      digitalWrite(BLED, HIGH);
-      break;
-
-    case 1:
-      // Flash green on/off
-      digitalWrite(RLED, LOW);
-      digitalWrite(GLED, HIGH);
-      digitalWrite(BLED, LOW);
-      delay(1000);
-      digitalWrite(GLED, LOW);
-      delay(1000);
-      break;
-
-    case 2:
-      // Light is red
-      digitalWrite(RLED, HIGH);
-      digitalWrite(GLED, LOW);
-      digitalWrite(BLED, LOW);
-      break;
-  }
 }
