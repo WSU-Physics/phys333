@@ -6,6 +6,7 @@ boolean lastButton = LOW; // variable containing the previous button state
 boolean currentButton = LOW; // variable constaing the current button state
 unsigned int ledMode = 0; // present state of the LED
 unsigned long previousMillis = 0;
+unsigned int brightness = 0;
 
 void setup() {
 pinMode(9,OUTPUT);
@@ -36,8 +37,8 @@ currentButton = debounce(lastButton); //Read debounced state
  lastButton = currentButton; //Reset button value
  if (ledMode == 6) ledMode=1;
 {
-switch (ledMode){ //
-case 1:
+switch (ledMode){ //tells the mode to switch
+case 1: // led off
 if (ledMode== 1)
 {
 digitalWrite(RED, LOW);
@@ -53,7 +54,7 @@ if (ledMode==2)
 {
 if (currentMillis - previousMillis >= 500)
 {previousMillis = currentMillis;
-if (RED==LOW)
+if (digitalRead(RED)==LOW)
 {
 digitalWrite(RED, HIGH);
  digitalWrite(GREEN, HIGH);
@@ -65,7 +66,7 @@ else {
  digitalWrite(BLUE, LOW);
 }
  break;
- }
+}}
  else {
   break;
  }
@@ -73,25 +74,31 @@ else {
  case 3:
 if (ledMode==3)
 {
-for (int i=0; i<256; i++ )
+if (currentMillis - previousMillis >= 10)
+{previousMillis = currentMillis;
+if (brightness==0)
 {
-analogWrite(RED, i);
+for (brightness=0; brightness<256; brightness++ )
+{
+analogWrite(RED, brightness);
  digitalWrite(GREEN, LOW);
- analogWrite(BLUE, i);
+ analogWrite(BLUE, brightness);
  delay(10);
-}
-for (int i=255; i>=0; i--)
+}}
+else
 {
- analogWrite(RED, i );
+for (brightness =255; brightness>=0; brightness--)
+{
+ analogWrite(RED, brightness );
  digitalWrite(GREEN, LOW);
- analogWrite(BLUE, i);
+ analogWrite(BLUE, brightness);
  delay (10);
  }
  break;
 }
 else {
   break;
- }
+ }}}
 
 case 4:
 if (ledMode==4)
@@ -138,5 +145,5 @@ digitalWrite(RED, HIGH);
  }
 }
 }
-}}
+}
 
