@@ -5,7 +5,7 @@ const int BUTTON=2; // setting the button as an input on pin 2
 boolean lastButton = LOW; // variable containing the previous button state
 boolean currentButton = LOW; // variable constaing the current button state
 unsigned int ledMode = 0; // present state of the LED
-
+unsigned long previousMillis = 0;
 
 void setup() {
 pinMode(9,OUTPUT);
@@ -27,6 +27,7 @@ boolean debounce(boolean last)
 
 void loop() 
 {
+  unsigned long currentMillis = millis();
 currentButton = debounce(lastButton); //Read debounced state
  if (lastButton == LOW && currentButton == HIGH) //if it was pressed...
  {
@@ -34,11 +35,10 @@ currentButton = debounce(lastButton); //Read debounced state
  }
  lastButton = currentButton; //Reset button value
  if (ledMode == 6) ledMode=1;
- switch(ledMode);
 {
 switch (ledMode){ //
 case 1:
-if (ledMode = 1)
+if (ledMode== 1)
 {
 digitalWrite(RED, LOW);
  digitalWrite(GREEN, LOW);
@@ -49,16 +49,21 @@ else {
 break;
 }
 case 2:
-if (ledMode=2)
+if (ledMode==2)
+{
+if (currentMillis - previousMillis >= 500)
+{previousMillis = currentMillis;
+if (RED==LOW)
 {
 digitalWrite(RED, HIGH);
  digitalWrite(GREEN, HIGH);
  digitalWrite(BLUE, HIGH);
- delay(500);
+}
+else {
  digitalWrite(RED, LOW);
  digitalWrite(GREEN, LOW);
  digitalWrite(BLUE, LOW);
- delay (500);
+}
  break;
  }
  else {
@@ -66,7 +71,7 @@ digitalWrite(RED, HIGH);
  }
 
  case 3:
-if (ledMode=3)
+if (ledMode==3)
 {
 for (int i=0; i<256; i++ )
 {
@@ -89,7 +94,7 @@ else {
  }
 
 case 4:
-if (ledMode=4)
+if (ledMode==4)
 {
 for (int i=255; i>=0; i-- )
 {
@@ -112,7 +117,7 @@ else {
  }
 
 case 5:
-if (ledMode=5)
+if (ledMode==5)
 {
 digitalWrite(RED, HIGH);
  digitalWrite(GREEN, LOW);
@@ -133,5 +138,5 @@ digitalWrite(RED, HIGH);
  }
 }
 }
-}
+}}
 
