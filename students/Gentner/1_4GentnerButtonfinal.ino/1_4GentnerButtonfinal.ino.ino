@@ -85,7 +85,7 @@ analogWrite(RED, brightness);
  analogWrite(BLUE, brightness);
 }}
 else
-for (brightness =255; brightness>=0; brightness--)
+for (brightness=255; brightness>=0; brightness--)
 {
  analogWrite(RED, brightness );
  digitalWrite(GREEN, LOW);
@@ -102,20 +102,30 @@ if (ledMode==4)
 {
 for (int i=255; i>=0; i-- )
 {
-analogWrite(RED, i);
+if (currentMillis - previousMillis >= 10)
+{previousMillis = currentMillis;
+ analogWrite(RED, i);
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, 0);
- delay(10);
+}
+else{
+  break;
 }
 for (int i=0; i<256; i++)
 {
+if (currentMillis - previousMillis >= 10)
+{previousMillis = currentMillis;
  analogWrite(RED, 0 );
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, i);
- delay (10);
+ }
+ else{
+  break;
  }
  break;
 }
+
+}}
 else {
   break;
  }
@@ -123,6 +133,10 @@ else {
 case 5:
 if (ledMode==5)
 {
+  if (currentMillis - previousMillis >= 2000)
+{previousMillis = currentMillis;
+if (digitalRead(RED)==LOW)
+
 digitalWrite(RED, HIGH);
  digitalWrite(GREEN, LOW);
  digitalWrite(BLUE, LOW);
