@@ -84,21 +84,20 @@ analogWrite(RED, brightness);
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
  delay(10);
-}}
-else
-{
+}
 for (brightness =255; brightness>=0; brightness--)
 {
  analogWrite(RED, brightness );
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
  delay (10);
- }
+ }}
+ else
  break;
 }}
 else {
   break;
- }}
+ }
 
 case 4:
 if (ledMode==4)
