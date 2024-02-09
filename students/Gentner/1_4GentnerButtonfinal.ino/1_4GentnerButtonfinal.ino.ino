@@ -83,14 +83,12 @@ for (brightness=0; brightness<256; brightness++ )
 analogWrite(RED, brightness);
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
- delay(10);
 }
 for (brightness =255; brightness>=0; brightness--)
 {
  analogWrite(RED, brightness );
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
- delay (10);
  }}
  else
  break;
