@@ -76,21 +76,21 @@ if (ledMode==3)
 {
 if (currentMillis - previousMillis >= 10)
 {previousMillis = currentMillis;
-if (brightness==0)
+if (brightness>=0)
 {
 for (brightness=0; brightness<256; brightness++ )
 {
 analogWrite(RED, brightness);
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
-}
+}}
+else
 for (brightness =255; brightness>=0; brightness--)
 {
  analogWrite(RED, brightness );
  digitalWrite(GREEN, LOW);
  analogWrite(BLUE, brightness);
- }}
- else
+ }
  break;
 }}
 else {
