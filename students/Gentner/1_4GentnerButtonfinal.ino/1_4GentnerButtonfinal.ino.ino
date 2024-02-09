@@ -95,10 +95,10 @@ for (brightness =255; brightness>=0; brightness--)
  delay (10);
  }
  break;
-}
+}}
 else {
   break;
- }}}
+ }}
 
 case 4:
 if (ledMode==4)
