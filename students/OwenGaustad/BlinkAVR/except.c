@@ -1,5 +1,5 @@
-                                                    /* Blinker Demo II */
-
+/* Blinker Demo II */
+/*use this to stop code
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -17,7 +17,7 @@ int main(void) {
 
   // Init
   setBit(LED_DDR, LED);                      /* set LED pin for output */
-
+/*use this to stop code
   // Mainloop
   while (1) {
 
@@ -29,4 +29,4 @@ int main(void) {
 
   }
   return 0;                                          /* end mainloop */
-}
+//}
