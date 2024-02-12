@@ -6,13 +6,21 @@ boolean lastButton = LOW; //Last Button State
 boolean currentButton = LOW; //Current Button State
 int ledMode = 0; //Cycle between LED states
 unsigned long previousMillis = 0;
-const long interval = 1000;
+const long interval = 10000;
+int i = 0; // brightness integer
+int o = 0; //2nd brightness integer
+int brightness = 0; // 3rd brightness integer
+int brightness2 = 0; // 4th brightness integer
+int fadeAmount = 5;  // the amount that the LED is changed by
+
+
 void setup()
 {
  pinMode (BLED, OUTPUT); //Set Blue LED as Output
  pinMode (GLED, OUTPUT); //Set Green LED as Output
  pinMode (RLED, OUTPUT); //Set Red LED as Output
  pinMode (BUTTON, INPUT); //Set button as input (not required)
+ Serial.begin(9600);
 }
 /*
 * Debouncing Function
@@ -36,65 +44,7 @@ boolean debounce(boolean last)
 * LED Mode Selection
 * Pass a number for the LED state and set it accordingly.
 */
-/*void setMode(int mode) {
-unsigned long currentMillis = millis();
 
- //RED
- if (mode == 1)
- {
-  
- while (digitalRead(BUTTON) == LOW) {
-    digitalWrite(RLED, HIGH);
-    digitalWrite(GLED, HIGH);
-    digitalWrite(BLED, HIGH);
-  delay(1000);
-    digitalWrite(RLED, LOW);
-    digitalWrite(GLED, LOW);
-    digitalWrite(BLED, LOW);
- 
-   if (currentMillis = previousMillis + interval) {// try switching it to current-precious >= interval, this may make it easier to modify
-    previousMillis = millis();
-    digitalWrite(RLED, HIGH);
-    digitalWrite(GLED, HIGH);
-    digitalWrite(BLED, HIGH);
-   }
-   if (currentMillis = previousMillis + .5 * interval){
-    digitalWrite(RLED, LOW);
-    digitalWrite(GLED, LOW);
-    digitalWrite(BLED, LOW);
-    
-  }
- }
- //GREEN
-
- else if (mode == 2)
- {
-   digitalWrite(RLED, HIGH);
-   digitalWrite(GLED, LOW);
-   digitalWrite(BLED, HIGH);
- }
- //BLUE
- else if (mode == 3)
- {
- digitalWrite(RLED, LOW);
- digitalWrite(GLED, LOW);
- digitalWrite(BLED, HIGH);
- }
- //PURPLE (RED+BLUE)
- if (mode == 4)
- {
- analogWrite(RLED, 255);
- analogWrite(GLED, 0);
- analogWrite(BLED, 0);
- }
- //OFF (mode = 0)
- if (mode == 0)
- {
- digitalWrite(RLED, LOW);
- digitalWrite(GLED, LOW);
- digitalWrite(BLED, LOW);
- }
-}*/
 void loop()
 {
   unsigned long currentMillis = millis();
@@ -113,19 +63,17 @@ void loop()
  if (ledMode == 5) ledMode = 0;
 
  //setMode(ledMode); //change the LED state
+ if (ledMode == 0)
+ {
+  digitalWrite(RLED, LOW);
+  digitalWrite(GLED, LOW);
+  digitalWrite(BLED,LOW);
+ }
  if (ledMode == 1)
  {
   
- /*while (digitalRead(BUTTON) == LOW) {
-    digitalWrite(RLED, HIGH);
-    digitalWrite(GLED, HIGH);
-    digitalWrite(BLED, HIGH);
-  delay(1000);*/
-    digitalWrite(RLED, LOW);
-    digitalWrite(GLED, LOW);
-    digitalWrite(BLED, LOW);
- 
-   if (currentMillis >= previousMillis + .5 * interval) {// try switching it to current-precious >= interval, this may make it easier to modify
+
+   if (currentMillis >= previousMillis + .5 * interval) {
     //previousMillis = millis();
     digitalWrite(RLED, HIGH);
     digitalWrite(GLED, HIGH);
@@ -139,33 +87,86 @@ void loop()
   }
   }
  
- //GREEN
+ 
 
- else if (ledMode == 2)
- {
-   digitalWrite(RLED, HIGH);
-   digitalWrite(GLED, LOW);
-   digitalWrite(BLED, HIGH);
- }
- //BLUE
- else if (ledMode == 3)
- {
- digitalWrite(RLED, LOW);
- digitalWrite(GLED, LOW);
- digitalWrite(BLED, HIGH);
- }
- //PURPLE (RED+BLUE)
- if (ledMode == 4)
- {
- analogWrite(RLED, 255);
- analogWrite(GLED, 0);
- analogWrite(BLED, 0);
- }
- //OFF (mode = 0)
- if (ledMode == 0)
- {
- digitalWrite(RLED, LOW);
- digitalWrite(GLED, LOW);
- digitalWrite(BLED, LOW);
- }
+ else if (ledMode == 2) {
+
+  analogWrite(RLED, brightness);
+  analogWrite(GLED, 0);
+  analogWrite(BLED, brightness);
+
+  brightness = brightness + fadeAmount;
+
+  // reverse the direction of the fading at the ends of the fade:
+  if (brightness <= 0 || brightness >= 255) {
+    fadeAmount = -fadeAmount;
+  }
+  // wait for 30 milliseconds to see the dimming effect
+  delay(30);
+  
 }
+
+
+
+
+
+ 
+ else if (ledMode == 3) {
+  analogWrite(RLED, brightness);
+  analogWrite(GLED, 0);
+  analogWrite(BLED, brightness2);
+
+  brightness = brightness + fadeAmount;
+  brightness2 = -brightness;
+
+  if (brightness <= 0 || brightness >= 255) {
+    fadeAmount = -fadeAmount;
+  }
+    delay(30);
+  } 
+  // wait for 30 milliseconds to see the dimming effect
+   
+ 
+   /*if (currentMillis >= previousMillis + .5 * interval) {
+  i = i++;
+  o = o--;
+   analogWrite(RLED, o);
+   analogWrite(GLED, 0);
+   analogWrite(BLED, i);
+   delay(10);
+   }
+   else if(currentMillis <= previousMillis + .5 * interval) {
+    i == i++;
+    o == o--;
+   analogWrite(RLED, i);
+   analogWrite(GLED, 0);
+   analogWrite(BLED, o);
+   delay(10);
+   } 
+ }*/
+ 
+  if (ledMode == 4) {
+   {
+  i = 0;
+
+   if (currentMillis >= previousMillis + .5 * interval) {
+    //previousMillis = millis();
+    i == i++;
+    digitalWrite(RLED, i);
+    digitalWrite(GLED, i);
+    digitalWrite(BLED, i);
+   }
+    else {
+      i = 0;
+    digitalWrite(RLED, LOW);
+    digitalWrite(GLED, LOW);
+    digitalWrite(BLED, LOW);
+    
+  }
+  }
+
+
+  
+   } 
+ }
+
