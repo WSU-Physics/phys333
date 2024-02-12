@@ -3,7 +3,7 @@
 // PWM function
 
 const int yLED = 9;
-const int bLED = 8; // constant for my blue LED
+const int bLED = 10; // constant for my blue LED
 
 /* function: pwm
  *  
@@ -44,10 +44,11 @@ void setup() {
 void loop() {
  // double brightness = 12.75;
  // double period = 2040;
-  for (int i = 0; i <= 255; i++) {
+  for (int i = 0; i <= 255; i++) 
+  {
     analogWrite(yLED, i);    // Generate the sawtooth wave by varying the PWM duty cycle
     analogWrite(bLED,i);
-    delay(10);
+    delay(8);
   }
   // Set yLED brightness
   //analogWrite(yLED, brightness);
