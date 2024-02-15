@@ -33,9 +33,9 @@ boolean debounce(boolean last)
 /*
 * LED Mode Selection
 * Pass a number for the LED state and set it accordingly
-* Note, since the RGB LED is COMMON ANODE, you must set the
-* cathode pin for each color LOW for that color to turn ON.
 */
+
+// for this blinking part, Its work perfact everytime when i push the button.
 void blinkWhite() {
   digitalWrite(RLED, LOW);
   digitalWrite(GLED, LOW);
@@ -46,6 +46,7 @@ void blinkWhite() {
   digitalWrite(BLED, HIGH);
   delay(100);
 }
+
 void fadePurple() {
   // Update fade value only if enough time has passed
   static unsigned long lastUpdate = 0;
@@ -116,6 +117,7 @@ void setMode(int mode)
  blinkWhite();
  }
  //Fade Purpel Bright to low (repate)
+ // That also working fine
  else if (mode == 3)
  {
 analogWrite(GLED,0);
