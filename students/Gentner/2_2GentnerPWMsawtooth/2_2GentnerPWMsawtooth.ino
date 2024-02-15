@@ -42,13 +42,13 @@ void setup() {
 }
 
 void loop() {
- // double brightness = 12.75;
+ //double brightness = 7.84;
  // double period = 2040;
   for (int i = 0; i <= 255; i++) 
   {
     analogWrite(yLED, i);    // Generate the sawtooth wave by varying the PWM duty cycle
     analogWrite(bLED,i);
-    delay(8);
+    delayMicroseconds(7843);
   }
   // Set yLED brightness
   //analogWrite(yLED, brightness);
