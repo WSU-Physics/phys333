@@ -42,8 +42,9 @@ void setup() {
 }
 
 void loop() {
-  double brightness = 100;
+  double brightness = 100.7;
   double period = 2040;
+
   
   // Set yLED brightness
   analogWrite(yLED, brightness);
