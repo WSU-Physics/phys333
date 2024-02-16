@@ -2,11 +2,12 @@
 // needs a V reading then that will be converted to distance
 // Error response of too close if distance is under 6in 
 // If V=<.25v then print Too Close Back Up
-int Vin;
+double Vin;
 int distanceReading;
 int Reading;
 int Sensor = 0; // distance sensor is on pin A0
-unsigned long distance;
+double distance;
+double Feet;
 
 void setup() {
   Serial.begin(9600); //sends info through serial
@@ -15,19 +16,22 @@ void setup() {
 
 void loop() {
 Reading= analogRead(Sensor);
-Vin=map(distanceReading, 0, 1023, 0, 5000); // converts analog into V
+Vin=map(Reading, 0, 1023, 0, 5000); // converts analog into V
 Serial.print("Vin : ");
-Serial.print(Reading );
+Serial.print(Vin );
 
-if(Vin<30)
+if(Vin<60)
 {
   Serial.println(" Too Close");
 }
 else
 {
-distance = Vin * 9.8;
-Serial.print("Distance : ");
-Serial.println(distance);
+distance = Vin / 9.8;
+Serial.print("  Distance : ");
+Serial.print(distance);
+Feet = distance / 12;
+Serial.print("  In Feet : ");
+Serial.println(Feet);
 }
-delay(500);
+delay(1000);
 }
