@@ -19,15 +19,15 @@ Vin=map(distanceReading, 0, 1023, 0, 5000); // converts analog into V
 Serial.print("Vin : ");
 Serial.print(Reading );
 
-if(Vin<75)
+if(Vin<30)
 {
   Serial.println(" Too Close");
 }
 else
 {
 distance = Vin * 9.8;
-Serial.println("Distance:");
-Serial.print(distance);
+Serial.print("Distance : ");
+Serial.println(distance);
 }
 delay(500);
 }
