@@ -42,9 +42,11 @@ void setup() {
 }
 
 void loop() {
-  double brightness = 100;
-  double period = 2040;
+  double brightness = Brigtness2;
+   double period = 2040;
   
+    z
+
   // Set yLED brightness
   analogWrite(yLED, brightness);
   // call self-made PWM function

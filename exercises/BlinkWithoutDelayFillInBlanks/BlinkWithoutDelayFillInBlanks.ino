@@ -43,15 +43,13 @@ const long interval = 1000;           // interval at which to blink (millisecond
 
 void setup() {
   // set the digital pin as output:
-  pinMode(XXX, YYY);
+  pinMode(13, OUTPUT);
 }
 
 void loop() {
-  // here is where you'd put code that needs to be running all the time.
+  
+digitlWrite(13,HIGH);
 
-  // check to see if it's time to blink the LED; that is, if the difference
-  // between the current time and last time you blinked the LED is bigger than
-  // the interval at which you want to blink the LED.
   unsigned long currentMillis = millis();
 
   if (ZZZ) {
