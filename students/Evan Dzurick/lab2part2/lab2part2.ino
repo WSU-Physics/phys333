@@ -43,7 +43,7 @@ void setup() {
 void loop() {
    double period = 2000000; // 2 seconds 
   
-    for (int brightness =0; brightness <= 225; brightness++)
+    for (int brightness =0; brightness <= 225; brightness++)// increments the brightness from 0 to 255 and reset 
 
 
   pwm(bLED, brightness, period/255);
