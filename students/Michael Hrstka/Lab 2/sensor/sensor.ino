@@ -5,25 +5,25 @@ float voltage;
 void setup() {
   Serial.begin(9600);
   analogReference(EXTERNAL); // Use 3.3V connected to AREF
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
 }
 
 void setLights(int a, int b, int c, int d, int e, int f, int g, int h){
-  digitalWrite(0, a);
-  digitalWrite(1, b);
-  digitalWrite(2, c);
-  digitalWrite(3, d);
-  digitalWrite(4, e);
-  digitalWrite(5, f);
-  digitalWrite(6, g);
-  digitalWrite(7, h);
+  digitalWrite(2, a);
+  digitalWrite(3, b);
+  digitalWrite(4, c);
+  digitalWrite(5, d);
+  digitalWrite(6, e);
+  digitalWrite(7, f);
+  digitalWrite(8, g);
+  digitalWrite(9, h);
 }
 
 void loop() {
@@ -35,6 +35,7 @@ void loop() {
   Serial.print("V:");
   Serial.println(voltage);
 
+    setLights(0, 0, 0, 0, 0, 0, 0, 0);
   if(voltage > 1.5)
     setLights(1, 0, 0, 0, 0, 0, 0, 0);
   if(voltage > 1.725)
