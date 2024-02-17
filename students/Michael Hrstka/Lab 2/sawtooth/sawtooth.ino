@@ -7,6 +7,6 @@ void setup() {
 void loop() {
   for(int i = 0; i < 256; i++){
     analogWrite(pin, i);
-    delayMicroseconds(7812);
+    delayMicroseconds(1953);
   }
 }
