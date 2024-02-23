@@ -13,12 +13,12 @@ void flashSignal() {
     PORTD = (1 << 3-ledRPos); // Set right
     
     ledLPos = 0;
-    ledRPos += ledRPos < 3 ? ledRPos + 1 : 0;
+    ledRPos = ledRPos < 3 ? ledRPos + 1 : 0;
   } else {
     // PORTD = 0b00000000; // Left side off
     PORTD = (1 << ledLPos) << 4; // Set left
     ledRPos = 0;
-    ledLPos += ledLPos < 3 ? ledLPos + 1 : 0;
+    ledLPos = ledLPos < 3 ? ledLPos + 1 : 0;
   }
 }
 
