@@ -39,6 +39,8 @@ uint8_t debounce(void) {
 }
 
 int main(void) {
+DDRD |= 0b11111111;
+PORTD = 0b00000000;
 
 uint8_t buttonWasPressed=0;                                 /* state */
   BUTTON_PORT |= (1 << BUTTON);     /* enable the pullup on the button */
@@ -59,8 +61,6 @@ uint8_t buttonWasPressed=0;                                 /* state */
   }                                                  /* End event loop */
 
 
-  // -------- Inits --------- //
-  DDRD |= 0b11111111;            /* Data Direction Register D:
 
   return 0;                            /* This line is never reached */
 }
