@@ -1,7 +1,24 @@
 // ------- Preamble -------- //
 #include <avr/io.h>                        /* Defines pins, ports, etc */
 #include <util/delay.h>                     /* Functions to waste time */
-#include "pinDefines.h"
+
+//Pin Defines
+#define LED_PORT                PORTD
+#define LED_PIN                 PIND
+#define LED_DDR                 DDRD
+#define LED0                    PD0 //R
+#define LED1                    PD1 //G
+#define LED2                    PD2 //B
+#define LED3                    PD3 //W
+#define LED4                    PD4 //W
+#define LED5                    PD5 //B
+#define LED6                    PD6 //G
+#define LED7                    PD7 //R
+//Buttons
+#define BUTTON_PORT             PORTB
+#define BUTTON_PIN              PINB
+#define BUTTON_DDR              DDRB
+#define BUTTON                  PB0
 
 // Potentially useful macros
 #define BV(bit)               (1 << (bit))  // Mask with single bit set
@@ -10,6 +27,7 @@
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 //debounce equation grabbed from AVR
+#define DEBOUNCE_TIME 1000 //in ms
 uint8_t debounce(void) {
   if (bit_is_clear(BUTTON_PIN, BUTTON)) {      /* button is pressed now */
     _delay_us(DEBOUNCE_TIME);
