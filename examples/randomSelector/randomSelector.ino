@@ -2,7 +2,7 @@
   Random selector
 
   This fun sketch is meant to make a random selection between several choices,
-  and to light up an LED for fun.
+  and to animate the selection with an RGB LED.
   Use the NCHOICE constant to set the number of choices (maximum 6)
     TODO: allow for a on-the-fly NCHOICE selection
   The selector will randomly show colors from the first NCHOICE options in the
@@ -28,7 +28,7 @@ const int BUTTON = 2;
 // Array to store colors
 int colors[MAXCHOICE][3] = {
   // red, green, blue
-  {255, 0, 0}, {0, 255, 255}, {0, 0, 255},
+  {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
   // yellow, purple, white
   {255, 100, 0}, {255, 0, 255}, {255, 255, 255}
 };
@@ -36,7 +36,7 @@ int colors[MAXCHOICE][3] = {
 const int INTERVAL0 = 25;  // initial time (ms) between color flashes
 const int INTERVALMAX = 1000; // final time (ms) before final selection
 const int FLASH_DELAY = 500;  // Winner flashed with this interval
-const float increment = 1.05;
+const float increment = 1.05;  // multiply interval by this factor to slow down
 int ledState = 0;
 unsigned long previousMillis = 0;
 
@@ -48,8 +48,6 @@ void setup() {
 }
 
 void loop() {
-  int colori = 0;
-  int prevcolori = 0;
   while (digitalRead(BUTTON)){
     // Wait for button to run selection
     delay(5);
@@ -57,6 +55,8 @@ void loop() {
 
   // Button has been pushed - start the selection
   int interval = INTERVAL0;  // time between color flashes
+  int colori = 0;  // color choice
+  int prevcolori = 0;  // last color choice (avoid repeats)
   while (interval < INTERVALMAX){
     // Cycle through random colors, slowing down as we go
     colori = random(NCHOICE);
