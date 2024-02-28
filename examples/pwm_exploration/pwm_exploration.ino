@@ -2,8 +2,8 @@
 // Turn on another LED using our own
 // PWM function
 
-
-const int bLED = 9; // constant for my blue LED
+const int yLED = 9;
+const int bLED = 8; // constant for my blue LED
 
 /* function: pwm
  *  
@@ -36,15 +36,17 @@ void pwm(int pin, double brightness, double period){
 
 void setup() {
   // set pin mode to output
-  pinMode(9, OUTPUT);
-
+  pinMode(yLED, OUTPUT);
+  // set blue LED pin to output
+  pinMode(bLED, OUTPUT);
 }
 
 void loop() {
-   double period = 2000000; // 2 seconds 
+  double brightness = 100;
+  double period = 2040;
   
-    for (int brightness =0; brightness <= 225; brightness++)
-
-
-  pwm(bLED, brightness, period/255);
+  // Set yLED brightness
+  analogWrite(yLED, brightness);
+  // call self-made PWM function
+  pwm(bLED, brightness, period);
 }
