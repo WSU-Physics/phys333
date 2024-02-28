@@ -1,6 +1,10 @@
 // ------- Preamble -------- //
+
 #include <avr/io.h>                        /* Defines pins, ports, etc */
+
 #include <util/delay.h>                     /* Functions to waste time */
+
+
 
 //Pin Defines
 #define LED_PORT                PORTD
@@ -26,16 +30,26 @@
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 int main(void){
-DDRD |=Ob11111111;
+DDRD |=0b11111111;
 
 while(1){
-  PORTD = 0b00000001;
-  delay(250)
-  PORTD = 0b00000010;
+  PORTD = 0b000001000;
+  _delay_ms(250);
   PORTD = 0b00000100;
-  PORTD = 0b00001000;
-  
+ _delay_ms(250);
+  PORTD = 0b00000010;
+ _delay_ms(250);
+  PORTD = 0b00000001;
+ _delay_ms(250);
+  PORTD = 0b000001000;
+ _delay_ms(250);
+  PORTD = 0b0001100;
+ _delay_ms(250);
+  PORTD = 0b00001110;
+ _delay_ms(250);
+  PORTD = 0b00001111;
+ _delay_ms(250);
 }
-
+return(0);
 
 }
