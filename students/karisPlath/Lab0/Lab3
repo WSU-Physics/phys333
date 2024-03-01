@@ -1,0 +1,35 @@
+#include <avr/io.h>
+#include <util/delay.h>
+#define DELAYTIME 200                                             /* ms */
+
+uint8_t arr[] = {
+  0b00000000,
+  0b00011000,
+  0b00111100,
+  0b01111110,
+  0b11111111
+};
+
+void POVDisplay(uint8_t povData[], uint8_t numberRows) {
+  uint8_t i;
+  for (i = 0; i < numberRows; i++) {
+    PORTD = povData[i];
+    _delay_ms(DELAYTIME);
+  }
+  for (i = numberRows; i >= 0; i--) {
+    PORTD = povData[i];
+    _delay_ms(DELAYTIME);
+  }
+}
+
+int main(void) {
+
+  DDRD = 0xff;                            /* set all LEDs to output */ 
+
+  while (1) {                                              /* mainloop */
+
+      POVDisplay(arr, sizeof(arr));
+
+  }                                                    /* end mainloop */
+  return 0;
+}
