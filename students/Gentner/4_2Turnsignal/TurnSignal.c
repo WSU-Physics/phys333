@@ -29,26 +29,39 @@
 #define clearBit(byte, bit)   (byte &= ~BV(bit)) // clear bit
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
+void delay(int number_of_seconds)
+{
+  int milli_seconds = 1000 * number_of_seconds;
+  clock_t start_time = clock();
+  while (clock() < start_time + milli_seconds);
+}
+
 int main(void){
-DDRD |=0b11111111;
+DDRD =0b11111111; //all output
+
+
 
 while(1){
   PORTD = 0b000001000;
-  _delay_ms(250);
-  PORTD = 0b00000100;
- _delay_ms(250);
-  PORTD = 0b00000010;
- _delay_ms(250);
-  PORTD = 0b00000001;
- _delay_ms(250);
-  PORTD = 0b000001000;
- _delay_ms(250);
+int i;
+for (i = 0; i<10; i++);
+delay(.25);
   PORTD = 0b0001100;
- _delay_ms(250);
+int i;
+for (i = 0; i<10; i++);
+delay(.25);
   PORTD = 0b00001110;
- _delay_ms(250);
+ int i;
+for (i = 0; i<10; i++);
+delay(.25);
   PORTD = 0b00001111;
- _delay_ms(250);
+int i;
+for (i = 0; i<10; i++);
+delay(.25);
+  PORTD = 0b00000000;
+int i;
+for (i = 0; i<10; i++);
+delay(.25);
 }
 return(0);
 
