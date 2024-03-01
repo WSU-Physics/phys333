@@ -68,20 +68,66 @@ int main(void) {
   // ------ Event loop ------ //
   while (1) {
 
+    // 1/8 -> 150
+    transmitBeep(E3, 100);
+    _delay_ms(50);
+    transmitBeep(E3, 100);
+    _delay_ms(200);
+    transmitBeep(E3, 100);
+    _delay_ms(200);
+    transmitBeep(C3, 100);
+    _delay_ms(50);
+    transmitBeep(E3, 100);
+    _delay_ms(200);
+    transmitBeep(G3, 200);
+    _delay_ms(400);
+    transmitBeep(G2, 300);
+    _delay_ms(300);
+
+    transmitBeep(C3, 300);
+    _delay_ms(150);
+    transmitBeep(G2, 300);
+    _delay_ms(150);
+    transmitBeep(E2, 300);
+    _delay_ms(150);
+    transmitBeep(A2, 300);
+    transmitBeep(B2, 300);
+    transmitBeep(Ax2, 150);
+    transmitBeep(A2, 200);
+    _delay_ms(100);
+
+    transmitBeep(G2, 150);
+    _delay_ms(50);
+    transmitBeep(E3, 150);
+    _delay_ms(50);
+    transmitBeep(G3, 150);
+    _delay_ms(50);
+    transmitBeep(A3, 200);
+    _delay_ms(100);
+    transmitBeep(F3, 100);
+    _delay_ms(50);
+    transmitBeep(G3, 100);
+    _delay_ms(200);
     transmitBeep(E3, 200);
     _delay_ms(100);
-    transmitBeep(E3, 200);
-    _delay_ms(200);
-    transmitBeep(E3, 200);
-    _delay_ms(200);
-    transmitBeep(C3, 200);
-    transmitBeep(E3, 200);
-    _delay_ms(200);
-    transmitBeep(G3, 400);
-    _delay_ms(500);
-    transmitBeep(G2, 400);
+    transmitBeep(C3, 100);
+    _delay_ms(50);
+    transmitBeep(D3, 100);
+    _delay_ms(50);
+    transmitBeep(B2, 200);
+    _delay_ms(450);
+    
+    
+    
+    
+    
+    // transmitBeep(G3, 200);
+    // _delay_ms(200);
+    
+    
+    
 
-    _delay_ms(2500);
+    _delay_ms(1500);
 
   }                                                  /* End event loop */
   return 0;                            /* This line is never reached */
