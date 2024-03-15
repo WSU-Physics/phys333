@@ -54,6 +54,9 @@ void flashSignal() {
     if(hazardLit) {
       fullRight();
       fullLeft();
+    } else {
+      clearRight();
+      clearLeft();
     }
     if(hazardTimer < hazardMaxTime) {
       hazardTimer++;
