@@ -109,12 +109,12 @@ variableDelay(time) {
 * Main Method *
 **************/
 int main(void){
-  uint8_t bita;                       //
-  uint8_t bitb;                       //
-  BUTTON_DDR &= ~(1 << BUTTON);       //
-  BUTTON_PORT |= (1 << BUTTON);       //
-  BUTTON_DDR &= ~(1 << BUTTON2);      //
-  BUTTON_PORT |= (1 << BUTTON2);      //
+  uint8_t bita;                       //unused
+  uint8_t bitb;                       //unused
+  BUTTON_DDR &= ~(1 << BUTTON);       //activates input
+  BUTTON_PORT |= (1 << BUTTON);       //activates resistor
+  BUTTON_DDR &= ~(1 << BUTTON2);      //activates input
+  BUTTON_PORT |= (1 << BUTTON2);      //activates resistor
   LED_DDR = 0xff;                     // All output
 
   /****************************
