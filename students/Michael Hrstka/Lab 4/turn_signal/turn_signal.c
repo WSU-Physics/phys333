@@ -27,6 +27,7 @@ int hazardMaxTime = 4;
 _Bool rightDown = 0;
 _Bool leftDown = 0;
 _Bool breakDown = 0;
+_Bool hazardPressed = 0;
 
 
 void flashRight() {
@@ -53,7 +54,7 @@ void flashLeft() {
 
 void flashSignal() {
 
-  if(rightPressed && leftPressed){
+  if(hazardPressed){
     if(hazardLit) {
       fullRight();
       fullLeft();
@@ -96,18 +97,26 @@ void checkBtns(){
   _Bool rightClick = bit_is_clear(PINC, rightPin);
   _Bool breakClick = bit_is_clear(PINC, breakPin);
 
-  if(leftDown && !leftClick){
-    leftDown = 0;
-  } else if (!leftDown && leftClick){
-    leftPressed = !leftPressed;
-    leftDown = 1;
-  }
+  if(!leftDown && leftClick && !rightDown && rightClick){
+    hazardPressed = !hazardPressed;
+  } else {
+    if(leftDown && !leftClick){
+      leftDown = 0;
+    } else if (!leftDown && leftClick){
+      leftPressed = !leftPressed;
+      leftDown = 1;
+      hazardPressed = 0;
+      rightPressed = 0;
+    }
 
-  if(rightDown && !rightClick){
-    rightDown = 0;
-  } else if (!rightDown && rightClick){
-    rightPressed = !rightPressed;
-    rightDown = 1;
+    if(rightDown && !rightClick){
+      rightDown = 0;
+    } else if (!rightDown && rightClick){
+      rightPressed = !rightPressed;
+      rightDown = 1;
+      hazardPressed = 0;
+      leftPressed = 0;
+    }
   }
 
   if(breakDown && !breakClick){
