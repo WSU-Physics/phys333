@@ -3,10 +3,12 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define clearRight() PORTD &= 0b11110000;
-#define setRight(bit) PORTD |= (1 << 3-bit);
-#define clearLeft() PORTD &= 0b00001111;
-#define setLeft(bit) PORTD |= ((1 << bit)) << 4;
+#define clearRight()    PORTD &= 0b11110000;
+#define setRight(bit)   PORTD |= (1 << 3-bit);
+#define fullRight()     PORTD |= 0b00001111;
+#define clearLeft()     PORTD &= 0b00001111;
+#define setLeft(bit)    PORTD |= ((1 << bit)) << 4;
+#define fullLeft()      PORTD |= 0b11110000;
 
 int ledLPos = 0;
 int ledRPos = 0;
@@ -19,6 +21,10 @@ _Bool breakPressed = 0;
 int leftPin = 0;
 int rightPin = 2;
 int breakPin = 1;
+int hazardTimer = 0;
+_Bool hazardLit = 0;
+int hazardMaxTime = 4;
+
 
 void flashRight() {
   clearRight();
@@ -45,19 +51,37 @@ void flashLeft() {
 void flashSignal() {
 
   if(rightPressed && leftPressed){
-    // For later: Hazard lights
-  }
-  if(rightPressed || ledRPos > 0){
-    flashRight();
+    if(hazardLit) {
+      fullRight();
+      fullLeft();
+    }
+    if(hazardTimer < hazardMaxTime) {
+      hazardTimer++;
+    } else {
+      hazardTimer = 0;
+      hazardLit = !hazardLit;
+    }
   } else {
-    ledRPos = 0;
-    clearRight();
-  }
-  if(leftPressed || ledLPos > 0) {
-    flashLeft();
-  } else {
-    ledLPos = 0;
-    clearLeft();
+    if(rightPressed || ledRPos > 0){
+      flashRight();
+    } else {
+      ledRPos = 0;
+
+      if(breakPressed)
+        fullRight()
+      else
+        clearRight();
+    }
+    if(leftPressed || ledLPos > 0) {
+      flashLeft();
+    } else {
+      ledLPos = 0;
+
+      if(breakPressed)
+        fullLeft()
+      else
+        clearLeft();
+    }
   }
 }
 
