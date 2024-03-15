@@ -24,6 +24,9 @@ int breakPin = 1;
 int hazardTimer = 0;
 _Bool hazardLit = 0;
 int hazardMaxTime = 4;
+_Bool rightDown = 0;
+_Bool leftDown = 0;
+_Bool breakDown = 0;
 
 
 void flashRight() {
@@ -89,10 +92,32 @@ void flashSignal() {
 }
 
 void checkBtns(){
-  leftPressed = bit_is_clear(PINC, leftPin);
-  rightPressed = bit_is_clear(PINC, rightPin);
-  breakPressed = bit_is_clear(PINC, breakPin);
-  // NOTE: Pass by ref -> fun(int& i); --> call with: fun(&i);
+  _Bool leftClick = bit_is_clear(PINC, leftPin);
+  _Bool rightClick = bit_is_clear(PINC, rightPin);
+  _Bool breakClick = bit_is_clear(PINC, breakPin);
+
+  if(leftDown && !leftClick){
+    leftDown = 0;
+  } else if (!leftDown && leftClick){
+    leftPressed = !leftPressed;
+    leftDown = 1;
+  }
+
+  if(rightDown && !rightClick){
+    rightDown = 0;
+  } else if (!rightDown && rightClick){
+    rightPressed = !rightPressed;
+    rightDown = 1;
+  }
+
+  if(breakDown && !breakClick){
+    breakDown = 0;
+  } else if (!breakDown && breakClick){
+    breakPressed = !breakPressed;
+    breakDown = 1;
+  }
+
+
 
 }
 
