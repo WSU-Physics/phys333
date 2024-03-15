@@ -97,8 +97,10 @@ void checkBtns(){
   _Bool rightClick = bit_is_clear(PINC, rightPin);
   _Bool breakClick = bit_is_clear(PINC, breakPin);
 
-  if(!leftDown && leftClick && !rightDown && rightClick){
+  if((!leftDown || !rightDown) && leftClick && rightClick){
     hazardPressed = !hazardPressed;
+    leftDown = 1;
+    rightDown = 1;
   } else {
     if(leftDown && !leftClick){
       leftDown = 0;
@@ -136,13 +138,16 @@ int main(void){
   DDRC = 0x00; // All inputs (cause I'm lazy);
   PORTC = 0xFF; // Pullup
 
+  int counter = 0;
   while(1) {
 
-    _delay_ms(tickSpeed); // Blatently stolen from Dr. Beardsley
-
+    _delay_ms(tickSpeed/4); // Blatently stolen from Dr. Beardsley
     checkBtns();
-
-    flashSignal();
+    counter++;
+    if(counter >= 4){
+      flashSignal();
+      counter = 0;
+    }
   }
   
   return (0);
