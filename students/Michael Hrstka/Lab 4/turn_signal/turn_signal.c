@@ -101,13 +101,13 @@ void checkBtns(){
     hazardPressed = !hazardPressed;
     leftDown = 1;
     rightDown = 1;
-  } else {
+    breakDown = 0;
+  } else if (!hazardPressed) {
     if(leftDown && !leftClick){
       leftDown = 0;
     } else if (!leftDown && leftClick){
       leftPressed = !leftPressed;
       leftDown = 1;
-      hazardPressed = 0;
       rightPressed = 0;
     }
 
@@ -116,16 +116,21 @@ void checkBtns(){
     } else if (!rightDown && rightClick){
       rightPressed = !rightPressed;
       rightDown = 1;
-      hazardPressed = 0;
       leftPressed = 0;
     }
-  }
-
-  if(breakDown && !breakClick){
-    breakDown = 0;
-  } else if (!breakDown && breakClick){
-    breakPressed = !breakPressed;
-    breakDown = 1;
+    if(breakDown && !breakClick){
+      breakDown = 0;
+    } else if (!breakDown && breakClick){
+      breakPressed = !breakPressed;
+      breakDown = 1;
+    }
+  } else {
+    if(leftDown && !leftClick){
+      leftDown = 0;
+    }
+    if(rightDown && !rightClick){
+      rightDown = 0;
+    }
   }
 
 
