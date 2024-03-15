@@ -1,9 +1,10 @@
 // ------- Preamble -------- //
 
 #include <avr/io.h>                        /* Defines pins, ports, etc */
-
 #include <util/delay.h>                     /* Functions to waste time */
-
+#include <time.h>
+#include <stdio.h>
+#include <unistd.h>
 
 
 //Pin Defines
@@ -29,39 +30,25 @@
 #define clearBit(byte, bit)   (byte &= ~BV(bit)) // clear bit
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
-void delay(int number_of_seconds)
-{
-  int milli_seconds = 1000 * number_of_seconds;
-  clock_t start_time = clock();
-  while (clock() < start_time + milli_seconds);
-}
-
 int main(void){
 DDRD =0b11111111; //all output
 
 
 
 while(1){
+  int sleep_seconds = 5;
+  sleep(sleep_seconds);
+
   PORTD = 0b000001000;
-int i;
-for (i = 0; i<10; i++);
-delay(.25);
+sleep(150);
   PORTD = 0b0001100;
-int i;
-for (i = 0; i<10; i++);
-delay(.25);
+sleep(150);
   PORTD = 0b00001110;
- int i;
-for (i = 0; i<10; i++);
-delay(.25);
+sleep(150);
   PORTD = 0b00001111;
-int i;
-for (i = 0; i<10; i++);
-delay(.25);
+sleep(150);
   PORTD = 0b00000000;
-int i;
-for (i = 0; i<10; i++);
-delay(.25);
+sleep(150);
 }
 return(0);
 
