@@ -29,6 +29,29 @@ _Bool leftDown = 0;
 _Bool breakDown = 0;
 _Bool hazardPressed = 0;
 
+
+void flashRight() {
+  clearRight();
+  setRight(ledRPos)
+
+  if(ledRPos < maxLed) {
+    ledRPos++;
+  } else {
+    ledRPos = 0;
+  }
+}
+
+void flashLeft() {
+  clearLeft();
+  setLeft(ledLPos);
+
+  if(ledLPos < maxLed) {
+    ledLPos++;
+  } else {
+    ledLPos = 0;
+  }
+}
+
 void flashSignal() {
 
   if(hazardPressed){
@@ -47,10 +70,7 @@ void flashSignal() {
     }
   } else {
     if(rightPressed || ledRPos > 0){
-      // Flash right signal
-      clearRight();
-      setRight(ledRPos)
-      ledRPos = ledRPos < 3 ? ledRPos + 1 : 0;
+      flashRight();
     } else {
       ledRPos = 0;
 
@@ -60,10 +80,7 @@ void flashSignal() {
         clearRight();
     }
     if(leftPressed || ledLPos > 0) {
-      // Flash left signal
-      clearLeft();
-      setLeft(ledLPos);
-      ledLPos = ledLPos < 3 ? ledLPos + 1 : 0;
+      flashLeft();
     } else {
       ledLPos = 0;
 

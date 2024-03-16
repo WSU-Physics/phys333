@@ -1,29 +1,14 @@
 #include <avr/sfr_defs.h>
-// ------- Preamble -------- //
 #include <avr/io.h>
 #include <util/delay.h>
 
-#define clearRight()    PORTD &= 0b11110000;
-#define setRight(bit)   PORTD |= (1 << 3-bit);
-#define fullRight()     PORTD |= 0b00001111;
-#define clearLeft()     PORTD &= 0b00001111;
-#define setLeft(bit)    PORTD |= ((1 << bit)) << 4;
-#define fullLeft()      PORTD |= 0b11110000;
-
 int ledLPos = 0;
 int ledRPos = 0;
-int bitOff = 0;
-int maxLed = 3;
-int tickSpeed = 100;
 _Bool rightPressed = 0;
 _Bool leftPressed = 0;
 _Bool breakPressed = 0;
-int leftPin = 0;
-int rightPin = 2;
-int breakPin = 1;
 int hazardTimer = 0;
 _Bool hazardLit = 0;
-int hazardMaxTime = 4;
 _Bool rightDown = 0;
 _Bool leftDown = 0;
 _Bool breakDown = 0;
@@ -32,14 +17,8 @@ _Bool hazardPressed = 0;
 void flashSignal() {
 
   if(hazardPressed){
-    if(hazardLit) {
-      fullRight();
-      fullLeft();
-    } else {
-      clearRight();
-      clearLeft();
-    }
-    if(hazardTimer < hazardMaxTime) {
+    hazardLit ? (PORTD |= 0xFF) : (PORTD &= 0);
+    if(hazardTimer < 4) {
       hazardTimer++;
     } else {
       hazardTimer = 0;
@@ -47,38 +26,29 @@ void flashSignal() {
     }
   } else {
     if(rightPressed || ledRPos > 0){
-      // Flash right signal
-      clearRight();
-      setRight(ledRPos)
+      PORTD &= 0b11110000;
+      PORTD |= (1 << 3-ledRPos);
       ledRPos = ledRPos < 3 ? ledRPos + 1 : 0;
     } else {
       ledRPos = 0;
 
-      if(breakPressed)
-        fullRight()
-      else
-        clearRight();
+      breakPressed ? (PORTD |= 0b00001111) : (PORTD &= 0b11110000);
     }
     if(leftPressed || ledLPos > 0) {
-      // Flash left signal
-      clearLeft();
-      setLeft(ledLPos);
+      PORTD &= 0b00001111;
+      PORTD |= ((1 << ledLPos)) << 4;
       ledLPos = ledLPos < 3 ? ledLPos + 1 : 0;
     } else {
       ledLPos = 0;
-
-      if(breakPressed)
-        fullLeft()
-      else
-        clearLeft();
+      breakPressed ? (PORTD |= 0b11110000) : (PORTD &= 0b00001111);
     }
   }
 }
 
 void checkBtns(){
-  _Bool leftClick = bit_is_clear(PINC, leftPin);
-  _Bool rightClick = bit_is_clear(PINC, rightPin);
-  _Bool breakClick = bit_is_clear(PINC, breakPin);
+  _Bool leftClick = bit_is_clear(PINC, 0);
+  _Bool rightClick = bit_is_clear(PINC, 2);
+  _Bool breakClick = bit_is_clear(PINC, 1);
 
   if((!leftDown || !rightDown) && leftClick && rightClick){
     hazardPressed = !hazardPressed;
@@ -108,16 +78,9 @@ void checkBtns(){
       breakDown = 1;
     }
   } else {
-    if(leftDown && !leftClick){
-      leftDown = 0;
-    }
-    if(rightDown && !rightClick){
-      rightDown = 0;
-    }
+    leftDown && !leftClick && (leftDown = 0);
+    rightDown && !rightClick && (rightDown = 0);
   }
-
-
-
 }
 
 int main(void){
@@ -129,7 +92,7 @@ int main(void){
   int counter = 0;
   while(1) {
 
-    _delay_ms(tickSpeed/4); // Blatently stolen from Dr. Beardsley
+    _delay_ms(100/4); // Blatently stolen from Dr. Beardsley
     checkBtns();
     counter++;
     if(counter >= 4){
@@ -137,6 +100,5 @@ int main(void){
       counter = 0;
     }
   }
-  
   return (0);
 }
