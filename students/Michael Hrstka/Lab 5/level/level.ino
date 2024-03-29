@@ -18,21 +18,28 @@ void setup(void) {
 }
 
 // Will check if the two other axis are near 0 to determine if level
-void checkLevel(double x, double y, double z, bool *xLevel, bool *yLevel, bool *zLevel) {
-  if((abs(x) < 0.11) && (abs(y) < 0.11))
-    *zLevel = true;
-  else
-    *zLevel = false;
+void checkLevel(double x, double y, double z, char *xLevel, char *yLevel, char *zLevel) {
+  // 0: Not level, 1: within 5°, 2: within 1°
+  if((abs(x) < 0.55) && (abs(y) < 0.55)) {
+      *zLevel = 1;
+    if((abs(x) < 0.11) && (abs(y) < 0.11))
+      *zLevel = 2;
+  } else
+    *zLevel = 0;
 
-  if(abs(y) < 0.11 && abs(z) < 0.11)
-    *xLevel = true;
-  else
-    *xLevel = false;
+  if(abs(y) < 0.55 && abs(z) < 0.55) {
+    *xLevel = 1;
+    if(abs(y) < 0.11 && abs(z) < 0.11)
+      *xLevel = 2;
+  } else
+    *xLevel = 0;
   
-  if(abs(x) < 0.11 && abs(z) < 0.11)
-    *yLevel = true;
-  else
-    *yLevel = false;
+  if(abs(x) < 0.55 && abs(z) < 0.55) {
+    *yLevel = 1;
+    if(abs(x) < 0.11 && abs(z) < 0.11)
+      *yLevel = 2;
+  } else
+    *yLevel = 0;
 
 }
 template <typename T> void printInfo(T x, T y, T z) {
@@ -58,13 +65,13 @@ void loop() {
 
   printInfo<double>(x, y, z);
 
-  bool xLevel;
-  bool yLevel;
-  bool zLevel;
+  char xLevel;
+  char yLevel;
+  char zLevel;
 
   checkLevel(x, y, z, &xLevel, &yLevel, &zLevel);
 
-  printInfo<bool>(xLevel, yLevel, zLevel);
+  printInfo<int>(xLevel, yLevel, zLevel);
 
   delay(200);
 }
