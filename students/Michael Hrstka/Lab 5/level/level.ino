@@ -18,18 +18,18 @@ void setup(void) {
 }
 
 // Will check if the two other axis are near 0 to determine if level
-void checkLevel(int x, int y, int z, bool *xLevel, bool *yLevel, bool *zLevel) {
-  if(abs(x) < 0.5 && abs(y) < 0.5)
+void checkLevel(double x, double y, double z, bool *xLevel, bool *yLevel, bool *zLevel) {
+  if((abs(x) < 0.11) && (abs(y) < 0.11))
     *zLevel = true;
   else
     *zLevel = false;
 
-  if(abs(y) < 0.5 && abs(z) < 0.5)
+  if(abs(y) < 0.11 && abs(z) < 0.11)
     *xLevel = true;
   else
     *xLevel = false;
   
-  if(abs(x) < 0.5 && abs(z) < 0.5)
+  if(abs(x) < 0.11 && abs(z) < 0.11)
     *yLevel = true;
   else
     *yLevel = false;
@@ -37,13 +37,13 @@ void checkLevel(int x, int y, int z, bool *xLevel, bool *yLevel, bool *zLevel) {
 }
 template <typename T> void printInfo(T x, T y, T z) {
   Serial.print("X: ");
-  Serial.print(x);
+  Serial.print(abs(x));
 
   Serial.print("\tY: ");
-  Serial.print(y);
+  Serial.print(abs(y));
 
   Serial.print("\tZ: ");
-  Serial.print(z);
+  Serial.print(abs(z));
   Serial.println();
 }
 
