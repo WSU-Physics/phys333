@@ -7,31 +7,59 @@ int distanceReading;
 int Reading;
 int Sensor = 0; // distance sensor is on pin D0-RX
 unsigned long distance;
+const byte numChars = 0;
+char receivedChars[numChars];
+
+boolean newData = false;
 
 void setup() {
-  Serial.begin(9600); //sends info through serial
+    Serial.begin(9600);
+    Serial.println("<Arduino is ready>");
 }
-
 
 void loop() {
-int val = analogRead(Sensor);
-Serial.println(val);
-delay(500);
+    recvWithStartEndMarkers();
+    showNewData();
 }
-//Reading= analogRead(Sensor);
-//Vin=map(distanceReading, 0, 1023, 0, 5000); // converts analog into V
-//Serial.print("Vin : ");
-//Serial.print(Reading );
 
-//if(Vin<75)
-//{
-//  Serial.println(" Too Close");
-//}
-//else
-//{
-//distance = Vin * 9.8;
-//Serial.println("Distance:");
-//Serial.print(distance);
-//}
-//delay(500);
+void recvWithStartEndMarkers() {
+    static boolean recvInProgress = false;
+    static byte ndx = 0;
+    char startMarker = '<';
+    char endMarker = '>';
+    char rc;
+ 
+    while (Serial.available() > 0 && newData == false) {
+        rc = Serial.read();
+
+        if (recvInProgress == true) {
+            if (rc != endMarker) {
+                receivedChars[ndx] = rc;
+                ndx++;
+                if (ndx >= numChars) {
+                    ndx = numChars - 1;
+                }
+            }
+            else {
+                receivedChars[ndx] = '\0'; // terminate the string
+                recvInProgress = false;
+                ndx = 0;
+                newData = true;
+            }
+        }
+
+        else if (rc == startMarker) {
+            recvInProgress = true;
+        }
+    }
+}
+
+void showNewData() {
+    if (newData == true) {
+        Serial.print("This just in ... ");
+        Serial.println(receivedChars);
+        newData = false;
+    }
+}
+
 
