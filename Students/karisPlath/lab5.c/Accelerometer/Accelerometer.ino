@@ -10,6 +10,14 @@
 // Used for hardware & software SPI
 #define LIS3DH_CS 10
 
+// LEDs
+const int gLED = 9;
+const int yLED = 10;
+const int rLED = 11;
+
+// level
+int level;
+
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
@@ -43,6 +51,10 @@ void setup(void) {
     case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
     case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("16 Khz Low Power"); break;
   }
+
+  pinMode(rLED, OUTPUT);
+  pinMode(yLED, OUTPUT);
+  pinMode(gLED, OUTPUT);
 }
 
 void loop() {
@@ -63,4 +75,24 @@ void loop() {
   Serial.println();
 
   delay(200);
+
+  // output to LED
+  level = abs(event.acceleration.x) + abs(event.acceleration.y) + (9.8 - abs(event.acceleration.z));
+
+  if(level <= 1){
+    digitalWrite(gLED, HIGH);
+    digitalWrite(yLED, LOW);
+    digitalWrite(rLED, LOW);
+  }
+  else if(level > 1 && level <=5){
+    digitalWrite(gLED, LOW);
+    digitalWrite(yLED, HIGH);
+    digitalWrite(rLED, LOW);
+  }
+  else{
+    digitalWrite(gLED, LOW);
+    digitalWrite(yLED, LOW);
+    digitalWrite(rLED, HIGH);
+  }
+
 }
