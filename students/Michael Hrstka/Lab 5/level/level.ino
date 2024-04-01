@@ -3,6 +3,8 @@
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 
+char yellowPin = 2;
+char greenPin = 3;
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
@@ -15,6 +17,8 @@ void setup(void) {
     while (1) yield();
   }
   Serial.println("LIS3DH found!");
+  pinMode(greenPin, OUTPUT);
+  pinMode(yellowPin, OUTPUT);
 }
 
 // Will check if the two other axis are near 0 to determine if level
@@ -71,7 +75,18 @@ void loop() {
 
   checkLevel(x, y, z, &xLevel, &yLevel, &zLevel);
 
-  printInfo<int>(xLevel, yLevel, zLevel);
+  // printInfo<int>(xLevel, yLevel, zLevel); // Print if level: 0: Not level, 1: within 5°, 2: within 1°
+
+  if (xLevel == 2 || yLevel == 2 || zLevel == 2){
+    digitalWrite(greenPin, HIGH);
+    digitalWrite(yellowPin, LOW);
+  } else if (xLevel == 1 || yLevel == 1 || zLevel == 1){
+    digitalWrite(greenPin, LOW);
+    digitalWrite(yellowPin, HIGH);
+  } else {
+    digitalWrite(greenPin, LOW);
+    digitalWrite(yellowPin, LOW);
+  }
 
   delay(200);
 }
