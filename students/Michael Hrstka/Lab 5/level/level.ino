@@ -24,14 +24,14 @@ void setup(void) {
 // Will check if the two other axis are near 0 to determine if level
 void checkLevel(double x, double y, double z, char *xLevel, char *yLevel, char *zLevel) {
   // 0: Not level, 1: within 5°, 2: within 1°
-  if((abs(x) < 0.55) && (abs(y) < 0.55)) {
+  if((abs(x) < 0.7) && (abs(y) < 0.55)) {
       *zLevel = 1;
     if((abs(x) < 0.11) && (abs(y) < 0.11))
       *zLevel = 2;
   } else
     *zLevel = 0;
 
-  if(abs(y) < 0.55 && abs(z) < 0.55) {
+  if(abs(y) < 0.75 && abs(z) < 0.75) {
     *xLevel = 1;
     if(abs(y) < 0.11 && abs(z) < 0.11)
       *xLevel = 2;
@@ -75,7 +75,7 @@ void loop() {
 
   checkLevel(x, y, z, &xLevel, &yLevel, &zLevel);
 
-  // printInfo<int>(xLevel, yLevel, zLevel); // Print if level: 0: Not level, 1: within 5°, 2: within 1°
+  printInfo<int>(xLevel, yLevel, zLevel); // Print if level: 0: Not level, 1: within 5°, 2: within 1°
 
   if (xLevel == 2 || yLevel == 2 || zLevel == 2){
     digitalWrite(greenPin, HIGH);
