@@ -33,20 +33,30 @@ void loop() {
   float angle = acos(event.acceleration.z / sqrt(pow(event.acceleration.x, 2) + pow(event.acceleration.y, 2) + pow(event.acceleration.z, 2))) * 180.0 / PI; // Find the Idea From Internet such as CalculaterHUb, OmniCalculater.
 
   // Check if we are within 5 degrees of being level
-  if (angle <= 5) {
-    digitalWrite(YELLOW_LED_PIN, HIGH);
-    digitalWrite(GREEN_LED_PIN, LOW);
-  } else {
-    digitalWrite(YELLOW_LED_PIN, LOW);
-  }
-
-  // Check if we are within 1 degree of being level
-  if (angle <= 1) {
-    digitalWrite(GREEN_LED_PIN, HIGH);
-    digitalWrite(YELLOW_LED_PIN, LOW);
-  } else {
-    digitalWrite(GREEN_LED_PIN, LOW);
-  }
+ if (angle <= 5) {
+-    digitalWrite(YELLOW_LED_PIN, HIGH);
+-    digitalWrite(GREEN_LED_PIN, LOW);
+-  } else {
+-    digitalWrite(YELLOW_LED_PIN, LOW);
+-  }
+-
+-  // Check if we are within 1 degree of being level
+-  if (angle <= 1) {
+-    digitalWrite(GREEN_LED_PIN, HIGH);
+-    digitalWrite(YELLOW_LED_PIN, LOW);
+-  } else {
+-    digitalWrite(GREEN_LED_PIN, LOW);
+-  }
++  if (angle <= 1){
++    digitalWrite(GREEN_LED_PIN, HIGH);
++    digitalWrite(YELLOW_LED_PIN, LOW);
++  else if (angle <= 5){
++    digitalWrite(YELLOW_LED_PIN, HIGH);
++    digitalWrite(GREEN_LED_PIN, LOW);
++  else {
++    digitalWrite(GREEN_LED_PIN, LOW);
++    digitalWrite(YELLOW_LED_PIN, LOW);
++  }
 
   Serial.print("Angle to level: "); Serial.println(angle);
   

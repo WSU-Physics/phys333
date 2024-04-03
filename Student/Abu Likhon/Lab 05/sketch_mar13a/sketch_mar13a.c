@@ -22,8 +22,7 @@ int main(void) {
 
   // Data Direction Registers
   DDRB |= 0b11111100;  // Writing a 1 to the pin makes it an output
-  DDRB |= 0b11111100;  // This seems to be a repeated line; you may want to check it.
-
+ 
   initUSART();
    printString("Hello World!\r\n"); /* to test */
 
@@ -31,8 +30,6 @@ int main(void) {
   while (1) {
 
     serialCharacter = receiveByte();
-// display ascii/numeric value of character
-    LED_PORT = serialCharacter;
     PORTD = serialCharacter << 2;
     PORTB = serialCharacter >> 6;
 
