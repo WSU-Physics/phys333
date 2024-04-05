@@ -21,6 +21,7 @@
 
 uint8_t buttonPressedR = 0;
 uint8_t buttonPressedL = 0;
+int state = 0;
 
 uint8_t debouncePress(button) {
   if (bit_is_clear(BUTTON_PIN, button)) {      /* button is pressed now */
@@ -55,6 +56,23 @@ uint8_t buttonCheck(void) {
   return (0);
 }
 
+updateState(){
+  int result = buttonCheck();
+  
+}
+
+void initInterupt0(void) {
+  PCICR |= (1 << PCIE0);
+  PCMSK0 |= (1 << PCINT0);
+  PCMSK0 |= (1 << PCINT1);
+  sei();
+}
+
+ISR(PCINT0_vect){
+  updateState();
+}
+
+
 int main(void) {
   // -------- Inits --------- //
   uint8_t buttonWasPressed=0;                                 /* state */
@@ -63,8 +81,8 @@ int main(void) {
   int tick = 0;
   int tick_ms = 10;
   int delay_ticks = 20;
-  int state = 0;
   int last_change = 0;
+  initInterupt0();
 
 
   // ------ Event loop ------ //
