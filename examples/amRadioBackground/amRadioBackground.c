@@ -8,9 +8,9 @@ with slight modifications to work directly on Arduino Uno board.
 
 // ------- Preamble -------- //
 #include <avr/io.h>                        /* Defines pins, ports, etc */
-#include <util/delay.h>                     /* Functions to waste time */
 #include <avr/interrupt.h>
-#include "scale16.h"
+#include "scale16_MHz.h"
+#include "songs.h"
 
 #define ANTENNA                 PD5        /* OC0B */
 #define ANTENNA_PORT            PORTD
@@ -30,28 +30,48 @@ with slight modifications to work directly on Arduino Uno board.
 // 16Mhz / (2 * 1 * (1+13)) = 570 kHz
 // 16Mhz / (2 * 1 * (1+15)) = 500 kHz
 
-static inline void initTimer0(void) {
-  TCCR0A |= (1 << WGM01);                                  /* CTC mode */
+// Define song up here (tones and durations)
+//       Needs to be global so interrupts can use
+int notes[] = MARIONOTES;
+int lengths[] = MARIOLENGTHS;
+int notei=0; // Note we are currently playing
+int nms=0; // Number of ms since started playing note
+int nnotes = sizeof(notes) / sizeof(notes[0]);
+
+static inline void initTimersInterrupts(void) {
+  // Timer/Counter0 used to set the carrier frequency
+  TCCR0A |= (1 << WGM01);             /* CTC mode */
   TCCR0A |= (1 << COM0B0);            /* Toggles pin each time through */
   TCCR0B |= (1 << CS00);              /* Clock at CPU frequency, ~8MHz */
-  OCR0A = COUNTER_VALUE;                          /* carrier frequency */
-}
+  OCR0A = COUNTER_VALUE;              /* carrier frequency */
 
-static inline void initTimer1(void) {
-  TCCR1B |= (1 << WGM12);                                  /* CTC mode */
+  // Timer/Counter1 used to play audio frequency
+  // Use compare match interrupt to signal ISR which will toggle antenna DDR
+  TCCR1B |= (1 << WGM12);            /* CTC mode */
+  // TODO: match this with backgroundMusic example
   // Cannot scale to 1 MHz as in example. Need to adjust pitches in scale.h
-  TCCR1B |= (1 << CS11);            /* Clock at CPU/8 frequency, ~2MHz */
-  TIMSK1 |= (1 << OCIE1A);          /* enable output compare interrupt */
-}
+  TCCR1B |= (1 << CS11);             /* Clock at CPU/128 */
+  TIMSK1 |= (1 << OCIE1A);           /* enable output compare interrupt */
 
-static inline void initTimer2(void) {
-    // User Timer/Counter0 to track ms
+  //  Timer/Counter2 to track ms
   TCCR2B |= (1 << CS22); /* CPU clock / 64 */
   TIMSK2 |= (1 << TOIE2); // enable overflow interrupt
+
+  sei();
 }
 
 ISR(TIMER1_COMPA_vect) {                 /* ISR for audio-rate Timer 1 */
   ANTENNA_DDR ^= (1 << ANTENNA);          /* toggle carrier on and off */
+}
+
+ISR(TIMER2_OVF_vect){
+  nms += 1;
+  if (nms >= lengths[notei]){
+    // reached end of note, update
+    notei = (notei + 1) % nnotes; // Increment, start over if we reach the end
+    playNote(notes[notei], lengths[notei]);
+    nms = 0;  // restart counter
+  }
 }
 
 static inline void transmitBeep(uint16_t pitch, uint16_t duration) {
@@ -66,88 +86,28 @@ static inline void transmitBeep(uint16_t pitch, uint16_t duration) {
 }
 
 static inline void playNote(uint8_t period, uint16_t duration) {
-  TCNT2 = 0;         /* reset the counter */
+  // Set up the timer - real work is done in the ISR
+  TCNT1 = 0;         /* reset the counter */
   OCR1A = period;    /* set pitch */
 
-  if (period == REST){
-    // Disable if rest
-    SPEAKER_DDR &= ~(1 << SPEAKER);
-  } else{
-    // Otherwise enable
-    SPEAKER_DDR |= (1 << SPEAKER);
-  }
+  // Unsure how to handle the rest... let's see if it works to just set OCR1A to 0.
+  // if (period == REST){
+  //   // Disable if rest
+  //   SPEAKER_DDR &= ~(1 << SPEAKER);
+  // } else{
+  //   // Otherwise enable
+  //   SPEAKER_DDR |= (1 << SPEAKER);
+  // }
 }
 
 int main(void) {
   // -------- Inits --------- //
 
-  initTimer0();
-  initTimer1();
-  initTimer2();
+  initTimersInterrupts();
 
   // ------ Event loop ------ //
   while (1) {
 
-    // 1/8 -> 150
-    transmitBeep(E3, 100);
-    _delay_ms(50);
-    transmitBeep(E3, 100);
-    _delay_ms(200);
-    transmitBeep(E3, 100);
-    _delay_ms(200);
-    transmitBeep(C3, 100);
-    _delay_ms(50);
-    transmitBeep(E3, 100);
-    _delay_ms(200);
-    transmitBeep(G3, 200);
-    _delay_ms(400);
-    transmitBeep(G2, 300);
-    _delay_ms(300);
-
-    transmitBeep(C3, 300);
-    _delay_ms(150);
-    transmitBeep(G2, 300);
-    _delay_ms(150);
-    transmitBeep(E2, 300);
-    _delay_ms(150);
-    transmitBeep(A2, 300);
-    transmitBeep(B2, 300);
-    transmitBeep(Ax2, 150);
-    transmitBeep(A2, 200);
-    _delay_ms(100);
-
-    transmitBeep(G2, 150);
-    _delay_ms(50);
-    transmitBeep(E3, 150);
-    _delay_ms(50);
-    transmitBeep(G3, 150);
-    _delay_ms(50);
-    transmitBeep(A3, 200);
-    _delay_ms(100);
-    transmitBeep(F3, 100);
-    _delay_ms(50);
-    transmitBeep(G3, 100);
-    _delay_ms(200);
-    transmitBeep(E3, 200);
-    _delay_ms(100);
-    transmitBeep(C3, 100);
-    _delay_ms(50);
-    transmitBeep(D3, 100);
-    _delay_ms(50);
-    transmitBeep(B2, 200);
-    _delay_ms(450);
-    
-    
-    
-    
-    
-    // transmitBeep(G3, 200);
-    // _delay_ms(200);
-    
-    
-    
-
-    _delay_ms(1500);
 
   }                                                  /* End event loop */
   return 0;                            /* This line is never reached */
