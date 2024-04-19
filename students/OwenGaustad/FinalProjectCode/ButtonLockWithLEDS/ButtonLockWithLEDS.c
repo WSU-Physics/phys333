@@ -115,72 +115,71 @@ ISR(PCINT2_vect) {
   updatePassword();
 }
 
+void ledsOff(){
+  //turns all leds to off
+}
 
+void oneLED(){
+  //turns on first led
+}
 
+void twoLED(){
+  //turns on first 2 leds
+}
+
+void threeLED(){
+  //turns on first 3 leds
+}
+
+void fourLED(){
+  // fourLED();
+  // _delay_ms(1000);
+  // ledOff();
+  // _delay_ms(100);
+}
+
+void passwordCorrect(){
+  //double blink fourLED();
+  //turn motor forward
+  //turn motor back to  start position(theoretccially this won't lock it)
+}
+
+void passwordIncorrect(){
+  //double blink all red LEDs. 
+}
+void motorAction(){
+  //turn motor set distance in one direction and then that same distance back
+}
+void flagCheck(){
+  if (flag == 1) {
+    cli();
+    flag = 0;
+    fourLED();
+    if (getPassword == setPassword){
+      passwordCorrect();
+    }
+    else {
+      paasswordIncorrect();
+    }
+    sei();
+  }
+}
 int main(void) {
-
 // ------- Inits -------- //
-  int flag = 0;
-  intInterrupt0();
-
+  int flag = 0;     //initializes flag that will be used to turn off our buttons after the password has been input
+  intInterrupt0();  //initializes our interrupts
   // ------- Code -------- //
   while (1){
     switch(getIndex){
       case(0):
-        if (flag == 1) {
-          cli();
-          flag = 0;
-          //4 leds
-          //delay
-          if (getPassword == setPassword){
-            //blink green twice
-            //turn motor forward
-            //turn motor back to  start position(theoretccially this won't lock it)
-            //intInterrupt0(); or sei();
-          }
-          else {
-            //blink red twice
-            //intInterrupt0(); or sei();
-          }
-        }
-        //off
+        flagCheck();
+        ledOff();
       case(1):
-        //1 led
+        oneLED();
       case(2):
-        //2 led
+        twoLED();
       case(3):
-        //3 led
+        threeLED();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // //no light function
-    // while (getIndex == 0){} // stop sign
-    // //if I get zero that means it is waiting on the first input so none of the lights shold be on
-
-    // //single light function
-    // while (getIndex == 1){}// stop sign
-    // //if I get 1 a button has been pressed
-
-    // //two light function
-    // while (getIndex == 2){} // stop sign
-    // //if I get 2 the second button has been pressed
-
-    // //three light function
-    // while (getIndex == 3){} // stop sign
-    // //if I get 3 the third button has been pressed
-
-    // //four light function maybe followed by a delay if I think it looks ugly
-    // //if password was correct flash green twice and turn motor
-    // //else flash lightss red twice
   }  
 }
