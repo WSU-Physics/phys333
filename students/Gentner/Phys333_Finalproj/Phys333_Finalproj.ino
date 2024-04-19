@@ -17,12 +17,12 @@
 const int Lights=13;
 const int PR=11;
 const int IR=4;
-const int IRD=3;
+const int IRD=A0;
 
 
 void setup() {
-pinMode(4,OUTPUT);
-pinMode(3,INPUT);
+pinMode(IR,OUTPUT);
+pinMode(IRD,INPUT);
 Serial.begin(9600);
 }
 
@@ -34,7 +34,8 @@ digitalWrite(IR, HIGH);
 DetectRead = analogRead(IRD);
 Detect=map(DetectRead, 0, 1023, 0, 5000);
 Serial.print("High ");
-Serial.print(DetectRead)
+Serial.print(DetectRead);
+Serial.print(" - ");
 Serial.println(Detect);
 delay(500);
 digitalWrite(IR,LOW);
