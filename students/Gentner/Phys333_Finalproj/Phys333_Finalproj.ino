@@ -28,9 +28,19 @@ Serial.begin(9600);
 
 void loop() {
   // put your main code here, to run repeatedly:
+int DetectRead = 0;
 int Detect = 0;
-digitalWrite(IR, true);
-Detect = analogRead(IRD);
+digitalWrite(IR, HIGH);
+DetectRead = analogRead(IRD);
+Detect=map(DetectRead, 0, 1023, 0, 5000);
+Serial.print("High ");
+Serial.print(DetectRead)
+Serial.println(Detect);
+delay(500);
+digitalWrite(IR,LOW);
+DetectRead = analogRead(IRD);
+Detect=map(DetectRead, 0, 1023, 0, 5000);
+Serial.print("Low ");
 Serial.println(Detect);
 delay(500);
 }
