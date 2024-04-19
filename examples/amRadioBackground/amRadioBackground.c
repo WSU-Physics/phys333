@@ -47,11 +47,9 @@ static inline void initTimersInterrupts(void) {
 
   // Timer/Counter1 used to play audio frequency
   // Use compare match interrupt to signal ISR which will toggle antenna DDR
-  TCCR1B |= (1 << WGM12);            /* CTC mode */
-  // TODO: match this with backgroundMusic example
-  // Cannot scale to 1 MHz as in example. Need to adjust pitches in scale.h
-  TCCR1B |= (1 << CS11);             /* Clock at CPU/128 */
-  TIMSK1 |= (1 << OCIE1A);           /* enable output compare interrupt */
+  TCCR1B |= (1 << WGM12);             /* CTC mode */
+  TCCR1B |= (1 << CS11 | 1 << CS10);  /* Clock at CPU/64 */
+  TIMSK1 |= (1 << OCIE1A);            /* enable output compare interrupt */
 
   //  Timer/Counter2 to track ms
   TCCR2B |= (1 << CS22); /* CPU clock / 64 */
