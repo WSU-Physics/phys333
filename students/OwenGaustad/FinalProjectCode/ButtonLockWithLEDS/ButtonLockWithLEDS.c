@@ -8,8 +8,8 @@
 #define BUTTON_PIN              PINB
 #define BUTTON_DDR              DDRB
 
-#define LED_PORT                PORTD
-#define LED_DDR                 DDRD
+#define LED_MOTOR_PORT          PORTD
+#define LED_MOTOR_DDR           DDRD
 
 // ------- Pin Defines -------- //
 
@@ -26,12 +26,13 @@
 #define GREEN_LED2              PB2     //Digital Pin 10
 #define GREEN_LED3              PB3     //Digital Pin 11
 #define GREEN_LED4              PB4     //Digital Pin 12
-
 #define MOTOR                   PB5     //Digital Pin 13
 
 // ------- Macros -------- //
 
 #define BV(bit)               (1 << (bit))       // Mask with single bit set
+#define setBit(byte, bit)     (byte |= BV(bit))  // set bit within byte
+#define clearBit(byte, bit)   (byte &= ~BV(bit)) // clear bit
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 // ------- Global Variables -------- //
@@ -50,7 +51,7 @@ is pressed it waits 5 milliseconds then if it is still depressed it returns
 the delay time. Maybe a while loop could be useful here otherwise this 
 should work for our cerruent design. 
 ******************************************************************************/
-uint8_t btnCheck(button)  {
+uint8_t btnCheck(int button)  {
   if (bit_is_clear(BUTTON_PIN, button)){
     _delay_ms(delay);
     if (bit_is_clear(BUTTON_PIN, button)) {return 1;}
@@ -65,14 +66,13 @@ called and if any of them return 1 then this method will return their given
 number i.e. 1,2,3,4....
 ******************************************************************************/
 uint8_t chkButton() {
-//must return # into the first index in our getPassword array if the first index is filled it must go in the second and so on...
   if (btnCheck(BUTTON1))       {return 0;}
   else if (btnCheck(BUTTON2))  {return 1;}
   else if (btnCheck(BUTTON3))  {return 2;} 
   else if (btnCheck(BUTTON4))  {return 3;} 
   else if (btnCheck(BUTTON5))  {return 4;}
   else if (btnCheck(BUTTON6))  {return 5;}
-  else if (btnCheck(BUTTON7))  {return 6;} //if 6 returns this should clear the numbers in my array
+  else if (btnCheck(BUTTON7))  {return 6;}
 }
 
 /******************************************************************************
@@ -84,12 +84,12 @@ function which will be button 7 and if that is hit the index will be reset
 to 0 and our LED's will all be reset. 
 ******************************************************************************/
 updatePassword()  {
-  getPassword[getIndex] = chkButton();//I have to be careful around this because there is a delay in here and my interrupt could cause problems with everything after this 
+  getPassword[getIndex] = chkButton();
   if (getPassword[getIndex] == 6) {
-    //This has to clear my LEDs and resent my index
     getIndex = 0;
     flag = 0;
-  } else {
+  } 
+  else {
     getIndex++;
     if (getIndex == 4){
       flag = 1;
@@ -104,7 +104,10 @@ voltage across those pins will then activate my ISR function located below.
 ******************************************************************************/
 void intInterrupt0()  {
   PCICR |= (1 << PCIE2);
-  for(int i = 1; i <= 7; i++) {PCMSK2 |= (1 << i);} //sets up a loop that initializes my interrupts
+  for(int i = 1; i <= 7; i++) {
+    BUTTON_DDR &= ~(1 << i);       //activates input
+    BUTTON_PORT |= (1 << i);       //activates resistor
+    PCMSK2 |= (1 << i);} //sets up a loop that initializes my interrupts
   sei();
 }
 /******************************************************************************
@@ -114,42 +117,68 @@ function.
 ISR(PCINT2_vect) {
   updatePassword();
 }
-
+/******************************************************************************
+******************************************************************************/
 void ledsOff(){
   //turns all leds to off
+  for (int i = 0; i <= 4;i++){
+    clearBit(LED_PORT,i); 
+  }
 }
-
+/******************************************************************************
+******************************************************************************/
 void oneLED(){
   //turns on first led
+  setBit(LED_MOTOR_PORT, GREEN_LED1);
 }
 
+/******************************************************************************
+******************************************************************************/
 void twoLED(){
   //turns on first 2 leds
+  setBit(LED_MOTOR_PORT, GREEN_LED2);
 }
-
+/******************************************************************************
+******************************************************************************/
 void threeLED(){
   //turns on first 3 leds
+  setBit(LED_MOTOR_PORT, GREEN_LED3);
 }
-
+/******************************************************************************
+******************************************************************************/
 void fourLED(){
-  // fourLED();
-  // _delay_ms(1000);
-  // ledOff();
-  // _delay_ms(100);
+  setBit(LED_MOTOR_PORT, GREEN_LED4);
+  _delay_ms(1000);
+  ledsOff();
+  _delay_ms(100);
 }
-
+/******************************************************************************
+******************************************************************************/
 void passwordCorrect(){
-  //double blink fourLED();
+  for(int i = 0; i<=3; i++){
+    for(int i = 1; i <= 4;i++){
+      toggleBit(LED_MOTOR_PORT, i);
+    }
+    _delay_ms(200);
+  }
   //turn motor forward
   //turn motor back to  start position(theoretccially this won't lock it)
 }
-
+/******************************************************************************
+******************************************************************************/
 void passwordIncorrect(){
-  //double blink all red LEDs. 
+  for(int i = 0; i<=3; i++){
+    toggleBit(LED_MOTOR_PORT, ALL_RED_LEDS);
+    _delay_ms(200);
+  }
 }
+/******************************************************************************
+******************************************************************************/
 void motorAction(){
   //turn motor set distance in one direction and then that same distance back
 }
+/******************************************************************************
+******************************************************************************/
 void flagCheck(){
   if (flag == 1) {
     cli();
@@ -164,16 +193,21 @@ void flagCheck(){
     sei();
   }
 }
+
+
 int main(void) {
 // ------- Inits -------- //
+
   int flag = 0;     //initializes flag that will be used to turn off our buttons after the password has been input
   intInterrupt0();  //initializes our interrupts
+  LED_MOTOR_DDR = 0xff;
+  
   // ------- Code -------- //
   while (1){
     switch(getIndex){
       case(0):
         flagCheck();
-        ledOff();
+        ledsOff();
       case(1):
         oneLED();
       case(2):
