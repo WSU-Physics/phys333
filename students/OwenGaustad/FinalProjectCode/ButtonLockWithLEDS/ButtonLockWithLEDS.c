@@ -88,7 +88,14 @@ updatePassword()  {
   if (getPassword[getIndex] == 6) {
     //This has to clear my LEDs and resent my index
     getIndex = 0;
-  } else {getIndex = (getIndex+1) % 4;}
+    flag = 0;
+  } else {
+    getIndex++;
+    if (getIndex == 4){
+      flag = 1;
+      getIndex = (getIndex) % 4;
+    }  
+  }
 }
 
 /******************************************************************************
@@ -113,29 +120,67 @@ ISR(PCINT2_vect) {
 int main(void) {
 
 // ------- Inits -------- //
-  
+  int flag = 0;
   intInterrupt0();
 
   // ------- Code -------- //
   while (1){
-    //no light function
-    while (getIndex == 0){} // stop sign
-    //if I get zero that means it is waiting on the first input so none of the lights shold be on
+    switch(getIndex){
+      case(0):
+        if (flag == 1) {
+          cli();
+          flag = 0;
+          //4 leds
+          //delay
+          if (getPassword == setPassword){
+            //blink green twice
+            //turn motor forward
+            //turn motor back to  start position(theoretccially this won't lock it)
+            //intInterrupt0(); or sei();
+          }
+          else {
+            //blink red twice
+            //intInterrupt0(); or sei();
+          }
+        }
+        //off
+      case(1):
+        //1 led
+      case(2):
+        //2 led
+      case(3):
+        //3 led
+    }
 
-    //single light function
-    while (getIndex == 1){}// stop sign
-    //if I get 1 a button has been pressed
 
-    //two light function
-    while (getIndex == 2){} // stop sign
-    //if I get 2 the second button has been pressed
 
-    //three light function
-    while (getIndex == 3){} // stop sign
-    //if I get 3 the third button has been pressed
 
-    //four light function maybe followed by a delay if I think it looks ugly
-    //if password was correct flash green twice and turn motor
-    //else flash lightss red twice
+
+
+
+
+
+
+
+
+    // //no light function
+    // while (getIndex == 0){} // stop sign
+    // //if I get zero that means it is waiting on the first input so none of the lights shold be on
+
+    // //single light function
+    // while (getIndex == 1){}// stop sign
+    // //if I get 1 a button has been pressed
+
+    // //two light function
+    // while (getIndex == 2){} // stop sign
+    // //if I get 2 the second button has been pressed
+
+    // //three light function
+    // while (getIndex == 3){} // stop sign
+    // //if I get 3 the third button has been pressed
+
+    // //four light function maybe followed by a delay if I think it looks ugly
+    // //if password was correct flash green twice and turn motor
+    // //else flash lightss red twice
   }  
 }
