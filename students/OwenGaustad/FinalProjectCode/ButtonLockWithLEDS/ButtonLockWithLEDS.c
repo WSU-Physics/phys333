@@ -1,15 +1,16 @@
 
 // ------- Preamble -------- //
-
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdio.h>
 
-#define BUTTON_PORT             PORTB
-#define BUTTON_PIN              PINB
-#define BUTTON_DDR              DDRB
+#define BUTTON_PORT             PORTD
+#define BUTTON_PIN              PIND
+#define BUTTON_DDR              DDRD
 
-#define LED_MOTOR_PORT          PORTD
-#define LED_MOTOR_DDR           DDRD
+#define LED_MOTOR_PORT          PORTB
+#define LED_MOTOR_DDR           DDRB
 
 // ------- Pin Defines -------- //
 
@@ -35,9 +36,11 @@
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 // ------- Global Variables -------- //
-const int setPasssword = [1,2,3,4]; //Sets the password you need for checking if the buttons were clicked in the correct order
-const int delay = 5;                //Sets the delay that is used for a small delay in the button press. 
-int getPassword[3];                 //This establishes the array we will be using for our input password. 
+  //Initializes flag that will be used to turn off our buttons after the password has been input
+int flag = 0;
+int DELAY = 5;                //Sets the delay that is used for a small delay in the button press. 
+int setPassword[4] = {0,1,2,3};
+int getPassword[0];                 //This establishes the array we will be using for our input password. 
 int getIndex = 0;                   //This establishes a variable I use for shifting the index of my get password array
 
 // ------- Functions -------- //
@@ -50,7 +53,7 @@ should work for our cerruent design.
 ******************************************************************************/
 uint8_t btnCheck(int button)  {
   if (bit_is_clear(BUTTON_PIN, button)){
-    _delay_ms(delay);
+    _delay_ms(DELAY);
     if (bit_is_clear(BUTTON_PIN, button)) {return 1;}
     else {return 0;}
   }
@@ -122,9 +125,10 @@ directory as the LEDs this function does not effect the motor pin.
 ******************************************************************************/
 void ledsOff(){
   //turns all leds to off
-  for (int i = 0; i <= 4;i++){
-    clearBit(LED_PORT,i); 
+  for (int i = 1; i <= 3;i++){
+    toggleBit(LED_MOTOR_PORT,i);
   }
+  _delay_ms(1000);
 }
 
 /******************************************************************************
@@ -234,39 +238,76 @@ void flagCheck(){
       passwordCorrect();
     }
     else {
-      paasswordIncorrect();
+      passwordIncorrect();
     }
     sei();
   }
+  
+  ledsOff();
 }
+// ------- Code for testing errors -------- //
+
+void uart_init() {
+    // Set baud rate to 9600
+    UBRR0 = 103;
+
+    // Enable transmitter
+    UCSR0B = (1 << TXEN0);
+
+    // Set frame format: 8 data bits, 1 stop bit, no parity
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
+}
+
+void uart_putchar(char c) {
+    // Wait for transmit buffer to be empty
+    while (!(UCSR0A & (1 << UDRE0)));
+
+    // Put character into transmit buffer and send it
+    UDR0 = c;
+}
+
+void uart_println(const char *str) {
+    while (*str) {
+        uart_putchar(*str);
+        str++;
+    }
+    uart_putchar('\n');
+}
+
+
 
 // ------- Main Code -------- //
 int main(void) {
 
   // ------- Inits -------- //
-  //Initializes flag that will be used to turn off our buttons after the password has been input
-  int flag = 0;
+  //Sets the password you need for checking if the buttons were clicked in the correct order
   //Initializes our interrupts
-  intInterrupt0();
+  //intInterrupt0();
+  //uart_init();
   //Initializes the directory for our LED's and motor
   LED_MOTOR_DDR = 0xff;
-  
+  printf("Hello");
   // ------- Loop -------- //
   while (1){
-    //an array that indexes from 0 to 3
-    switch(getIndex){   
-      //this state is run when a button has not been pressed or our password has been fully input. 
-      case(0):          
-      flagCheck();
+    
+    //getIndex is used in my getPassword array that indexes from 0 to 3
+    switch(/*getIndex*/0){   
+      //this case is run when a button has not been pressed or our password has been fully input. 
+      case(0):     
+      printf("Hello");
       ledsOff();
-      //This state is run after one number has been input. 
+      //flagCheck();
+      //This case is run after one number has been input. 
       case(1):
+      printf("Hello");
       oneLED();
-      //This state is run after two numbers have been input. 
+      //This case is run after two numbers have been input. 
       case(2):
+      printf("Hello");
       twoLED();
-      //This state is run after three numbers have been input. 
+      //This case is run after three numbers have been input. 
       case(3):
+      printf("Hello");
       threeLED();
     }
   }  
