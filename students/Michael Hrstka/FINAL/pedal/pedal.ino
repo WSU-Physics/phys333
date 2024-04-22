@@ -1,13 +1,16 @@
 int guitarInput = 0;
-int outputPins[3] = {5, 6, 7}; // 0 being LEAST sig
+int outputPins[5] = {3, 4, 5, 6, 7};
 
 double sinWave = 0;
 
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(57600);
   pinMode(outputPins[0], OUTPUT);
   pinMode(outputPins[1], OUTPUT);
   pinMode(outputPins[2], OUTPUT);
+  pinMode(outputPins[3], OUTPUT);
+  pinMode(outputPins[4], OUTPUT);
+
 }
 
 void loop() {
@@ -17,11 +20,11 @@ void loop() {
 
   // Serial.print("\n");
 
-  sinWave += 0.3;
+  sinWave += 1;
 
   double wave = sin(sinWave);
 
-  int newWave = (wave + 1) * 4; // Should give a value ranging from 0 to 7
+  int newWave = (wave + 1) * 16; // Should give a value ranging from 0 to 31
 
   setOutput(newWave);
 
@@ -43,6 +46,10 @@ void setOutput(int output) {
     digitalWrite(outputPins[1], output % 2); //Serial.print(output % 2);
     output = output / 2;
     digitalWrite(outputPins[2], output % 2); //Serial.print(output % 2);
+    output = output / 2;
+    digitalWrite(outputPins[3], output % 2); //Serial.print(output % 2);
+    output = output / 2;
+    digitalWrite(outputPins[4], output % 2); //Serial.print(output % 2);
     output = output / 2;
 
     // Serial.print("\n");
