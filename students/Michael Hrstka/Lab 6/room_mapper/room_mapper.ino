@@ -1,7 +1,13 @@
 #include <SD.h>
 #include <Wire.h>
+#include "distance_sensor.h" // Hopefully this works
 
 const int sdPin = 10;
+int distance;
+int angle;
+
+char serialCharacter;
+DistanceSensor distanceSensor = DistanceSensor::DistanceSensor();
 
 File logfile;
 
@@ -48,5 +54,7 @@ void setup() {
 
 void loop() {
   delay(500);
-  logToSD(0, 0);
+  distance = distanceSensor.getDistance();
+  const 
+  logToSD(distance, angle);
 }
