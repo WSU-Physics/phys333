@@ -1,5 +1,5 @@
-/* Assumes 16 MHz clock and 128 prescalar */
-/* value = 16 MHz / (2 * 128 * f) */
+/* Assumes 16 MHz clock and 64 prescalar */
+/* value = 16 MHz / (2 * 64 * f) */
 
 #define REST 0
 #define C4 478
