@@ -9,10 +9,10 @@ with slight modifications to work directly on Arduino Uno board.
 // ------- Preamble -------- //
 #include <avr/io.h>                        /* Defines pins, ports, etc */
 #include <avr/interrupt.h>
-#include "scale16_MHz.h"
+#include "scale_16MHz.h"
 #include "songs.h"
 
-#define ANTENNA                 PD5        /* OC0B */
+#define ANTENNA                 PD6        /* OC0A */
 #define ANTENNA_PORT            PORTD
 #define ANTENNA_PIN             PIND
 #define ANTENNA_DDR             DDRD
@@ -41,7 +41,7 @@ int nnotes = sizeof(notes) / sizeof(notes[0]);
 static inline void initTimersInterrupts(void) {
   // Timer/Counter0 used to set the carrier frequency
   TCCR0A |= (1 << WGM01);             /* CTC mode */
-  TCCR0A |= (1 << COM0B0);            /* Toggles pin each time through */
+  TCCR0A |= (1 << COM0A0);            /* Toggles pin each time through */
   TCCR0B |= (1 << CS00);              /* Clock at CPU frequency, ~8MHz */
   OCR0A = COUNTER_VALUE;              /* carrier frequency */
 
@@ -58,6 +58,22 @@ static inline void initTimersInterrupts(void) {
   sei();
 }
 
+
+static inline void playNote(uint16_t period, uint16_t duration) {
+  // Set up the timer - real work is done in the ISR
+  TCNT1 = 0;         /* reset the counter */
+  OCR1AH = (period >> 8);    /* set pitch */
+  OCR1AL = (period & 0xff);
+  // Unsure how to handle the rest... let's see if it works to just set OCR1A to 0.
+  // if (period == REST){
+  //   // Disable if rest
+  //   SPEAKER_DDR &= ~(1 << SPEAKER);
+  // } else{
+  //   // Otherwise enable
+  //   SPEAKER_DDR |= (1 << SPEAKER);
+  // }
+}
+
 ISR(TIMER1_COMPA_vect) {                 /* ISR for audio-rate Timer 1 */
   ANTENNA_DDR ^= (1 << ANTENNA);          /* toggle carrier on and off */
 }
@@ -70,32 +86,6 @@ ISR(TIMER2_OVF_vect){
     playNote(notes[notei], lengths[notei]);
     nms = 0;  // restart counter
   }
-}
-
-static inline void transmitBeep(uint16_t pitch, uint16_t duration) {
-  OCR1A = pitch;                               /* set pitch for timer1 */
-  sei();                                         /* turn on interrupts */
-  do {
-    _delay_ms(1);                            /* delay for pitch cycles */
-    duration--;
-  } while (duration > 0);
-  cli();                  /* and disable ISR so that it stops toggling */
-  ANTENNA_DDR |= (1 << ANTENNA);               /* back on full carrier */
-}
-
-static inline void playNote(uint8_t period, uint16_t duration) {
-  // Set up the timer - real work is done in the ISR
-  TCNT1 = 0;         /* reset the counter */
-  OCR1A = period;    /* set pitch */
-
-  // Unsure how to handle the rest... let's see if it works to just set OCR1A to 0.
-  // if (period == REST){
-  //   // Disable if rest
-  //   SPEAKER_DDR &= ~(1 << SPEAKER);
-  // } else{
-  //   // Otherwise enable
-  //   SPEAKER_DDR |= (1 << SPEAKER);
-  // }
 }
 
 int main(void) {
