@@ -5,6 +5,7 @@
 #include <util/delay.h>
 #include <stdio.h>
 
+
 #define BUTTON_PORT             PORTD
 #define BUTTON_PIN              PIND
 #define BUTTON_DDR              DDRD
@@ -14,19 +15,19 @@
 
 // ------- Pin Defines -------- //
 
-#define BUTTON1                 PD1     //Digital Pin 1
-#define BUTTON2                 PD2     //Digital Pin 2
-#define BUTTON3                 PD3     //Digital Pin 3
-#define BUTTON4                 PD4     //Digital Pin 4
-#define BUTTON5                 PD5     //Digital Pin 5
-#define BUTTON6                 PD6     //Digital Pin 6
-#define BUTTON7                 PD7     //Digital Pin 7
+#define BUTTON_1                 PD1     //Digital Pin 1
+#define BUTTON_2                 PD2     //Digital Pin 2
+#define BUTTON_3                 PD3     //Digital Pin 3
+#define BUTTON_4                 PD4     //Digital Pin 4
+#define BUTTON_5                 PD5     //Digital Pin 5
+#define BUTTON_6                 PD6     //Digital Pin 6
+#define BUTTON_7                 PD7     //Digital Pin 7
 
 #define ALL_RED_LEDS            PB0     //Digital Pin 8
-#define GREEN_LED1              PB1     //Digital Pin 9
-#define GREEN_LED2              PB2     //Digital Pin 10
-#define GREEN_LED3              PB3     //Digital Pin 11
-#define GREEN_LED4              PB4     //Digital Pin 12
+#define LED_9                   PB1     //Digital Pin 9
+#define LED_10                  PB2     //Digital Pin 10
+#define LED_11                  PB3     //Digital Pin 11
+#define LED_12                  PB4     //Digital Pin 12
 #define MOTOR                   PB5     //Digital Pin 13
 
 // ------- Macros -------- //
@@ -39,7 +40,7 @@
   //Initializes flag that will be used to turn off our buttons after the password has been input
 int flag = 0;
 int DELAY = 5;                //Sets the delay that is used for a small delay in the button press. 
-int setPassword[4] = {0,1,2,3};
+int setPassword[4] = {1,2,3,4};
 int getPassword[0];                 //This establishes the array we will be using for our input password. 
 int getIndex = 0;                   //This establishes a variable I use for shifting the index of my get password array
 
@@ -53,9 +54,9 @@ should work for our cerruent design.
 ******************************************************************************/
 uint8_t btnCheck(int button)  {
   if (bit_is_clear(BUTTON_PIN, button)){
+    while (bit_is_clear(BUTTON_PIN, button)){}
     _delay_ms(DELAY);
-    if (bit_is_clear(BUTTON_PIN, button)) {return 1;}
-    else {return 0;}
+    return 1;
   }
   else {return 0;}
 }
@@ -66,13 +67,14 @@ called and if any of them return 1 then this method will return their given
 number i.e. 1,2,3,4....
 ******************************************************************************/
 uint8_t chkButton() {
-  if (btnCheck(BUTTON1))       {return 0;}
-  else if (btnCheck(BUTTON2))  {return 1;}
-  else if (btnCheck(BUTTON3))  {return 2;} 
-  else if (btnCheck(BUTTON4))  {return 3;} 
-  else if (btnCheck(BUTTON5))  {return 4;}
-  else if (btnCheck(BUTTON6))  {return 5;}
-  else if (btnCheck(BUTTON7))  {return 6;}
+  if (btnCheck(BUTTON_1))       {return 1;}
+  else if (btnCheck(BUTTON_2))  {return 2;}
+  else if (btnCheck(BUTTON_3))  {return 3;} 
+  else if (btnCheck(BUTTON_4))  {return 4;} 
+  else if (btnCheck(BUTTON_5))  {return 5;}
+  else if (btnCheck(BUTTON_6))  {return 6;}
+  else if (btnCheck(BUTTON_7))  {return 7;}
+  else                          {return 255;} //No button Pressed
 }
 
 /******************************************************************************
@@ -84,17 +86,20 @@ function which will be button 7 and if that is hit the index will be reset
 to 0 and our LED's will all be reset. 
 ******************************************************************************/
 void updatePassword()  {
-  getPassword[getIndex] = chkButton();
-  if (getPassword[getIndex] == 6) {
-    getIndex = 0;
-    flag = 0;
-  } 
-  else {
+  uint8_t buttonPressed = chkButton();
+
+  if (buttonPressed != 255 && buttonPressed != 6) {
+    getPassword[getIndex] = buttonPressed;
     getIndex++;
     if (getIndex == 4){
+      getIndex = 0;
       flag = 1;
-      getIndex = (getIndex) % 4;
-    }  
+      fourLED();
+    }
+  } 
+
+  if (buttonPressed == 6) {
+    getIndex = 0;
   }
 }
 
@@ -102,13 +107,24 @@ void updatePassword()  {
 This function activates the interupts on digital pins 1-7. Any change in 
 voltage across those pins will then activate my ISR function located below.
 ******************************************************************************/
-void intInterrupt0()  {
-  PCICR |= (1 << PCIE2);
-  for(int i = 1; i <= 7; i++) {
-    BUTTON_DDR &= ~(1 << i);       //activates input
-    BUTTON_PORT |= (1 << i);       //activates resistor
-    PCMSK2 |= (1 << i);} //sets up a loop that initializes my interrupts
+void initButtons()  {
+  BUTTON_DDR &= ~((1 << BUTTON_1) | (1 << BUTTON_2) | (1 << BUTTON_3) |
+                  (1 << BUTTON_4) | (1 << BUTTON_5) | (1 << BUTTON_6) |
+                  (1 << BUTTON_7));
+  BUTTON_PORT |= ((1 << BUTTON_1) | (1 << BUTTON_2) | (1 << BUTTON_3) |
+                  (1 << BUTTON_4) | (1 << BUTTON_5) | (1 << BUTTON_6) |
+                  (1 << BUTTON_7));
+  // Enable interrupts for the buttons
+  PCICR |= (1 << PCIE2); // Enable PCINT[23:16] interrupts
+  PCMSK2 |= ((1 << BUTTON_1) | (1 << BUTTON_2) | (1 << BUTTON_3) |
+             (1 << BUTTON_4) | (1 << BUTTON_5) | (1 << BUTTON_6) |
+             (1 << BUTTON_7));
   sei();
+}
+
+void initLEDs() {
+    // Set LED pins as output
+    DDRB |= (1 << ALL_RED_LEDS) | (1 << LED_9) | (1 << LED_10) | (1 << LED_11) | (1 << LED_12) | (1 << MOTOR);
 }
 
 /******************************************************************************
@@ -116,7 +132,9 @@ Function activates interrupts our arduino and runs our updatePassword
 function.
 ******************************************************************************/
 ISR(PCINT2_vect) {
+  cli();
   updatePassword();
+  sei();
 }
 
 /******************************************************************************
@@ -125,10 +143,7 @@ directory as the LEDs this function does not effect the motor pin.
 ******************************************************************************/
 void ledsOff(){
   //turns all leds to off
-  for (int i = 1; i <= 3;i++){
-    toggleBit(LED_MOTOR_PORT,i);
-  }
-  _delay_ms(1000);
+  PORTB &= ~((1 << ALL_RED_LEDS) | (1 << LED_9) | (1 << LED_10) | (1 << LED_11) | (1 << LED_12));
 }
 
 /******************************************************************************
@@ -136,8 +151,9 @@ This function turns one LED on. Although the motor is on the same
 directory as the LEDs this function does not effect the motor pin.
 ******************************************************************************/
 void oneLED(){
-  //turns on first led
-  setBit(LED_MOTOR_PORT, GREEN_LED1);
+  //turns on first led9
+  ledsOff();
+  PORTB |= (1 << LED_9);
 }
 
 /******************************************************************************
@@ -145,8 +161,8 @@ This function turns two LEDs on. Although the motor is on the same
 directory as the LEDs this function does not effect the motor pin.
 ******************************************************************************/
 void twoLED(){
-  //turns on first 2 leds
-  setBit(LED_MOTOR_PORT, GREEN_LED2);
+  ledsOff();
+  PORTB |= (1 << LED_9) | (1 << LED_10);
 }
 
 /******************************************************************************
@@ -155,7 +171,8 @@ directory as the LEDs this function does not effect the motor pin.
 ******************************************************************************/
 void threeLED(){
   //turns on first 3 leds
-  setBit(LED_MOTOR_PORT, GREEN_LED3);
+  ledsOff();
+  PORTB |= (1 << LED_9) | (1 << LED_10) | (1 << LED_11);
 }
 
 /******************************************************************************
@@ -166,10 +183,10 @@ it takes place in a state where no user input is allowed so it needs a
 delay followed by the turning off of all LEDs. 
 ******************************************************************************/
 void fourLED(){
-  setBit(LED_MOTOR_PORT, GREEN_LED4);
+  ledsOff();
+  PORTB |= (1 << LED_9) | (1 << LED_10) | (1 << LED_11)| (1 << LED_12);
   _delay_ms(1000);
   ledsOff();
-  _delay_ms(100);
 }
 
 /******************************************************************************
@@ -183,12 +200,11 @@ future I might need them. Plus it doesn't change anything having them in
 there as a checker. 
 ******************************************************************************/
 void passwordCorrect(){
-  ledsOff();
   for(int i = 0; i<=3; i++){
-    for(int i = 1; i <= 4;i++){
-      toggleBit(LED_MOTOR_PORT, i);
-    }
-    _delay_ms(200);
+    fourLED();
+    _delay_ms(1000);
+    ledsOff();
+    _delay_ms(1000);
   }
   ledsOff();
   //turn motor forward
@@ -204,9 +220,9 @@ redundant code but if I decide to make changes in the future I might need
 them. Plus it doesn't change anything having them in there as a checker. 
 ******************************************************************************/
 void passwordIncorrect(){
-  ledsOff();
-  for(int i = 0; i<=3; i++){
-    toggleBit(LED_MOTOR_PORT, ALL_RED_LEDS);
+  for(int i = 0; i<=1; i++){
+    ledsOff();
+    PORTB |= (1 << LED_9);
     _delay_ms(200);
   }
   ledsOff();
@@ -233,82 +249,53 @@ void flagCheck(){
   if (flag == 1) {
     cli();
     flag = 0;
-    fourLED();
-    if (getPassword == setPassword){
-      passwordCorrect();
+    int isEqual = 1; // Flag to indicate if arrays are equal, initially assume they are equal
+
+    // Check if arrays are equal
+    for (int i = 0; i < 4; i++) {
+      if (getPassword[i] != setPassword[i]) {
+        isEqual = 0; // Arrays are not equal
+        break;
+      }
     }
-    else {
+
+    if (isEqual) {
+      passwordCorrect();
+    } else {
       passwordIncorrect();
     }
     sei();
   }
-  
-  ledsOff();
 }
-// ------- Code for testing errors -------- //
-
-void uart_init() {
-    // Set baud rate to 9600
-    UBRR0 = 103;
-
-    // Enable transmitter
-    UCSR0B = (1 << TXEN0);
-
-    // Set frame format: 8 data bits, 1 stop bit, no parity
-    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
-}
-
-void uart_putchar(char c) {
-    // Wait for transmit buffer to be empty
-    while (!(UCSR0A & (1 << UDRE0)));
-
-    // Put character into transmit buffer and send it
-    UDR0 = c;
-}
-
-void uart_println(const char *str) {
-    while (*str) {
-        uart_putchar(*str);
-        str++;
-    }
-    uart_putchar('\n');
-}
-
-
 
 // ------- Main Code -------- //
 int main(void) {
 
   // ------- Inits -------- //
-  //Sets the password you need for checking if the buttons were clicked in the correct order
-  //Initializes our interrupts
-  //intInterrupt0();
-  //uart_init();
-  //Initializes the directory for our LED's and motor
-  LED_MOTOR_DDR = 0xff;
-  printf("Hello");
+  initLEDs(); // Initialize LED pins
+  initButtons(); // Initialize button pins
+
   // ------- Loop -------- //
   while (1){
-    
     //getIndex is used in my getPassword array that indexes from 0 to 3
-    switch(/*getIndex*/0){   
+    switch(getIndex){   
       //this case is run when a button has not been pressed or our password has been fully input. 
-      case(0):     
-      printf("Hello");
+      case(0):
       ledsOff();
-      //flagCheck();
+      flagCheck();
+      break;
       //This case is run after one number has been input. 
       case(1):
-      printf("Hello");
       oneLED();
+      break;
       //This case is run after two numbers have been input. 
       case(2):
-      printf("Hello");
       twoLED();
+      break;
       //This case is run after three numbers have been input. 
       case(3):
-      printf("Hello");
       threeLED();
+      break;
     }
   }  
 }
