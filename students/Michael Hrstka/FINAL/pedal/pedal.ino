@@ -1,7 +1,7 @@
 int guitarInput = 0;
-int outputPins[3] = {0, 1, 2}; // 0 being LEAST sig
+int outputPins[3] = {5, 6, 7}; // 0 being LEAST sig
 
-int outputTEST = 0;
+double sinWave = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -15,29 +15,35 @@ void loop() {
   // Serial.print("X:");
   // Serial.print(guitarVal);
 
-  // Serial.print("Y:");
-  // Serial.print(sineWave);
-
   // Serial.print("\n");
 
-  delay(1000);
+  sinWave += 0.3;
 
-  setOutput(outputTEST);
-  outputTEST = outputTEST < 7 ? outputTEST + 1 : outputTEST = 0;
+  double wave = sin(sinWave);
+
+  int newWave = (wave + 1) * 4; // Should give a value ranging from 0 to 7
+
+  setOutput(newWave);
+
+  // Serial.print("Y:");
+  // Serial.print(newWave);
+  // Serial.print("\n");
+
+  // delay(500);
 
 }
 
 void setOutput(int output) {
 
-    Serial.println(output);
+    //Serial.println(output);
 
     // Converting to binary between the pins
-    digitalWrite(outputPins[0], output % 2); Serial.print(output % 2); // Serial outputs for testing conversion, in an awkward spot so they annoy me and I remove them later.
+    digitalWrite(outputPins[0], output % 2); //Serial.print(output % 2); // Serial outputs for testing conversion, in an awkward spot so they annoy me and I remove them later.
     output = output / 2;
-    digitalWrite(outputPins[1], output % 2); Serial.print(output % 2);
+    digitalWrite(outputPins[1], output % 2); //Serial.print(output % 2);
     output = output / 2;
-    digitalWrite(outputPins[2], output % 2); Serial.print(output % 2);
+    digitalWrite(outputPins[2], output % 2); //Serial.print(output % 2);
     output = output / 2;
 
-    Serial.print("\n");
+    // Serial.print("\n");
 }
