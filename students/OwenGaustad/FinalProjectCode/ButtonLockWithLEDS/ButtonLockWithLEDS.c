@@ -41,7 +41,7 @@
 int flag = 0;
 int DELAY = 5;                //Sets the delay that is used for a small delay in the button press. 
 int setPassword[4] = {1,2,3,4};
-int getPassword[0];                 //This establishes the array we will be using for our input password. 
+int getPassword[4];                 //This establishes the array we will be using for our input password. 
 int getIndex = 0;                   //This establishes a variable I use for shifting the index of my get password array
 
 // ------- Functions -------- //
@@ -88,7 +88,7 @@ to 0 and our LED's will all be reset.
 void updatePassword()  {
   uint8_t buttonPressed = chkButton();
 
-  if (buttonPressed != 255 && buttonPressed != 6) {
+  if (buttonPressed != 255 && buttonPressed != 7) {
     getPassword[getIndex] = buttonPressed;
     getIndex++;
     if (getIndex == 4){
@@ -98,7 +98,7 @@ void updatePassword()  {
     }
   } 
 
-  if (buttonPressed == 6) {
+  if (buttonPressed == 7) {
     getIndex = 0;
   }
 }
@@ -201,10 +201,10 @@ there as a checker.
 ******************************************************************************/
 void passwordCorrect(){
   for(int i = 0; i<=3; i++){
-    fourLED();
-    _delay_ms(1000);
     ledsOff();
-    _delay_ms(1000);
+    _delay_ms(200);
+    PORTB |= (1 << LED_9) | (1 << LED_10) | (1 << LED_11)| (1 << LED_12);
+    _delay_ms(200);
   }
   ledsOff();
   //turn motor forward
@@ -220,9 +220,10 @@ redundant code but if I decide to make changes in the future I might need
 them. Plus it doesn't change anything having them in there as a checker. 
 ******************************************************************************/
 void passwordIncorrect(){
-  for(int i = 0; i<=1; i++){
+  for(int i = 0; i<=3; i++){
     ledsOff();
-    PORTB |= (1 << LED_9);
+    _delay_ms(200);
+    PORTB |= (1 << ALL_RED_LEDS);
     _delay_ms(200);
   }
   ledsOff();
@@ -246,8 +247,8 @@ Flag check the interrupts are reinitialized with sei() allowing you to
 reinput a password. 
 ******************************************************************************/
 void flagCheck(){
+  cli();
   if (flag == 1) {
-    cli();
     flag = 0;
     int isEqual = 1; // Flag to indicate if arrays are equal, initially assume they are equal
 
@@ -264,8 +265,8 @@ void flagCheck(){
     } else {
       passwordIncorrect();
     }
-    sei();
   }
+  sei();
 }
 
 // ------- Main Code -------- //
@@ -281,8 +282,8 @@ int main(void) {
     switch(getIndex){   
       //this case is run when a button has not been pressed or our password has been fully input. 
       case(0):
-      ledsOff();
       flagCheck();
+      ledsOff();
       break;
       //This case is run after one number has been input. 
       case(1):
