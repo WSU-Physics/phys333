@@ -1,9 +1,13 @@
 /*
-Plays a simple tune, broadcasts it in the AM radio band.
+This is a combination of the AM Radio project from Williams Make: AVR Programming
+and my little background music sketch.
 
-Based on amRadio from Williams AVR book, 
-https://github.com/hexagon5un/AVR-Programming/tree/master/Chapter09_Introduction-to-Timer-Counter-Hardware/amRadio
-with slight modifications to work directly on Arduino Uno board.
+Uses three timers to:
+1. Create a carrier frequency
+2. Modulate the carrier with an audio frequency
+3. Time note length and move to next note when ready
+
+All these are done using timer/counters and interrupts.
 */
 
 // ------- Preamble -------- //
@@ -64,18 +68,10 @@ static inline void playNote(uint16_t period, uint16_t duration) {
   TCNT1 = 0;         /* reset the counter */
   OCR1AH = (period >> 8);    /* set pitch */
   OCR1AL = (period & 0xff);
-  // Unsure how to handle the rest... let's see if it works to just set OCR1A to 0.
-  // if (period == REST){
-  //   // Disable if rest
-  //   SPEAKER_DDR &= ~(1 << SPEAKER);
-  // } else{
-  //   // Otherwise enable
-  //   SPEAKER_DDR |= (1 << SPEAKER);
-  // }
 }
 
-ISR(TIMER1_COMPA_vect) {                 /* ISR for audio-rate Timer 1 */
-  ANTENNA_DDR ^= (1 << ANTENNA);          /* toggle carrier on and off */
+ISR(TIMER1_COMPA_vect) {             /* ISR for audio-rate Timer 1 */
+  ANTENNA_DDR ^= (1 << ANTENNA);     /* toggle carrier on and off */
 }
 
 ISR(TIMER2_OVF_vect){
@@ -90,7 +86,6 @@ ISR(TIMER2_OVF_vect){
 
 int main(void) {
   // -------- Inits --------- //
-
   initTimersInterrupts();
 
   // ------ Event loop ------ //
