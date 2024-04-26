@@ -32,7 +32,7 @@ Serial.begin(9600);
 boolean debounce(boolean last)
 {
  boolean current = digitalRead(IRD); // Read the Detect state
- if (1020 >= current) // if it's less than ambient
+ if (1015 <= current) // if it's less than ambient
  {
  delay(3); //Wait 5ms
  currentDetect = digitalRead(IRD); //Read it again
@@ -44,35 +44,55 @@ boolean debounce(boolean last)
 
 void loop() {
   //Detector Debounce
-  {
-    currentDetect = debounce(lastDetect); //Read debounced state
- if (lastDetect == LOW &&currentDetect == HIGH) //if it was pressed...
  {
- ledMode++  ; //Increase the LED state value
- }
- lastDetect =currentDetect; //Reset Detect value
- if (ledMode == 2) ledMode=1;
- switch(ledMode);
-  // put your main code here, to run repeatedly:
+    currentDetect = debounce(lastDetect); //Read debounced state
+  if (lastDetect >= 1000 &&currentDetect <= 1015) //if it was pressed...
+  {
+  ledMode++  ; //Increase the LED state value
+  Serial.print("LedMode-");
+   Serial.print(ledMode );
+   Serial.print(" ");
   }
-int DetectRead = 0;
+  lastDetect =currentDetect; //Reset Detect value
+  if (ledMode == 3) ledMode=1;
+  switch(ledMode);
+  }
+//old test
+  //Serial.print("High ");
+  //delay(500);
+  //digitalWrite(IR,LOW);
+  //DetectRead = analogRead(IRD);
+  //Detect=map(DetectRead, 0, 1023, 0, 5000);
+  //Serial.print("Low ");
+  //Serial.print(DetectRead);
+  //Serial.print(" - ");
+  //Serial.println(Detect);
+  //delay(500);
+switch (ledMode){
+  case 1:
+  if (ledMode=1) //lights off
+  {
+  digitalWrite(Lights, LOW);
+  int DetectRead = 0;
 int Detect = 0;
 digitalWrite(IR, HIGH);
 DetectRead = analogRead(IRD);
 Detect=map(DetectRead, 0, 1023, 0, 5000);
-Serial.println(DetectRead);
-delay(100);
-//Serial.print("High ");
-
-//Serial.print(" - ");
-//Serial.println(Detect);
-//delay(500);
-//digitalWrite(IR,LOW);
-//DetectRead = analogRead(IRD);
-//Detect=map(DetectRead, 0, 1023, 0, 5000);
-//Serial.print("Low ");
-//Serial.print(DetectRead);
-//Serial.print(" - ");
-//Serial.println(Detect);
-//delay(500);
+Serial.print(DetectRead);
+Serial.print(" - ");
+Serial.println(Detect);
+}
+else{
+  break;
+}
+case 2:
+if (ledMode=2) //turn on lights
+{
+digitalWrite(Lights, HIGH);
+delay(1000);
+}
+else{
+  break;
+}
+}
 }
