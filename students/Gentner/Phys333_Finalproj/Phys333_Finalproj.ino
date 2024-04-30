@@ -46,27 +46,18 @@ boolean debounce(boolean last)
 void loop() {
 int DetectRead = 0;
 int Detect = 0;
-digitalWrite(IR, HIGH);
-DetectRead = analogRead(IRD);
-Detect=map(DetectRead, 0, 1023, 0, 5000);
-Serial.print(DetectRead);
-Serial.print(" - ");
-Serial.println(Detect);
-if (DetectRead >= 1010)
-{
-  ledMode++;
-}
+
 
   //Detector Debounce
 // {
-//   currentDetect = debounce(lastDetect);             //Read debounced state
-//   if (lastDetect >= 1000 && currentDetect <= 1015)  //if it was pressed...
-//   {
-//     ledMode++;  //Increase the LED state value
-//     Serial.print("LedMode-");
-//     Serial.print(ledMode);
-//     Serial.print(" ");
-//   }
+  //   currentDetect = debounce(lastDetect);             //Read debounced state
+  //   if (lastDetect >= 1000 && currentDetect <= 1015)  //if it was pressed...
+  //   {
+  //     ledMode++;  //Increase the LED state value
+  //     Serial.print("LedMode-");
+  //     Serial.print(ledMode);
+  //     Serial.print(" ");
+  //   }
 // lastDetect = currentDetect;  //Reset Detect value
    if (ledMode == 3) ledMode = 1;
 
@@ -87,14 +78,25 @@ switch (ledMode){
   {
   digitalWrite(Lights, LOW);
   Serial.print(ledMode);
+  digitalWrite(IR, HIGH);
+  DetectRead = analogRead(IRD);
+  Detect=map(DetectRead, 0, 1023, 0, 5000);
+  Serial.print(DetectRead);
+  Serial.print(" - ");
+  Serial.println(Detect);
+  delay(100);
+  if (DetectRead >= 1010)
+{
+  ledMode++;
+}
 }
   break;
 
 case 2:
 {
 digitalWrite(Lights, HIGH);
-delay(2000);
-Serial.print(ledMode);
+digitalWrite(IR, HIGH);
+delay(1000);
 ledMode++;
 
   break;
