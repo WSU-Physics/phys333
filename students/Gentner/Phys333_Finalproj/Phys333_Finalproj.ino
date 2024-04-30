@@ -44,6 +44,8 @@ boolean debounce(boolean last)
 
 
 void loop() {
+  //Testing Code
+  digitalWrite(IR, HIGH);
 int DetectRead = 0;
 int Detect = 0;
 
@@ -73,6 +75,7 @@ int Detect = 0;
   //Serial.print(" - ");
   //Serial.println(Detect);
   //delay(500);
+/*  Removing the State machine for testing
 switch (ledMode){
   case 1:
   {
@@ -102,4 +105,5 @@ ledMode++;
   break;
 }
 }
+*/
 }
