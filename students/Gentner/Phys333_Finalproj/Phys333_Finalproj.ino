@@ -14,7 +14,7 @@
     //Turn off LED 
     //Return to top
 
-const int Lights=13;
+const int Lights=12;
 const int PR=11;
 const int IR=4;
 const int IRD=A0;
@@ -44,6 +44,7 @@ boolean debounce(boolean last)
 
 
 void loop() {
+
 int DetectRead = 0;
 int Detect = 0;
 
@@ -63,32 +64,41 @@ int Detect = 0;
 
 // }
 //old test
-  //Serial.print("High ");
-  //delay(500);
-  //digitalWrite(IR,LOW);
-  //DetectRead = analogRead(IRD);
-  //Detect=map(DetectRead, 0, 1023, 0, 5000);
-  //Serial.print("Low ");
-  //Serial.print(DetectRead);
-  //Serial.print(" - ");
-  //Serial.println(Detect);
-  //delay(500);
 
+  digitalWrite(IR, HIGH);
+  DetectRead = analogRead(IRD);
+  Detect=map(DetectRead, 0, 1023, 0, 5000);
+  Serial.print("High ");
+  Serial.print(DetectRead);
+  Serial.print(" - ");
+  Serial.println(Detect);
+  delay(500);
+  digitalWrite(IR,LOW);
+  DetectRead = analogRead(IRD);
+  Detect=map(DetectRead, 0, 1023, 0, 5000);
+  Serial.print("Low ");
+  Serial.print(DetectRead);
+  Serial.print(" - ");
+  Serial.println(Detect);
+  delay(500);
+
+/*
 switch (ledMode){
   case 1:
   {
   digitalWrite(Lights, LOW);
-  Serial.print(ledMode);
   digitalWrite(IR, HIGH);
   DetectRead = analogRead(IRD);
   Detect=map(DetectRead, 0, 1023, 0, 5000);
   Serial.print(DetectRead);
   Serial.print(" - ");
-  Serial.println(Detect);
+  Serial.print(Detect);
   delay(100);
   if (DetectRead >= 1010)
 {
   ledMode++;
+  Serial.print("Mode - ");
+   Serial.println(ledMode);
 }
 }
   break;
@@ -96,12 +106,12 @@ switch (ledMode){
 case 2:
 {
 digitalWrite(Lights, HIGH);
-
 delay(1000);
 ledMode++;
+ Serial.println(ledMode);
 
   break;
 }
 }
-
+*/
 }
