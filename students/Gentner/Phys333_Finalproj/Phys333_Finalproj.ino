@@ -49,7 +49,7 @@ int Detect = 0;
 
 // }
 //old test
-
+/*
   digitalWrite(IR, HIGH);
   delay(500);
   DetectRead = analogRead(IRD);
@@ -68,8 +68,8 @@ int Detect = 0;
   Serial.print(" - ");
   Serial.println(Detect);
   delay(500);
+*/
 
-/*
 switch (ledMode){
   case 1:
   {
@@ -97,5 +97,5 @@ ledMode++;
   break;
 }
 }
-*/
+
 }
