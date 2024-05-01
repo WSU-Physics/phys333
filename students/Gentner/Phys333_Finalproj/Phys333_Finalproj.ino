@@ -29,20 +29,6 @@ pinMode(IRD,INPUT);
 Serial.begin(9600);
 }
 
-/*
-boolean debounce(boolean last)
-{
- boolean current = digitalRead(IRD); // Read the Detect state
- if (1015 <= current) // if it's less than ambient
- {
- delay(3); //Wait 5ms
- currentDetect = digitalRead(IRD); //Read it again
- }
- return current; //Return the current value
-}
-*/
-
-
 void loop() {
 int DetectRead = 0;
 int Detect = 0;
@@ -63,7 +49,7 @@ int Detect = 0;
 
 // }
 //old test
-/*
+
   digitalWrite(IR, HIGH);
   delay(500);
   DetectRead = analogRead(IRD);
@@ -82,8 +68,8 @@ int Detect = 0;
   Serial.print(" - ");
   Serial.println(Detect);
   delay(500);
-*/
 
+/*
 switch (ledMode){
   case 1:
   {
@@ -98,8 +84,6 @@ switch (ledMode){
   if (DetectRead <= 430)
 {
   ledMode++;
-  Serial.print("Mode - ");
-   Serial.println(ledMode);
 }
 }
   break;
@@ -109,10 +93,9 @@ case 2:
 digitalWrite(Lights, HIGH);
 delay(4000);
 ledMode++;
- Serial.println(ledMode);
 
   break;
 }
 }
-
+*/
 }
