@@ -63,7 +63,7 @@ int Detect = 0;
 
 // }
 //old test
-
+/*
   digitalWrite(IR, HIGH);
   delay(500);
   DetectRead = analogRead(IRD);
@@ -82,8 +82,8 @@ int Detect = 0;
   Serial.print(" - ");
   Serial.println(Detect);
   delay(500);
+*/
 
-/*
 switch (ledMode){
   case 1:
   {
@@ -95,7 +95,7 @@ switch (ledMode){
   Serial.print(" - ");
   Serial.print(Detect);
   delay(100);
-  if (DetectRead >= 1010)
+  if (DetectRead >= 430)
 {
   ledMode++;
   Serial.print("Mode - ");
@@ -107,12 +107,12 @@ switch (ledMode){
 case 2:
 {
 digitalWrite(Lights, HIGH);
-delay(1000);
+delay(4000);
 ledMode++;
  Serial.println(ledMode);
 
   break;
 }
 }
-*/
+
 }
