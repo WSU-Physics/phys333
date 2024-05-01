@@ -93,9 +93,9 @@ switch (ledMode){
   Detect=map(DetectRead, 0, 1023, 0, 5000);
   Serial.print(DetectRead);
   Serial.print(" - ");
-  Serial.print(Detect);
+  Serial.println(Detect);
   delay(100);
-  if (DetectRead >= 430)
+  if (DetectRead <= 430)
 {
   ledMode++;
   Serial.print("Mode - ");
