@@ -44,7 +44,6 @@ boolean debounce(boolean last)
 
 
 void loop() {
-
 int DetectRead = 0;
 int Detect = 0;
 
@@ -66,6 +65,7 @@ int Detect = 0;
 //old test
 
   digitalWrite(IR, HIGH);
+  delay(500);
   DetectRead = analogRead(IRD);
   Detect=map(DetectRead, 0, 1023, 0, 5000);
   Serial.print("High ");
@@ -73,14 +73,15 @@ int Detect = 0;
   Serial.print(" - ");
   Serial.println(Detect);
   delay(500);
-  digitalWrite(IR,LOW);
-  DetectRead = analogRead(IRD);
-  Detect=map(DetectRead, 0, 1023, 0, 5000);
-  Serial.print("Low ");
-  Serial.print(DetectRead);
-  Serial.print(" - ");
-  Serial.println(Detect);
-  delay(500);
+  // digitalWrite(IR,LOW);
+  // delay(500);
+  // DetectRead = analogRead(IRD);
+  // Detect=map(DetectRead, 0, 1023, 0, 5000);
+  // Serial.print("Low ");
+  // Serial.print(DetectRead);
+  // Serial.print(" - ");
+  // Serial.println(Detect);
+  // delay(500);
 
 /*
 switch (ledMode){
