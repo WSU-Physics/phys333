@@ -284,6 +284,28 @@ void setup() {
     return;
   }
 
+  // Check if the file exists
+  if (!SD.exists("PASSWORD.txt")) {
+    // Create the file if it doesn't exist
+    File myFile = SD.open("PASSWORD.txt", FILE_WRITE);
+    if (myFile) {
+      // Write default password and message
+      myFile.println("1234");
+      myFile.println("^^^^");
+      myFile.println("Above is the password set for your lock you can change it to whatever 4 letter");
+      myFile.println("combination of numbers you want as long as they are from 1-6");
+      myFile.println("if you have any questions about the use of the device please feel free to contact me");
+      myFile.println("at [insert contact here]");
+      // Flush the data to ensure it's written to the SD card
+      myFile.flush();
+      myFile.close();
+      Serial.println("PASSWORD.txt created with default password.");
+    } else {
+      Serial.println("Error creating PASSWORD.txt");
+      return;
+    }
+  }
+
   // Open the file for reading
   File myFile = SD.open("PASSWORD.txt");
   if (myFile) {
