@@ -33,7 +33,7 @@
 const int chipSelect = 10; // Chip select pin for the SD card
 int flag = 0;
 int DELAY = 5;                //Sets the delay that is used for a small delay in the button press. 
-int setPassword[4] = {1,2,3,4};
+int setPassword[4];
 int getPassword[4];                 //This establishes the array we will be using for our input password. 
 int getIndex = 0;                   //This establishes a variable I use for shifting the index of my get password array
 
@@ -337,11 +337,11 @@ void setup() {
     while (myFile.available() && index < MAX_CHARACTERS - 1) {
       char c = myFile.read();
       // Store the character in the array
-      data[index] = c;
+      setPassword[index] = c;
       index++;
     }
     // Null-terminate the array to make it a valid C-string
-    data[index] = '\0';
+    setPassword[index] = '\0';
 
     // Close the file
     myFile.close();
@@ -349,6 +349,7 @@ void setup() {
     // Print out the password
     Serial.println("Password:");
     Serial.println(data);
+
 
   } else {
     // If the file didn't open, print an error
