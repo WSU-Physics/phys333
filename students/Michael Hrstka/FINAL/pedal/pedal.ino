@@ -1,13 +1,14 @@
 int guitarInput = 0;
 int outputPins[5] = {9, 10, 11, 12, 13};
 bool distortion = 0;
-bool chorus = 0;
+bool chorus = 1;
 
 int distortionBtn = 2;
 int chorusBtn = 3;
 
 int previousWave = 0;
-
+int chorusArray[300];
+int chorusIndex = 0;
 double sinWave = 0;
 
 void setup() {
@@ -21,7 +22,11 @@ void setup() {
   pinMode(distortionBtn, INPUT);
   digitalWrite(distortionBtn, HIGH);
 
+  pinMode(chorusBtn, INPUT);
+  digitalWrite(chorusBtn, HIGH);
+
   attachInterrupt(digitalPinToInterrupt(distortionBtn), toggleDistortion, FALLING);
+  attachInterrupt(digitalPinToInterrupt(chorusBtn), toggleChorus, FALLING);
 
 }
 
@@ -43,11 +48,21 @@ void loop() {
   newWave = (newWave + previousWave) / 2; // Average wave
   previousWave = newWave;
 
+  if (chorus) {
+    chorusArray[chorusIndex == 0 ? 299 : chorusIndex - 1] = newWave;
+    newWave = (newWave +  chorusArray[chorusIndex]) / 2;
+    chorusIndex = chorusIndex >= 299 ? 0 : chorusIndex + 1;
+  }
+
   setOutput(newWave);
 }
 
-void toggleDistortion(){
+void toggleDistortion() {
   distortion = !distortion;
+}
+
+void toggleChorus() {
+  chorus = !chorus;
 }
 
 void setOutput(int output) {
