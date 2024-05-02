@@ -48,7 +48,7 @@ void loop() {
 
   if (reverb) {
     newWave = (newWave +  reverbArray[reverbIndex]) / 2;
-    reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave + reverbArray[reverbIndex] / 2;
+    reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave + reverbArray[reverbIndex] / 4;
     reverbIndex = reverbIndex >= 299 ? 0 : reverbIndex + 1;
   }
 
