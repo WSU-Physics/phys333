@@ -6,6 +6,9 @@ bool reverb = 0;
 int distortionBtn = 2;
 int reverbBtn = 3;
 
+int distortionLight = 4;
+int reverbLight = 5;
+
 int previousWave = 0;
 int reverbArray[300];
 int reverbIndex = 0;
@@ -25,6 +28,9 @@ void setup() {
 
   attachInterrupt(digitalPinToInterrupt(distortionBtn), toggleDistortion, FALLING);
   attachInterrupt(digitalPinToInterrupt(reverbBtn), toggleReverb, FALLING);
+
+  pinMode(distortionLight, OUTPUT);
+  pinMode(reverbLight, OUTPUT);
 
 }
 
@@ -47,8 +53,13 @@ void loop() {
   previousWave = newWave;
 
   if (reverb) {
-    newWave = (newWave +  reverbArray[reverbIndex]) / 2;
-    reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave + reverbArray[reverbIndex] / 4;
+    if (distortion){
+      reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave / 4 + reverbArray[reverbIndex] / 4;
+      newWave = (newWave +  reverbArray[reverbIndex]) / 2;
+    } else {
+      newWave = (newWave +  reverbArray[reverbIndex]) / 2;
+      reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave + reverbArray[reverbIndex] / 4;
+    }
     reverbIndex = reverbIndex >= 299 ? 0 : reverbIndex + 1;
   }
 
@@ -57,10 +68,12 @@ void loop() {
 
 void toggleDistortion() {
   distortion = !distortion;
+  digitalWrite(distortionLight, distortion);
 }
 
 void toggleReverb() {
   reverb = !reverb;
+  digitalWrite(reverbLight, reverb);
 }
 
 void setOutput(int output) {
