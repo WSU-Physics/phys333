@@ -1,6 +1,5 @@
 // Basic demo for accelerometer readings from Adafruit LIS3DH
-#include <avr/io.h>
-#include <util/delay.h>
+
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LIS3DH.h>
@@ -10,8 +9,6 @@
 #define LIS3DH_CLK 13
 #define LIS3DH_MISO 12
 #define LIS3DH_MOSI 11
-
-
 // Used for hardware & software SPI
 #define LIS3DH_CS 10
 
@@ -20,7 +17,6 @@ const int LED2 = 3;
 const int LED3 = 4;
 const int LED4 = 5;
 const int LED5 = 6;
-const int BUTTON = 10;
 const float FiveDegreeRange = 0.555555555555555555555555555555555555555;
 const float OneDegreeRange = 0.111111111111111111111111111111111111111;
 const float GravConst = 10.5;
@@ -36,19 +32,6 @@ float v = 0;
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
 void setup(void) {
-//Dbounce-----------------------------------------------------------------------------
-uint8_t debounce(void) {
-  if (bit_is_clear(BUTTON_PIN, BUTTON)) {      /* button is pressed now */
-   
-    _delay_us(DEBOUNCE_TIME);
-    if (bit_is_clear(BUTTON_PIN, BUTTON)) {            /* still pressed */
-      return (1);
-    }
-  }
-  return 0;
-}
-
-//Accelerometer and LED's------------------------------------------
   pinMode (LED1, OUTPUT);
   pinMode (LED2, OUTPUT);
   pinMode (LED3, OUTPUT);
@@ -132,13 +115,7 @@ void loop() {
 
 
  if( (v>12) || (v<8)){
-  while(1){
-
-      unsigned long currentMillis = millis();
-    
-      if (currentMillis >= previousMillis + interval) {
-      previousMillis = millis();
-      i++;}
+  
   if(i == 1){
 
 
@@ -189,28 +166,6 @@ void loop() {
       i = 1;
       
     }
-    
-  }
+  
  }
-  /*if (((GravConst - FiveDegreeRange) <= event.acceleration.z) && (event.acceleration.z <= (GravConst + FiveDegreeRange)))
-  {
-    analogWrite(YLED, 250);
-    
-  }
-  else
-  {
-    analogWrite(YLED, 250);
-    delay(10);
-  }
-
-  if (((GravConst - OneDegreeRange) <= event.acceleration.z) && (event.acceleration.z <= (GravConst + OneDegreeRange)))
-  {
-    analogWrite(GLED,200);
-    delay(10);
-  }
-  else
-  {
-    analogWrite(GLED,0);
-    delay(100);
-  }*/
-}
+  
