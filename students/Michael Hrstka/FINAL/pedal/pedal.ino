@@ -1,9 +1,12 @@
 int guitarInput = 0;
 int outputPins[5] = {9, 10, 11, 12, 13};
 bool distortion = 0;
+bool chorus = 0;
 
 int distortionBtn = 2;
 int chorusBtn = 3;
+
+int previousWave = 0;
 
 double sinWave = 0;
 
@@ -24,9 +27,6 @@ void setup() {
 
 void loop() {
   double guitarVal = analogRead(guitarInput);
-  // sinWave += .1;
-
-  // double wave = sin(sinWave);
 
   if (distortion) {
     guitarVal *= 5;
@@ -39,18 +39,11 @@ void loop() {
     newWave = 31;
   }
 
-  // Serial.print("X:");
-  // Serial.print(wave);
-  // Serial.print("\n");
+  /* Misguided attempt at adding reverb */
+  newWave = (newWave + previousWave) / 2; // Average wave
+  previousWave = newWave;
 
   setOutput(newWave);
-
-  // Serial.print("Y:");
-  // Serial.print(newWave);
-  // Serial.print("\n");
-
-  // delay(500);
-
 }
 
 void toggleDistortion(){
@@ -58,20 +51,15 @@ void toggleDistortion(){
 }
 
 void setOutput(int output) {
-
-    //Serial.println(output);
-
     // Converting to binary between the pins
-    digitalWrite(outputPins[0], output % 2); //Serial.print(output % 2); // Serial outputs for testing conversion, in an awkward spot so they annoy me and I remove them later.
+    digitalWrite(outputPins[0], output % 2);
     output = output / 2;
-    digitalWrite(outputPins[1], output % 2); //Serial.print(output % 2);
+    digitalWrite(outputPins[1], output % 2);
     output = output / 2;
-    digitalWrite(outputPins[2], output % 2); //Serial.print(output % 2);
+    digitalWrite(outputPins[2], output % 2);
     output = output / 2;
-    digitalWrite(outputPins[3], output % 2); //Serial.print(output % 2);
+    digitalWrite(outputPins[3], output % 2);
     output = output / 2;
-    digitalWrite(outputPins[4], output % 2); //Serial.print(output % 2);
+    digitalWrite(outputPins[4], output % 2);
     output = output / 2;
-
-    // Serial.print("\n");
 }
