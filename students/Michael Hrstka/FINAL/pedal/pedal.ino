@@ -1,5 +1,9 @@
 int guitarInput = 0;
-int outputPins[5] = {3, 4, 5, 6, 7};
+int outputPins[5] = {9, 10, 11, 12, 13};
+bool distortion = 0;
+
+int distortionBtn = 2;
+int chorusBtn = 3;
 
 double sinWave = 0;
 
@@ -11,6 +15,11 @@ void setup() {
   pinMode(outputPins[3], OUTPUT);
   pinMode(outputPins[4], OUTPUT);
 
+  pinMode(distortionBtn, INPUT);
+  digitalWrite(distortionBtn, HIGH);
+
+  attachInterrupt(digitalPinToInterrupt(distortionBtn), toggleDistortion, FALLING);
+
 }
 
 void loop() {
@@ -19,13 +28,17 @@ void loop() {
 
   // double wave = sin(sinWave);
 
+  if (distortion) {
+    guitarVal *= 5;
+  }
+
   double wave = guitarVal * 2 / 1023.0;
 
-  int newWave = wave * 16; // Should give a value ranging from 0 to 31
+  int newWave = wave * 16;
   if (newWave > 31) {
     newWave = 31;
   }
-  
+
   // Serial.print("X:");
   // Serial.print(wave);
   // Serial.print("\n");
@@ -38,6 +51,10 @@ void loop() {
 
   // delay(500);
 
+}
+
+void toggleDistortion(){
+  distortion = !distortion;
 }
 
 void setOutput(int output) {
