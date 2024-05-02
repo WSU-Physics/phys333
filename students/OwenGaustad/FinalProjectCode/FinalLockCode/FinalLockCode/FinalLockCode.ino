@@ -18,7 +18,8 @@
 #define LED_10                  11    //Digital Pin 11
 #define LED_11                  12    //Digital Pin 12
 #define LED_12                  13    //Digital Pin 13
-#define MOTOR                   A0    //Analog Pin 0
+#define motorPin1               A0; // Pin for controlling direction 1
+#define motorPin2               A1; // Pin for controlling direction 2
 
 // ------- Macros -------- //
 #define BV(bit)               (1 << (bit))       // Mask with single bit set
@@ -120,13 +121,14 @@ void initButtons()  {
 }
 
 void initLEDs() {
-    // Set LED pins as output
-    pinMode(ALL_RED_LEDS, OUTPUT);
-    pinMode(LED_9, OUTPUT);
-    pinMode(LED_10, OUTPUT);
-    pinMode(LED_11, OUTPUT);
-    pinMode(LED_12, OUTPUT);
-    pinMode(MOTOR, OUTPUT);
+  // Set LED pins as output
+  pinMode(ALL_RED_LEDS, OUTPUT);
+  pinMode(LED_9, OUTPUT);
+  pinMode(LED_10, OUTPUT);
+  pinMode(LED_11, OUTPUT);
+  pinMode(LED_12, OUTPUT);
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
 }
 
 /******************************************************************************
@@ -216,7 +218,7 @@ void passwordCorrect(){
     delay(200);
   }
   ledsOff();
-  //motorAction();
+  motorAction();
 }
 
 /******************************************************************************
@@ -240,7 +242,25 @@ void passwordIncorrect(){
 /******************************************************************************
 ******************************************************************************/
 void motorAction(){
-  //turn motor set distance in one direction and then that same distance back
+  // Turn the motor in one direction
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+  delay(1000); // 1 second
+
+  // Stop the motor
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+  delay(1000); // 1 second
+
+  // Turn the motor in the opposite direction
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  delay(1000); // 1 second
+
+  // Stop the motor
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+  delay(1000); // 1 second
 }
 
 /******************************************************************************
