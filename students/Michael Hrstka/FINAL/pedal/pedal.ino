@@ -14,17 +14,21 @@ void setup() {
 }
 
 void loop() {
-  int guitarVal = analogRead(guitarInput);
+  double guitarVal = analogRead(guitarInput);
+  // sinWave += .1;
+
+  // double wave = sin(sinWave);
+
+  double wave = guitarVal * 2 / 1023.0;
+
+  int newWave = wave * 16; // Should give a value ranging from 0 to 31
+  if (newWave > 31) {
+    newWave = 31;
+  }
+  
   // Serial.print("X:");
-  // Serial.print(guitarVal);
-
+  // Serial.print(wave);
   // Serial.print("\n");
-
-  sinWave += 1;
-
-  double wave = sin(sinWave);
-
-  int newWave = (wave + 1) * 16; // Should give a value ranging from 0 to 31
 
   setOutput(newWave);
 
