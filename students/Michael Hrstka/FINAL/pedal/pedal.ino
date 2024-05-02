@@ -1,18 +1,16 @@
 int guitarInput = 0;
 int outputPins[5] = {9, 10, 11, 12, 13};
 bool distortion = 0;
-bool chorus = 1;
+bool reverb = 0;
 
 int distortionBtn = 2;
-int chorusBtn = 3;
+int reverbBtn = 3;
 
 int previousWave = 0;
-int chorusArray[300];
-int chorusIndex = 0;
-double sinWave = 0;
+int reverbArray[300];
+int reverbIndex = 0;
 
 void setup() {
-  // Serial.begin(57600);
   pinMode(outputPins[0], OUTPUT);
   pinMode(outputPins[1], OUTPUT);
   pinMode(outputPins[2], OUTPUT);
@@ -22,11 +20,11 @@ void setup() {
   pinMode(distortionBtn, INPUT);
   digitalWrite(distortionBtn, HIGH);
 
-  pinMode(chorusBtn, INPUT);
-  digitalWrite(chorusBtn, HIGH);
+  pinMode(reverbBtn, INPUT);
+  digitalWrite(reverbBtn, HIGH);
 
   attachInterrupt(digitalPinToInterrupt(distortionBtn), toggleDistortion, FALLING);
-  attachInterrupt(digitalPinToInterrupt(chorusBtn), toggleChorus, FALLING);
+  attachInterrupt(digitalPinToInterrupt(reverbBtn), toggleReverb, FALLING);
 
 }
 
@@ -44,14 +42,14 @@ void loop() {
     newWave = 31;
   }
 
-  /* Misguided attempt at adding reverb */
+  /* Misguided initial attempt at adding reverb - Fixes crackling */
   newWave = (newWave + previousWave) / 2; // Average wave
   previousWave = newWave;
 
-  if (chorus) {
-    chorusArray[chorusIndex == 0 ? 299 : chorusIndex - 1] = newWave;
-    newWave = (newWave +  chorusArray[chorusIndex]) / 2;
-    chorusIndex = chorusIndex >= 299 ? 0 : chorusIndex + 1;
+  if (reverb) {
+    newWave = (newWave +  reverbArray[reverbIndex]) / 2;
+    reverbArray[reverbIndex == 0 ? 299 : reverbIndex - 1] = newWave + reverbArray[reverbIndex] / 2;
+    reverbIndex = reverbIndex >= 299 ? 0 : reverbIndex + 1;
   }
 
   setOutput(newWave);
@@ -61,8 +59,8 @@ void toggleDistortion() {
   distortion = !distortion;
 }
 
-void toggleChorus() {
-  chorus = !chorus;
+void toggleReverb() {
+  reverb = !reverb;
 }
 
 void setOutput(int output) {
