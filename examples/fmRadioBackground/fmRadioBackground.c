@@ -21,8 +21,6 @@ All these are done using timer/counters and interrupts.
 #define ANTENNA_PIN             PIND
 #define ANTENNA_DDR             DDRD
 
-#define COUNTER_VALUE   7              /* determines carrier frequency */
-
 // From f = f_cpu / ( 2 * N * (1 + OCRnx) )
 // Good values for the AM band from 5 to 15: pick one that's clear
 // Divide by two b/c we're toggling on or off each loop;
@@ -30,11 +28,7 @@ All these are done using timer/counters and interrupts.
 // 16MHz / (2 * 1 * (1+5)) = 1333 kHz
 // 16MHz / (2 * 1 * (1+6)) = 1143 kHz
 // 16Mhz / (2 * 1 * (1+7)) = 1000 kHz
-// 16MHz / (2 * 1 * (1+8)) = 889 kHz
-// 16Mhz / (2 * 1 * (1+9)) = 800 kHz
-// 16Mhz / (2 * 1 * (1+11)) = 670 kHz
-// 16Mhz / (2 * 1 * (1+13)) = 570 kHz
-// 16Mhz / (2 * 1 * (1+15)) = 500 kHz
+counter_array[] = {6, 5, 6, 7}; // cycle through
 
 // Define song up here (tones and durations)
 //       Needs to be global so interrupts can use
@@ -43,13 +37,14 @@ int lengths[] = MARIOLENGTHS;
 int notei=0; // Note we are currently playing
 int nms=0; // Number of ms since started playing note
 int nnotes = sizeof(notes) / sizeof(notes[0]);
+int phase = 0; // Keeps track of where on waveform we are
 
 static inline void initTimersInterrupts(void) {
   // Timer/Counter0 used to set the carrier frequency
   TCCR0A |= (1 << WGM01);             /* CTC mode */
   TCCR0A |= (1 << COM0A0);            /* Toggles pin each time through */
   TCCR0B |= (1 << CS00);              /* Clock at CPU frequency, ~8MHz */
-  OCR0A = COUNTER_VALUE;              /* carrier frequency */
+  OCR0A = counter_array[0];              /* carrier frequency */
 
   // Timer/Counter1 used to play audio frequency
   // Use compare match interrupt to signal ISR which will toggle antenna DDR
@@ -73,7 +68,8 @@ static inline void playNote(uint16_t period) {
 }
 
 ISR(TIMER1_COMPA_vect) {             /* ISR for audio-rate Timer 1 */
-  ANTENNA_DDR ^= (1 << ANTENNA);     /* toggle carrier on and off */
+  phase = (phase + 1) % 4; // update where on the waveform we are
+  OCR0A = counter_array[phase]; // set carrier freq
 }
 
 ISR(TIMER2_OVF_vect){
@@ -89,6 +85,7 @@ ISR(TIMER2_OVF_vect){
 int main(void) {
   // -------- Inits --------- //
   initTimersInterrupts();
+  ANTENNA_DDR = (1 << ANTENNA);
 
   // ------ Event loop ------ //
   while (1) {
