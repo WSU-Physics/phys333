@@ -1,9 +1,8 @@
 /*
-This is a combination of the AM Radio project from Williams Make: AVR Programming
-and my little background music sketch.
-
+This sketch modifies the amRadioBackground example to instead
+use frequency modulation. Surprisingly few changes were needed.
 Uses three timers to:
-1. Create a carrier frequency
+1. Create a carrier frequency, which changes with the audio wave
 2. Modulate the carrier with an audio frequency
 3. Time note length and move to next note when ready
 
@@ -22,12 +21,12 @@ All these are done using timer/counters and interrupts.
 #define ANTENNA_DDR             DDRD
 
 // From f = f_cpu / ( 2 * N * (1 + OCRnx) )
-// Good values for the AM band from 5 to 15: pick one that's clear
-// Divide by two b/c we're toggling on or off each loop;
-//  a full cycle of the carrier takes two loops.
 // 16MHz / (2 * 1 * (1+5)) = 1333 kHz
 // 16MHz / (2 * 1 * (1+6)) = 1143 kHz
 // 16Mhz / (2 * 1 * (1+7)) = 1000 kHz
+// We will use a central frequency and modulate to nearby freqs
+// So through a period of the audio wave, we will set the carrier to
+// 1143 -> 1333 -> 1143 -> 1000
 counter_array[] = {6, 5, 6, 7}; // cycle through
 
 // Define song up here (tones and durations)
@@ -44,7 +43,7 @@ static inline void initTimersInterrupts(void) {
   TCCR0A |= (1 << WGM01);             /* CTC mode */
   TCCR0A |= (1 << COM0A0);            /* Toggles pin each time through */
   TCCR0B |= (1 << CS00);              /* Clock at CPU frequency, ~8MHz */
-  OCR0A = counter_array[0];              /* carrier frequency */
+  OCR0A = counter_array[0];           /* carrier frequency */
 
   // Timer/Counter1 used to play audio frequency
   // Use compare match interrupt to signal ISR which will toggle antenna DDR
@@ -57,6 +56,8 @@ static inline void initTimersInterrupts(void) {
   TIMSK2 |= (1 << TOIE2); // enable overflow interrupt
 
   sei();
+
+  ANTENNA_DDR = (1 << ANTENNA); // enable output
 }
 
 
@@ -68,7 +69,11 @@ static inline void playNote(uint16_t period) {
 }
 
 ISR(TIMER1_COMPA_vect) {             /* ISR for audio-rate Timer 1 */
-  phase = (phase + 1) % 4; // update where on the waveform we are
+  if (notes[notei] == REST){
+    phase = 0; // Keep carrier at center when resting
+  } else {
+    phase = (phase + 1) % 4; // update where on the waveform we are
+  }
   OCR0A = counter_array[phase]; // set carrier freq
 }
 
@@ -85,7 +90,6 @@ ISR(TIMER2_OVF_vect){
 int main(void) {
   // -------- Inits --------- //
   initTimersInterrupts();
-  ANTENNA_DDR = (1 << ANTENNA);
 
   // ------ Event loop ------ //
   while (1) {
