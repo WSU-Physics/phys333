@@ -5,12 +5,14 @@ const int chipSelect = 10; // Chip select pin for the SD card
 
 void setup() {
   Serial.begin(9600);
+  
+  // Initialize SD card
   if (!SD.begin(chipSelect)) {
     Serial.println("Initialization failed!");
     return;
   }
 
-  // Open the file for reading:
+  // Open the file for reading
   File myFile = SD.open("PASSWORD.txt");
   if (myFile) {
     const int MAX_CHARACTERS = 5; // Adjust the maximum number of characters as needed
@@ -30,15 +32,12 @@ void setup() {
     // Close the file
     myFile.close();
 
-
-    // Print out the data stored in the array
-    Serial.println("");
-    for (int i = 0; i < MAX_CHARACTERS - 1; i++){
-      Serial.println(data[i]);
-    }
+    // Print out the password
+    Serial.println("Password:");
+    Serial.println(data);
 
   } else {
-    // If the file didn't open, print an error:
+    // If the file didn't open, print an error
     Serial.println("Error opening PASSWORD.txt");
   }
 }
