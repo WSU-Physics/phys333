@@ -39,18 +39,4 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
   delay(250);                      // wait of 0.25 sec
 }
-//Part 1: LED ON 1s, OFF 2s - once
-//loop function runs indefinitely
-/*void loop() {
-  static bool run_once = false;
-  if (run_once == false) {
-    digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-    delay(1000);                      // wait for a second
-    digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-    delay(2000);                      // wait of 2 seconds
-
-    run_once = true;                  //end condition
-  }
-}
-*/
 
