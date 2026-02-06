@@ -29,7 +29,7 @@
 */
 
 // constants won't change. Used here to set a pin number:
-const int ledPin =  LED_BUILTIN;// the number of the LED pin
+const int ledPin = LED_BUILTIN;// the number of the LED pin
 
 // Variables will change:
 int ledState = LOW;             // ledState used to set the LED
@@ -43,7 +43,7 @@ const long interval = 1000;           // interval at which to blink (millisecond
 
 void setup() {
   // set the digital pin as output:
-  pinMode(XXX, YYY);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
@@ -54,14 +54,16 @@ void loop() {
   // the interval at which you want to blink the LED.
   unsigned long currentMillis = millis();
 
-  if (ZZZ) {
+  if (currentMillis - previousMillis >= interval) {
     // save the last time you blinked the LED
-    previousMillis = XXX;
+    previousMillis = currentMillis;
+
 
     // if the LED is off turn it on and vice-versa:
-    [...] // Fill in - relevant variable is ledState
-
-    // set the LED with the ledState of the variable:
-    digitalWrite(ledPin, ledState);
+    ledState = !ledState; 
   }
+    // set the LED with the ledState of the variable:
+    digitalWrite(LED_BUILTIN, ledState);
+  
 }
+
