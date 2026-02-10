@@ -65,46 +65,48 @@ void setMode(int mode) {
 
     //LED purple fading
     case 2:
+      int val = 2;  //should this be global and I reset it?
 
       if( (current_time - previous_time_purple) >= purple_pause) {
+        if (i % 255 == 0) { //has it reached max value? if so increment val
+          val++;
+        }
+        if (val % 2 == 0) {   //starting off and turning on
+            previous_time_purple = current_time;
+            analogWrite(RLED, (i % 255) );  //push to pin the value of i mod 255
+            analogWrite(GLED, 0);
+            analogWrite(BLED, (i % 255) );
+            Serial.println(i);
+            //need to use millis instead of delay
+            i++;
           
+        } else if (val % 2 != 0) {  //start on full bright and fade off
+            previous_time_purple = current_time;
+            analogWrite(RLED, 255 - (i % 255) );  //take max mad and subtract off
+            analogWrite(GLED, 0);
+            analogWrite(BLED, 255 - (i % 255) );
+            Serial.println(i);
+            //need to use millis instead of delay
+            i++;
+          }
+        }   
+
+  
+        break;
+      
+      //red fade to blue and back
+      case 3:
+        if( (current_time - previous_time_purple) >= purple_pause) {
+            
           previous_time_purple = current_time;
           analogWrite(RLED, i);
           analogWrite(GLED, 0);
-          analogWrite(BLED, i);
+          analogWrite(BLED, 0);
           Serial.println(i);
           //need to use millis instead of delay
           i++;
-        }  
-
- 
-      break;
-    
-    //red fade to blue and back
-    case 3:
-      digitalWrite(RLED, HIGH);
-      digitalWrite(GLED, LOW);
-      digitalWrite(BLED, LOW);
-    /*
-      for(int i = 255; i >= 0; i--) {
-        if (analogRead(BUTTON) != 0) {       
-          break;
-        }
-      analogWrite(GLED, i);
-      analogWrite(BLED, 255 - i);
-      delay(10);
         
-      }
-      for(int i = 255; i >= 0; i--) {
-        if (analogRead(BUTTON) != 0) {  //instead of sensing zero have it sense above zero otherwise this is constantly reseting
-          break;
-      
-        }
-      analogWrite(GLED, 255 - i);
-      analogWrite(BLED, i);
-      delay(10);
-      }    
-      */
+          }  
       break;
       
     case 4: 
