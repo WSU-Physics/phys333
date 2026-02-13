@@ -1,12 +1,18 @@
-/*PHYS 333 Lab 1
+/*
+  PHYS 333 Lab 1: LED with button and 5 modes
   Due 2/13/26
   Ana Schneider
   Creating 5 states for a LED with a button 
+  Case 0 the LED is off
+  Case 1 the LED blinks white
+  Case 2 fades purple
+  Case 3 fades red to blue
+  Case 4 blinks the rainbow
 */
 
 
-const int RLED = 9;  // Define LED for pin 9
-const int GLED = 10;
+const int RLED = 9; 
+const int GLED = 10;  
 const int BLED = 11;
 const int BUTTON = 2;
 
@@ -19,7 +25,6 @@ int n = 2;
 
 void setup() {
   Serial.begin(9600);  //baud rate must match in the serial monitor tab
-  // put your setup code here, to run once:
 
   pinMode(RLED, OUTPUT);
   pinMode(GLED, OUTPUT);
@@ -104,7 +109,7 @@ void setMode(int mode) {
 
     //red fade to blue and back
     case 3:  //yes it starts at red and yes I should have changed the if cases to starting with it being % 1 == 0 instead of checking % 2 == 0
-             //or starting with val = 2 but it works so no I am not going to fix it and yes that is part of my testing process it
+             //or starting with val = 2 but it works so no I am not going to fix it and yes that is part of my testing process 
       if ((current_time - previous_time_purple) >= red_blue_pause) {
         if (i % 255 == 0) {  //has it reached max value? if so increment val
           val++;
@@ -152,6 +157,7 @@ void setMode(int mode) {
       }
       break;
 
+    //blink rainbow
     case 4:
       if( (current_time - previous_time_RGB) > RGB_pause) {
         previous_time_RGB = current_time;
