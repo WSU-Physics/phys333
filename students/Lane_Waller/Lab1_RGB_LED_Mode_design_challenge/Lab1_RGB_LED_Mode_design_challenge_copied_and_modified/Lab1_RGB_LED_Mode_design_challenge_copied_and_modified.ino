@@ -137,20 +137,46 @@ void setMode(int mode)
   //red fade to blue then fade to green then back to red, repeat
   else if (mode == 4)
   {
-    for (int i=127; i>=0; i--) {
-      analogWrite(RLED, i);
-      analogWrite(BLED, 127-i);
-      delay(10);
-    }
-    for (int i=0; i<128; i++) {
-      analogWrite(GLED, i);
-      analogWrite(BLED, 127-i);
-      delay(10);
-    }
-    for (int i=127; i>=0; i--) {
-      analogWrite(GLED, i);
-      analogWrite(RLED, 127-i);
-      delay(10);
+    if (currentMillis - previousMillis >= fadeDelay){
+
+      previousMillis = currentMillis;
+      if (fadeDirection == 1){
+        if (fadeBrightness <=127 && fadeBrightness >=0){
+          fadeBrightness = fadeBrightness + 1;
+          analogWrite(RLED, 127 - fadeBrightness); //red to blue
+          analogWrite(GLED, 0);
+          analogWrite(BLED, fadeBrightness);
+        }
+        if (fadeBrightness >=127){
+          fadeBrightness = fadeBrightness - 1;    //switch count direction
+          fadeDirection = -1;
+        }
+      }
+      if (fadeDirection == -1){
+        if (fadeBrightness <=127 && fadeBrightness >=0){
+          fadeBrightness = fadeBrightness - 1;
+          analogWrite(RLED, 0);
+          analogWrite(GLED, 127 - fadeBrightness);  // blue to green
+          analogWrite(BLED, fadeBrightness);
+        }
+        if (fadeBrightness <=0){
+          fadeBrightness = fadeBrightness + 1;    //switch count direction
+          fadeDirection = 0;
+        }
+      }
+      if (fadeDirection == 0){
+        if (fadeBrightness <=127 && fadeBrightness >=0){
+          fadeBrightness = fadeBrightness + 1;
+          analogWrite(RLED, fadeBrightness);   // green to red
+          analogWrite(GLED, 127 - fadeBrightness);
+          analogWrite(BLED, 0);
+        }
+        if (fadeBrightness >=127){
+          fadeBrightness = 0;
+          fadeDirection = 1;
+
+        }
+      }
     }
   }
   //OFF (mode = 0)
