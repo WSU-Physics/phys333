@@ -1,3 +1,4 @@
+
 const unsigned long period_ms = 10000; //~10 ms period
 const unsigned long Time_step_us  = 10;    //~10 us 
 
@@ -28,17 +29,17 @@ void pwmSoft(uint8_t pin, uint8_t dutyPercent, unsigned long duration_ms) {
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(9, OUPTUT); 
+  pinMode(9, OUTPUT); 
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  pwmSoft(9, 25, 2000); 
+  pwmSoft(9, 25, 5000); 
   delay(1000); 
 
-  pwmSoft(9, 50, 2000); 
+  pwmSoft(9, 50, 5000); 
   delay(1000); 
 
-  pwmSoft(9, 75, 2000); 
-  delay(2000); 
+  pwmSoft(9, 75, 5000); 
+  delay(1000); 
 }
