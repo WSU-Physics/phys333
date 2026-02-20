@@ -9,7 +9,7 @@ void pwmSoft(uint8_t pin, uint8_t dutyPercent, unsigned long duration_ms) {
   unsigned long startTime = millis(); 
 
   while (millis() - startTime < duration_ms) {
-    unsigned long cycleStart = mircos(); 
+    unsigned long cycleStart = micros(); 
 
     //ON 
     digitalWrite(pin, HIGH); 
