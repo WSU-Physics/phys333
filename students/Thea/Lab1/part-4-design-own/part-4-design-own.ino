@@ -15,10 +15,7 @@ boolean ledState = false;
 //fade variables
 int Brightness = 0;
 int Step = 5;
-const unsigned long fadeTime = 20; //ms
-
-//rainbow fade
-int Color = 0
+const unsigned long fadeTime = 20;
 
 // Set Color Function
 void setColor(int redValue, int greenValue, int blueValue);
@@ -78,41 +75,10 @@ void loop() {
       pastMillis = nowMillis;
       Brightness += Step;
 
-     if (Brightness <= 0 || Brightness >= 255) {
-       Step = -Step;
-       Brightness = constrain(Brightness, 0, 255);
-     }
-
       setColor(Brightness, 0, Brightness);
     }
     break;
-    }
-
-    case 3: { //red to blue fade
-    unsigned nowMillis = millis();
-
-    if (nowMillis - pastMillis >= fadeTime) {
-      pastMillis = nowMillis;
-      Brightness += Step;
-
-      if (Brightness <= 0 || Brightness >= 255) {
-        Step = -Step;
-        Brightness = constrain(Brightness, 0, 255);
-      }
-
-      setColor(Brightness, 0, -Brightness);
-    }
-    break;
-    }
-
-    case 4: { //rainbow fade
-    unsigned nowMillis = millis();
-
-    if (nowMillis - pastMillis >= fadeTime) {
-      pastMillis = nowMillis;
-
-
-
+  }
 }
 }
 
