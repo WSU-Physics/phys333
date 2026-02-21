@@ -19,7 +19,6 @@ const unsigned long fadeTime = 20; //ms
 
 //rainbow fade
 int Color = 0;
-int r = 255, g = 0, b = 0;
 
 // Set Color Function
 void setColor(int redValue, int greenValue, int blueValue);
@@ -47,7 +46,7 @@ void loop() {
   // Detect button press (LOW --> HIGH transition)
   if (lastButton == HIGH && currentButton == LOW) {
     ledMode++;
-    if (ledMode > 5) ledMode = 0;         //Once case 7 is done, switches back to case 0
+    if (ledMode > 7) ledMode = 0;         //Once case 7 is done, switches back to case 0
   }
 
   lastButton = currentButton;
@@ -112,18 +111,16 @@ void loop() {
     if (nowMillis - pastMillis >= fadeTime) {
       pastMillis = nowMillis;
 
-      if (Color >= 6) Color = 0;
-
-      switch (Color) {
-          case 0: g++; if (g >= 175) Color = 1; break;    //when g brightness is >= 255, the green brightness will increase
-          case 1: r--; if (r <= 0) Color = 2; break;      // when r is greater than 0, decrease brightness of red LED
-          case 2: b++; if (b >= 175) Color = 3; break;    //when b less than 255, increase brightness of blue LED
-          case 3: g--; if (g <= 0) Color = 4; break;
-          case 4: r++; if (r >= 175) Color = 5; break;
-          case 5: b--; if (b <= 0) Color = 6; break;
+      switch(Color){
+          case 0: greenValue++; if (greenValue >= 255) Color = 1; break;    //when g brightness is >= 255, the green brightness will increase
+          case 1: redValue--; if (redValue <= 0) Color = 2; break;
+          case 2: blueValue++; if (blueValue >= 255) Color = 3; break;
+          case 3: greenValue--; if (greenValue <= 0) Color = 4; break;
+          case 4: redValue++; if (redValue >= 255) Color = 5; break;
+          case 5; blueValue--; if (blueValue <= 0) Color = 6; break;
         }
       
-        setColor( r, g, b);
+        setColor( redValue, greenValue, blueValue);
        }
         break;
 
@@ -132,7 +129,7 @@ void loop() {
       }
     }
 }
-
+}
 
 void setColor(int redValue, int greenValue, int blueValue) {
   analogWrite(RLED, redValue);
