@@ -47,7 +47,7 @@ void loop() {
   // Detect button press (LOW --> HIGH transition)
   if (lastButton == HIGH && currentButton == LOW) {
     ledMode++;
-    if (ledMode > 4) ledMode = 0;         //Once case 7 is done, switches back to case 0
+    if (ledMode > 5) ledMode = 0;         //Once case 7 is done, switches back to case 0
   }
 
   lastButton = currentButton;
