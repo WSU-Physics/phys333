@@ -18,7 +18,7 @@ int Step = 5;
 const unsigned long fadeTime = 20; //ms
 
 //rainbow fade
-int Color = 0;
+int Color = 0
 
 // Set Color Function
 void setColor(int redValue, int greenValue, int blueValue);
@@ -111,23 +111,8 @@ void loop() {
     if (nowMillis - pastMillis >= fadeTime) {
       pastMillis = nowMillis;
 
-      switch(Color){
-          case 0: greenValue++; if (greenValue >= 255) Color = 1; break;    //when g brightness is >= 255, the green brightness will increase
-          case 1: redValue--; if (redValue <= 0) Color = 2; break;
-          case 2: blueValue++; if (blueValue >= 255) Color = 3; break;
-          case 3: greenValue--; if (greenValue <= 0) Color = 4; break;
-          case 4: redValue++; if (redValue >= 255) Color = 5; break;
-          case 5; blueValue--; if (blueValue <= 0) Color = 6; break;
-        }
-      
-        setColor( redValue, greenValue, blueValue);
-       }
-        break;
 
 
-
-      }
-    }
 }
 }
 
