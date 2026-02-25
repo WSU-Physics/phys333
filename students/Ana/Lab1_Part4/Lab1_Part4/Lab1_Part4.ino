@@ -92,7 +92,6 @@ void setMode(int mode) {
           analogWrite(RLED, (i % 255));  //push to pin the value of i mod 255
           analogWrite(GLED, 0);
           analogWrite(BLED, (i % 255));
-          //need to use millis instead of delay
           i++;
 
         } else {  //start on full bright and fade off
