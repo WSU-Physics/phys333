@@ -7,6 +7,8 @@ const int LED = 9;
 const int period = 10000; //us
 const int resolution = 10; //us
 
+int duty = 0;
+
 //pwm function
 void pwmhb(int pin, double duty, double duration){
   //stuff that the duty cycle input affects 
@@ -52,5 +54,14 @@ void setup() {
 
 
 void loop() {
-  pwmhb(LED, 0.25, 0.1);
+
+  for (duty = 0; duty < 256; duty++){
+    digitalWrite(LED, duty);
+    delayMicroseconds(7800);
+  }
+
+  digitalWrite(LED, 0);
+  delay(10);
+
+  pwmhb(LED, duty, 2);
 }
