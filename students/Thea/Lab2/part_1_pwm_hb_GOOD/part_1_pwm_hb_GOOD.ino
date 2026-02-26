@@ -10,9 +10,9 @@ const int resolution = 10; //us
 //pwm function
 void pwmhb(int pin, double duty, double duration){
   //stuff that the duty cycle input affects 
-  duty = constrain(duty, 0, 1);
+  duty = constrain(duty, 0, 255);
   //on and off times
-  int tON = duty * period;
+  int tON = (duty / 255) * period;
   int tOFF = period - tON;
 
   //stuff that the duration time (in seconds) input affects --> number of cycles 
