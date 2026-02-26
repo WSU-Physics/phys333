@@ -25,8 +25,8 @@ void pwm(int PIN, double duty_cycle, double duration, double period){//double du
 
   Ton = (duty_cycle * period) / 255;  //duty cycle = Ton / total period * 100%
   Toff = period - Ton;
-  duration = 100 * 1000;  //100ms in us will turn on/off with certain duty 
-  val = duration / period;  //100ms / 10ms = 10 
+  duration = 2000 * 1000;  //2000ms in us will turn on/off with certain duty 
+  //val = duration / period;  //100ms / 10ms = 10 
 
   // Turn on
   digitalWrite(PIN, HIGH);
@@ -41,24 +41,22 @@ void pwm(int PIN, double duty_cycle, double duration, double period){//double du
 }
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   pinMode(PIN, OUTPUT);
   
 }
 
 
 void loop() {
-  for (int i = 0; i < 256; i++) {
+  for (int i = 0; i < 200; i++) {
     double duty_cycle = i;  //fraction of time that signal spends in active state
-    //delay(10) 
-    //Serial.println(i);
   
     double period = 10 * 1000;  //want 10 ms
-    double duration = 100  * 1000; //100 ms, this is how long so many periods will run
+    double duration; //100 ms, this is how long so many periods will run
 
     pwm(PIN, duty_cycle, duration, period);
   }
-  double duty_cycle = 0;
+  //double duty_cycle = 0;
 
 
 }
