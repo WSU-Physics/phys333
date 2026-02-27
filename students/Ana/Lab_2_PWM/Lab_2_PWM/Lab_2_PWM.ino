@@ -1,3 +1,4 @@
+
 // Turn on an LED using PWM
 // Turn on another LED using our own
 // PWM function
@@ -17,16 +18,16 @@ double val;
  *             0 is off, 255 is maximum.
  * period: period of pulse in microseconds
 */
-void pwm(int PIN, double duty_cycle, double duration, double period){//double duration,
+void pwm(int PIN, double duty_cycle, double duration, double period){
   // Calculate Ton and Toff
   //resolution of 10 us
   double Ton;  // using double precision to avoid overflow
   double Toff;
 
-  Ton = (duty_cycle * period) / 255;  //duty cycle = Ton / total period * 100%
+  Ton = (duty_cycle * period) / 200;  //duty cycle = Ton / total period * 100%
   Toff = period - Ton;
-  duration = 2000 * 1000;  //2000ms in us will turn on/off with certain duty 
-  //val = duration / period;  //100ms / 10ms = 10 
+  duration = 100 * 1000;  //100ms in us will turn on/off with certain duty cycle
+  val = duration / period;
 
   // Turn on
   digitalWrite(PIN, HIGH);
@@ -41,22 +42,28 @@ void pwm(int PIN, double duty_cycle, double duration, double period){//double du
 }
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   pinMode(PIN, OUTPUT);
-  
 }
 
-
 void loop() {
-  for (int i = 0; i < 200; i++) {
+
+  for (double i = 0; i < 200; i++) {
     double duty_cycle = i;  //fraction of time that signal spends in active state
+    duty_cycle = constrain(duty_cycle, 0, 200);
+    //Serial.println(duty_cycle);
   
     double period = 10 * 1000;  //want 10 ms
-    double duration; //100 ms, this is how long so many periods will run
+    double duration = 0.00078; //100 * 1000; //100 ms, this is how long so many periods will run
 
     pwm(PIN, duty_cycle, duration, period);
   }
   //double duty_cycle = 0;
-
+/*  
+  // Set yLED brightness
+  analogWrite(yLED, brightness);
+  // call self-made PWM function
+  pwm(bLED, brightness, period);
+*/
 
 }
