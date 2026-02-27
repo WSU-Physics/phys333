@@ -7,7 +7,7 @@ const int LED = 9;
 const int period = 10000; //us
 const int resolution = 10; //us
 
-int duty = 0;
+int dutycycle = 0;         //<-- have duty cycle start at 0
 
 //pwm function
 void pwmhb(int pin, double duty, double duration){
@@ -55,13 +55,16 @@ void setup() {
 
 void loop() {
 
-  for (duty = 0; duty < 256; duty++){
-    digitalWrite(LED, duty);
-    delayMicroseconds(7800);
+  for (dutycycle = 0; dutycycle < 256; dutycycle++){
+    digitalWrite(LED, dutycycle);
+    delayMicroseconds(7800);      //<-- 2 s / 256 steps = ~7.8 ms/step
+
+    pwmhb(LED, dutycycle, 2);        //<-- does this need to be in here or outside of the for loop?
+
   }
 
   digitalWrite(LED, 0);
-  delay(10);
+  delay(10);                  //<-- small delay for drop
 
-  pwmhb(LED, duty, 2);
+  //pwmhb(LED, duty, 2);
 }
