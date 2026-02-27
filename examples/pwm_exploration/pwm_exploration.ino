@@ -2,8 +2,7 @@
 // Turn on another LED using our own
 // PWM function
 
-const int yLED = 9;
-const int bLED = 8; // constant for my blue LED
+//const int bLED = 8; // constant for my blue LED
 
 /* function: pwm
  *  
@@ -16,37 +15,42 @@ const int bLED = 8; // constant for my blue LED
  * brightness: How bright the LED should be.
  *             0 is off, 255 is maximum.
  * period: period of pulse in microseconds
-*/
-void pwm(int pin, double brightness, double period){
+  */
+const int pin = 0;
+unsigned long previousMillis = 0;
+unsigned long duration = 100;
+void pwm(int pin, double dutyCycle){
   // Calculate Ton and Toff
-  double Ton;  // using double precision to avoid overflow
-  double Toff;
-  Ton = (brightness * period) / 255;
-  Toff = period - Ton;
-  
+  long Ton;  // using double precision to avoid overflow
+  long Toff;
+  double period = 10;
+  Ton = ((dutyCycle * period) * 100) + 0.5;
+  Toff = (period - 10 * Ton / 100) * 100 + 0.5;
   // Turn on
   digitalWrite(pin, HIGH);
   // delay for Ton
-  delayMicroseconds(Ton);
+  delayMicroseconds(10 * Ton);
   // Turn off
   digitalWrite(pin, LOW);
   // delay for Toff
-  delayMicroseconds(Toff);
+  delayMicroseconds(10 * Toff);
+  
 }
 
 void setup() {
-  // set pin mode to output
-  pinMode(yLED, OUTPUT);
   // set blue LED pin to output
-  pinMode(bLED, OUTPUT);
+  pinMode(pin, OUTPUT);
+  
 }
 
 void loop() {
-  double brightness = 100;
-  double period = 2040;
-  
-  // Set yLED brightness
-  analogWrite(yLED, brightness);
-  // call self-made PWM function
-  pwm(bLED, brightness, period);
+   
+  unsigned long currentMillis = 0;
+
+  while (currentMillis <= duration) {
+    // save the last time you blinked the LED
+    pwm(13, 0.25);
+    currentMillis = millis();
+  }
+ delay(1000);
 }
