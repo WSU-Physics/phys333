@@ -29,21 +29,26 @@
 */
 
 // constants won't change. Used here to set a pin number:
-const int ledPin = LED_BUILTIN;// the number of the LED pin
+const int ledPin = 3;// the number of the LED pin
+const int LED = 4;
 
 // Variables will change:
 int ledState = LOW;             // ledState used to set the LED
+int ledState_2 = LOW;
 
 // Generally, you should use "unsigned long" for variables that hold time
 // The value will quickly become too large for an int to store
 unsigned long previousMillis = 0;        // will store last time LED was updated
+unsigned long lastMillis = 0;
 
 // constants won't change:
 const long interval = 1000;           // interval at which to blink (milliseconds)
+const long interval_two = 2000;
 
 void setup() {
   // set the digital pin as output:
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(LED, OUTPUT);
 }
 
 void loop() {
@@ -54,16 +59,24 @@ void loop() {
   // the interval at which you want to blink the LED.
   unsigned long currentMillis = millis();
 
-  if (currentMillis - previousMillis >= interval) {
+  if ( (currentMillis - previousMillis) > interval) {
     // save the last time you blinked the LED
     previousMillis = currentMillis;
 
-
     // if the LED is off turn it on and vice-versa:
-    ledState = !ledState; 
-  }
-    // set the LED with the ledState of the variable:
-    digitalWrite(LED_BUILTIN, ledState);
-  
-}
+    ledState = !ledState;
+    // Fill in - relevant variable is ledState
 
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
+    
+  }
+  if ( (currentMillis - lastMillis) > interval_two) {
+    lastMillis = currentMillis;
+
+    ledState_2 = !ledState_2;
+
+    digitalWrite(LED, ledState_2);
+
+  }
+}
