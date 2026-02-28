@@ -14,8 +14,8 @@ void pwmhb(int pin, double duty, double duration){
   //stuff that the duty cycle input affects 
   duty = constrain(duty, 0, 199);
   //on and off times
-  int tON = ((float)duty / 199.0) * period;
-  int tOFF = period - tON;
+  float tON = ((float)duty / 199.0) * period;
+  float tOFF = period - tON;
 
   //stuff that the duration time (in seconds) input affects --> number of cycles 
   float cycles = (duration * 1000000) / period;
