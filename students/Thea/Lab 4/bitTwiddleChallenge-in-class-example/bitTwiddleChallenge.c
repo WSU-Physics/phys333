@@ -9,6 +9,7 @@
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 #define DELAYTIME 150 //ms
+#define LEDPORT   PORTD
 
 int main(void){
   // Declare variables
@@ -21,24 +22,24 @@ int main(void){
   while (1){
     // Main loop
 
-    for (bita = 0; bita < 7; bita++) {
+    //for (bita = 0; bita < 7; bita++) {
       
 
-    }
+    //}
 
 
     while (bita < 7) {
-      BV(bita);
+      LEDPORT = BV(bita);
       _delay_ms(DELAYTIME);
-      bita = bita +1;
-      BV(bitb);
-      setbit(DDRD, 6);
-      _delay_ms(DELAYTIME);
-      bitb = bitb - 1;
+      bita = bita + 1;
+      //BV(bitb);
+      //setbit(DDRD, 6);
+      //_delay_ms(DELAYTIME);
+      //bitb = bitb - 1;
     }
 
     while (bita > 0){
-      BV(bita);
+      LEDPORT = BV(bita);
       _delay_ms(DELAYTIME);
       bita = bita - 1;
     }
