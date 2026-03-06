@@ -26,9 +26,11 @@ uint8_t debounce(void) {
 
 int main(void) {
   // -------- Inits --------- //
-  uint8_t buttonWasPressed=0;                                 /* state */
-  PORTB |= (1 << PB5);               /* enable the pullup on the button */
-  DDRD = 0xff;                      /* set up LED for output */
+  uint8_t buttonWasPressed = 0;                  /* state */
+  DDRB = 0x00;                                 /* set all Port B pins as Input*/
+  PORTB |= (1 << PB5);                        /* enable the pullup on the button */
+  //PORTB |= (1 << PB4);                       /* pullup on my Left Button*/
+  DDRD = 0xff;                              /* set up LED for output */
   uint8_t bita;
   uint8_t bitb;
 
@@ -36,7 +38,7 @@ int main(void) {
   while (1) {
     if (debounce()) {                        /* debounced button press */
       if (buttonWasPressed == 0) {     /* but wasn't last time through */
-        PORTD = 0b00000001;
+        PORTD = 0b11111111;
         buttonWasPressed = 1;                      /* update the state */ 
         }
       }
