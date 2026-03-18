@@ -26,10 +26,10 @@ uint8_t debounce(void) {
 
 int main(void) {
   // -------- Inits --------- //
-  uint8_t buttonWasPressed = 0;                  /* state */
+  uint8_t buttonWasPressed = 0;                 /* button state */
   DDRB = 0x00;                                 /* set all Port B pins as Input*/
-  PORTB |= (1 << PB5);                        /* enable the pullup on the button */
-  //PORTB |= (1 << PB4);                       /* pullup on my Left Button*/
+  setBit(PORTB,PB5);                          /* enable the pullup on the button */                        
+  //PORTB |= (1 << PB4);                     /* pullup on my Left Button*/
   DDRD = 0xff;                              /* set up LED for output */
   uint8_t bita;
   uint8_t bitb;
