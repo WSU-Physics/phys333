@@ -1,8 +1,14 @@
-
+/*
+  Adapted from Debouncing code on pg 117 of Make: AVR Programming
+  by Williams
+  Excluded #include "pinDefines.h" library that can be found on git
+  There was a weird error with it and I am using PORTB for buttons rather than PORTD like he is
+  Buttons are using PB4 (arduino pin 12) and PB5 (arduino pin 13)
+*/
 
 #include <avr/io.h>
 #include <util/delay.h>
-#define DEBOUNCE_TIME 10  //micros
+#define DEBOUNCE_TIME 1000 //micros
 
 
 uint8_t debounce(void) {
@@ -13,7 +19,7 @@ uint8_t debounce(void) {
     }
   }
   return(0);
-  /*
+ /* 
   if (bit_is_clear(PINB, PB5)) {   //button pressed
     _delay_us(DEBOUNCE_TIME);
     if(bit_is_clear(PINB, PB5)) { //button still pressed
@@ -21,29 +27,31 @@ uint8_t debounce(void) {
     }
   }
   return(0);
-  */
+*/
 }
 
 
 int main (void) {
+  uint8_t leftButton;
+  uint8_t rightButton;
   DDRB = 0x00;  //setting register to input
-  //PORTB |= (1 << PB5);
+  PORTB |= (1 << PB5);
   PORTB |= (1 << PB4);  //initialize pullup on input pin
   DDRD = 0xff;  //set up all LEDS for output
-  uint8_t buttonWasPressed;
+  
 
   while(1) {
     if(debounce()) {   //debounce button press
-      if(buttonWasPressed == 0) {  //but wasn't last time 
+      if(leftButton == 0) {  //but wasn't last time 
         //do whatever 
         PORTD ^= 0b11110000;
-        buttonWasPressed = 1; //update the state
+        leftButton = 1; //update the state
+      }  
       } else {
-        buttonWasPressed = 0;
+        leftButton = 0;
       }
     }
-    
-  }
   
   return(0);
+  
 }
