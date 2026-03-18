@@ -11,7 +11,7 @@
 #define DEBOUNCE_TIME 1000 //micros
 
 
-uint8_t debounce(void) {
+uint8_t debounceLeft(void) {
   if (bit_is_clear(PINB, PB4)) {   //button pressed
     _delay_us(DEBOUNCE_TIME);
     if(bit_is_clear(PINB, PB4)) { //button still pressed
@@ -19,7 +19,8 @@ uint8_t debounce(void) {
     }
   }
   return(0);
- /* 
+}
+uint8_t debounceRight(void) { 
   if (bit_is_clear(PINB, PB5)) {   //button pressed
     _delay_us(DEBOUNCE_TIME);
     if(bit_is_clear(PINB, PB5)) { //button still pressed
@@ -27,7 +28,7 @@ uint8_t debounce(void) {
     }
   }
   return(0);
-*/
+
 }
 
 
@@ -41,7 +42,7 @@ int main (void) {
   
 
   while(1) {
-    if(debounce()) {   //debounce button press
+    if(debounceLeft()) {   //debounce button press
       if(leftButton == 0) {  //but wasn't last time 
         //do whatever 
         PORTD ^= 0b11110000;
@@ -50,7 +51,16 @@ int main (void) {
       } else {
         leftButton = 0;
       }
+    if(debounceRight()) {
+      if(rightButton == 0) {
+        PORTD ^= 0b00001111;
+        rightButton = 1;
+      }
+    } else {
+      rightButton = 0;
     }
+    }  
+
   
   return(0);
   
