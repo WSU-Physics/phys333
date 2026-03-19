@@ -60,7 +60,9 @@ int main (void) {
 
     if(leftTurnOn == 1) {
       PORTD ^= 0b11000000;
-    } 
+    } else {
+      PORTD = 0;
+    }
 
     if(debounceRight()) {
       if(rightButton == 0) {
@@ -74,6 +76,8 @@ int main (void) {
 
     if(rightTurnOn == 1) {
       PORTD ^= 0b00000011;
+    } else {
+      PORTD = 0;
     }
     
     }  
