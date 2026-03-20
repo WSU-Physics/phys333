@@ -39,10 +39,10 @@ int main (void) {
 
   uint8_t leftButton;
   uint8_t rightButton;
-  uint8_t tickCounterR = 0;
+  uint64_t tickCounterR = 0;
   uint8_t tickPrevL = 0;
   uint8_t tickR = 10;
-  uint8_t tickPrevR = 0;
+  uint64_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
   _Bool rightTurnOn = 0;
   uint8_t bitl = 7;
@@ -69,7 +69,7 @@ int main (void) {
 
     if(leftTurnOn) {
       
-      PORTD ^= 0b11000000;
+      PORTD = 0b11000000;
     } else {
       PORTD = 0;
     }
@@ -85,14 +85,19 @@ int main (void) {
     }
 
     if(rightTurnOn) {
-      PORTD = BV(0);  //test for seeing if button works
-      // if( (tickCounterR - tickPrevR) > tickR) 
-        if( (tickCounterR ) == 10){
-          PORTD = BV(1);
-          tickCounterR = 0;
-        }   
+      PORTD = BV(bitr);
 
-      // } 
+      if( (tickCounterR - tickPrevR) > 10000){ //is 16 bit int
+        bitr++;
+        tickPrevR = tickCounterR;
+
+        if(bitr > 3) {
+          bitr = 0;
+        }
+
+      } else {
+        PORTD = 0;
+      }
         
 
     } else {
