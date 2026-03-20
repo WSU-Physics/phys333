@@ -39,13 +39,15 @@ int main (void) {
 
   uint8_t leftButton;
   uint8_t rightButton;
+  uint64_t tickCounterL = 0;
   uint64_t tickCounterR = 0;
-  uint8_t tickPrevL = 0;
+  uint8_t tickL = 10;
   uint8_t tickR = 10;
+  uint64_t tickPrevL = 0;
   uint64_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
   _Bool rightTurnOn = 0;
-  uint8_t bitl = 7;
+  uint8_t bitl = 4;
   uint8_t bitr = 0;
   DDRB = 0x00;  //setting register to input
   PORTB |= (1 << PB5);
@@ -54,11 +56,13 @@ int main (void) {
   
 
   while(1) {
+    tickCounterL++;
     tickCounterR++;
 
     if(debounceLeft()) {   //debounce button press
       if(leftButton == 0) {  //but wasn't last time 
         leftTurnOn = !leftTurnOn;
+        bitl = 3;
 
         leftButton = 1; //update the state
         
@@ -69,7 +73,20 @@ int main (void) {
 
     if(leftTurnOn) {
       
-      PORTD = 0b11000000;
+      PORTD = BV(bitl);
+
+      if( (tickCounterL - tickPrevL) > 10000){ //is 16 bit int
+        bitl++;
+        tickPrevL = tickCounterL;
+
+        if(bitl > 7) {
+          bitl = 4;
+        }
+
+      } else {
+        PORTD = 0;
+      }
+
     } else {
       PORTD = 0;
     }
@@ -85,19 +102,10 @@ int main (void) {
     }
 
     if(rightTurnOn) {
-      PORTD = BV(bitr);
+      
 
-      if( (tickCounterR - tickPrevR) > 10000){ //is 16 bit int
-        bitr++;
-        tickPrevR = tickCounterR;
 
-        if(bitr > 3) {
-          bitr = 0;
-        }
 
-      } else {
-        PORTD = 0;
-      }
         
 
     } else {
