@@ -41,8 +41,8 @@ int main (void) {
   uint8_t rightButton;
   uint64_t tickCounterL = 0;
   uint64_t tickCounterR = 0;
-  uint8_t tickL = 10;
-  uint8_t tickR = 10;
+  uint16_t tickL = 10000;
+  uint16_t tickR = 10000;
   uint64_t tickPrevL = 0;
   uint64_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
@@ -63,6 +63,9 @@ int main (void) {
       if(leftButton == 0) {  //but wasn't last time 
         leftTurnOn = !leftTurnOn;
         bitl = 3;
+        if(rightTurnOn == 1) {
+          rightTurnOn = !rightTurnOn;
+        }    
 
         leftButton = 1; //update the state
         
@@ -75,7 +78,7 @@ int main (void) {
       
       PORTD = BV(bitl);
 
-      if( (tickCounterL - tickPrevL) > 10000){ //is 16 bit int
+      if( (tickCounterL - tickPrevL) > tickL){ //is 16 bit int
         bitl++;
         tickPrevL = tickCounterL;
 
@@ -95,6 +98,9 @@ int main (void) {
       if(rightButton == 0) {
         rightTurnOn = !rightTurnOn;
         bitr = 5;
+        if(leftTurnOn == 1) {
+          leftTurnOn = !leftTurnOn;
+        }    
 
         rightButton = 1;
       }
@@ -106,7 +112,7 @@ int main (void) {
   
       PORTD = BV(bitr - 1);
 
-      if( (tickCounterR - tickPrevR) > 10000){ //is 16 bit int
+      if( (tickCounterR - tickPrevR) > tickR){ //is 16 bit int
         bitr--;
         tickPrevR = tickCounterR;
 
