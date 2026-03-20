@@ -47,8 +47,8 @@ int main (void) {
   uint64_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
   _Bool rightTurnOn = 0;
-  uint8_t bitl = 4;
-  uint8_t bitr = 0;
+  uint8_t bitl;
+  uint8_t bitr;
   DDRB = 0x00;  //setting register to input
   PORTB |= (1 << PB5);
   PORTB |= (1 << PB4);  //initialize pullup on input pin
@@ -94,6 +94,7 @@ int main (void) {
     if(debounceRight()) {
       if(rightButton == 0) {
         rightTurnOn = !rightTurnOn;
+        bitr = 5;
 
         rightButton = 1;
       }
@@ -102,8 +103,21 @@ int main (void) {
     }
 
     if(rightTurnOn) {
-      
+  
+      PORTD = BV(bitr - 1);
 
+      if( (tickCounterR - tickPrevR) > 10000){ //is 16 bit int
+        bitr--;
+        tickPrevR = tickCounterR;
+
+        if(bitr == 0) {
+          bitr = 4;
+        }
+
+      } else {
+        PORTD = 0;
+      }    
+      
 
 
         
