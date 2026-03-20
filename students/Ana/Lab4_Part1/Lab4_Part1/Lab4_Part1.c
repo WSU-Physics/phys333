@@ -10,6 +10,7 @@
 #include <util/delay.h>
 #define DEBOUNCE_TIME 1000 //micros
 #define BV(bit)               (1 << (bit))  // Mask with single bit set
+#include "USART.h"
 
 
 uint8_t debounceLeft(void) {
@@ -34,8 +35,14 @@ uint8_t debounceRight(void) {
 
 
 int main (void) {
+  //initUSART();
+
   uint8_t leftButton;
   uint8_t rightButton;
+  uint8_t tickCounterR = 0;
+  uint8_t tickPrevL = 0;
+  uint8_t tickR = 10;
+  uint8_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
   _Bool rightTurnOn = 0;
   uint8_t bitl = 7;
@@ -47,6 +54,8 @@ int main (void) {
   
 
   while(1) {
+    tickCounterR++;
+
     if(debounceLeft()) {   //debounce button press
       if(leftButton == 0) {  //but wasn't last time 
         leftTurnOn = !leftTurnOn;
@@ -58,7 +67,8 @@ int main (void) {
         leftButton = 0;
       }
 
-    if(leftTurnOn == 1) {
+    if(leftTurnOn) {
+      
       PORTD ^= 0b11000000;
     } else {
       PORTD = 0;
@@ -74,8 +84,17 @@ int main (void) {
       rightButton = 0;
     }
 
-    if(rightTurnOn == 1) {
-      PORTD ^= 0b00000011;
+    if(rightTurnOn) {
+      PORTD = BV(0);  //test for seeing if button works
+      // if( (tickCounterR - tickPrevR) > tickR) 
+        if( (tickCounterR ) == 10){
+          PORTD = BV(1);
+          tickCounterR = 0;
+        }   
+
+      // } 
+        
+
     } else {
       PORTD = 0;
     }
