@@ -5,7 +5,12 @@
 
 #include <util/delay.h>
 #define DEBOUNCE_TIME  1000                            /* microseconds */
-
+#define BUTTON PD2
+#define BUTTON_PIN PIND
+#define BUTTON_PORT PORTD
+#define LED_DDR DDRB
+uint8_t bita;
+uint8_t bitb;
 uint8_t debounce(void) {
   if (bit_is_clear(BUTTON_PIN, BUTTON)) {      /* button is pressed now */
     _delay_us(DEBOUNCE_TIME);
@@ -38,13 +43,17 @@ int main(void) {
   // -------- Inits --------- //
   uint8_t buttonWasPressed=0;                                 /* state */
   BUTTON_PORT |= (1 << BUTTON);     /* enable the pullup on the button */
-  LED_DDR = (1 << LED0);                      /* set up LED for output */
+  // Declare variables
+ 
+
+  // Set up LEDs
+  DDRD = 0xff;  // All output
 
   // ------ Event loop ------ //
   while (1) {
     if (debounce()) {                        /* debounced button press */
       if (buttonWasPressed == 0) {     /* but wasn't last time through */
-        LED_PORT ^= (1 << LED0);                        /* do whatever */
+        leftTurn();                       /* do whatever */
         buttonWasPressed = 1;                      /* update the state */
       }
     }
