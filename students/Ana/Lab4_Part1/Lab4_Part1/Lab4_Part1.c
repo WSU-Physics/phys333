@@ -39,10 +39,8 @@ int main (void) {
 
   uint8_t leftButton;
   uint8_t rightButton;
-  uint64_t tickCounterL = 0;
-  uint64_t tickCounterR = 0;
-  uint16_t tickL = 10000;
-  uint16_t tickR = 10000;
+  uint64_t tickCounter = 0;
+  uint16_t tick = 10000;
   uint64_t tickPrevL = 0;
   uint64_t tickPrevR = 0;
   _Bool leftTurnOn = 0;
@@ -56,8 +54,7 @@ int main (void) {
   
 
   while(1) {
-    tickCounterL++;
-    tickCounterR++;
+    tickCounter++;
 
     if(debounceLeft()) {   //debounce button press
       if(leftButton == 0) {  //but wasn't last time 
@@ -78,9 +75,9 @@ int main (void) {
       
       PORTD = BV(bitl);
 
-      if( (tickCounterL - tickPrevL) > tickL){ //is 16 bit int
+      if( (tickCounter - tickPrevL) > tick){ //is 16 bit int
         bitl++;
-        tickPrevL = tickCounterL;
+        tickPrevL = tickCounter;
 
         if(bitl > 7) {
           bitl = 4;
@@ -112,9 +109,9 @@ int main (void) {
   
       PORTD = BV(bitr - 1);
 
-      if( (tickCounterR - tickPrevR) > tickR){ //is 16 bit int
+      if( (tickCounter - tickPrevR) > tick){ //is 16 bit int
         bitr--;
-        tickPrevR = tickCounterR;
+        tickPrevR = tickCounter;
 
         if(bitr == 0) {
           bitr = 4;
@@ -123,10 +120,6 @@ int main (void) {
       } else {
         PORTD = 0;
       }    
-      
-
-
-        
 
     } else {
       PORTD = 0;
