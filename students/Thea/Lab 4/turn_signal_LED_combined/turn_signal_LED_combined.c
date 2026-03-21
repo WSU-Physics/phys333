@@ -9,7 +9,7 @@
 #define toggleBit(byte, bit)  (byte ^= BV(bit))  // toggle bit
 
 #define DEBOUNCE_TIME   1000 //us
-#define DELAYTIME 200 //ms
+#define DELAYTIME 100 //ms
 #define LEDPORT   PORTD
 
 // ------ Debounce Functions ------//
@@ -40,8 +40,9 @@ int main(void){
   uint8_t rightWasPressed = 0;
   uint8_t leftWasPressed = 0;
 
-  uint8_t grow = 1;       /* 1 = fill and 0 = empty */
   uint8_t dir = 0;       /* 0 = right and 1 = left */
+  
+  uint8_t grow = 1;       /* 1 = fill and 0 = empty */
   uint8_t run = 0;      /* signal OFF = 0 and ON = 1 */
 
   // Set up LEDs
