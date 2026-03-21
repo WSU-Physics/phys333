@@ -16,7 +16,7 @@ int main(void){
   uint8_t bita = 0x00;    /* pattern starts atb 0000 */
   uint8_t bitb = 0x00;
 
-  uint8_t grow = 1; /* 1 = fill and 0 = empty */
+  uint8_t grow = 1;       /* 1 = fill and 0 = empty */
 
   // Set up LEDs
   DDRD = 0xff;  // All output
@@ -24,18 +24,14 @@ int main(void){
   while (1){
 
     if (grow){
-
       bita = (bita << 1) | 0x01;
 
-      if (bita == 0x0F)
-        grow = 0;
+      if (bita == 0x0F) grow = 0;
     }
     else{
-
       bita = bita << 1;
 
-      if (bita == 0x00)
-        grow = 1;
+      if (bita == 0x00) grow = 1;
     }
 
     PORTD = bita << 4;

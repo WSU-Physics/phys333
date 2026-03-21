@@ -24,18 +24,14 @@ int main(void){
   while (1){
 
     if (grow){
-
       bitb = (bitb >> 1) | 0x08;
 
-      if (bitb == 0x0F)
-        grow = 0;
+      if (bitb == 0x0F) grow = 0;
     }
     else{
-
       bitb = bitb >> 1;
 
-      if (bitb == 0x00)
-        grow = 1;
+      if (bitb == 0x00) grow = 1;
     }
 
     PORTD = bitb;
