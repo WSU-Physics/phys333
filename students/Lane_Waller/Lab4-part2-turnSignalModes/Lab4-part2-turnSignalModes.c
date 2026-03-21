@@ -19,14 +19,20 @@ int main(void){
   while (1){
     // Main loop
 
-    for(bita=0; bita < 4; bita++){
+    for(bita=4; bita < 8; bita++){
       PORTD |= (1<<bita); 
       _delay_ms(200);
     }
     PORTD = 0x00;
     _delay_ms(200);
+
+    for(bitb=3; bitb != 255; bitb--){
+      PORTD |= (1<<bitb); 
+      _delay_ms(200);
+    }
+    PORTD = 0x00;
+    _delay_ms(200);
+    
   }
-
-
   return (0);
 }
