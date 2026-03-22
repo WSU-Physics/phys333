@@ -41,6 +41,9 @@ int main(void) {
             if (button1State == 0) {
                 PORTB ^= (1 << LED1_PIN);  
                 button1State = 1;
+
+                
+
             }     /* End event loop */
         } else {
             button1State = 0;   /* update the state */
