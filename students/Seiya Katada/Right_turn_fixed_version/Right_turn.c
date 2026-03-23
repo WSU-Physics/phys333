@@ -25,7 +25,6 @@ int main(void) {
         PORTD = 0b00001111;
         _delay_ms(100);
 
-        // Add your right‑to‑left sequence here if needed
     }
 
     return 0;
