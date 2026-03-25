@@ -16,16 +16,19 @@
  *             0 is off, 255 is maximum.
  * period: period of pulse in microseconds
   */
-const int pin = 0;
+const int pin = 3;
 unsigned long previousMillis = 0;
-unsigned long duration = 100;
+unsigned long duration = 1000;
+long Ton; 
+long Toff;
 void pwm(int pin, double dutyCycle){
   // Calculate Ton and Toff
-  long Ton;  // using double precision to avoid overflow
-  long Toff;
+   // using double precision to avoid overflow
+  
   double period = 10;
   Ton = ((dutyCycle * period) * 100) + 0.5;
-  Toff = (period - 10 * Ton / 100) * 100 + 0.5;
+  //Serial.print(Ton);
+  Toff = (((1-dutyCycle) * period) * 100) + 0.5;
   // Turn on
   digitalWrite(pin, HIGH);
   // delay for Ton
@@ -40,17 +43,21 @@ void pwm(int pin, double dutyCycle){
 void setup() {
   // set blue LED pin to output
   pinMode(pin, OUTPUT);
-  
+  Serial.begin(9600);
+
 }
 
 void loop() {
    
-  unsigned long currentMillis = 0;
-
-  while (currentMillis <= duration) {
+  //unsigned long currentMillis = 0;
+  unsigned long startMillis = millis();
+  while (millis()-startMillis <= duration) {
     // save the last time you blinked the LED
-    pwm(13, 0.25);
-    currentMillis = millis();
+    pwm(pin, 0.256);
+    //currentMillis = millis();
   }
- delay(1000);
+  startMillis = 0;
+  Serial.println(Ton);
+   Serial.println(Toff);
+ //delay(1000);
 }
