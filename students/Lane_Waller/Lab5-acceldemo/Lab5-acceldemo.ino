@@ -22,7 +22,14 @@
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
+int Y_led = 13;
+int G_led = 12;
+
 void setup(void) {
+
+  pinMode(Y_led, OUTPUT);
+  pinMode(G_led, OUTPUT);
+
   Serial.begin(115200);
   while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
 
@@ -89,4 +96,17 @@ void loop() {
   Serial.println();
 
   delay(500);
+
+  if(event.acceleration.z >= 9.81*sin(85*3.141592653/180)){
+    digitalWrite(Y_led, HIGH);
+  }
+  else{
+    digitalWrite(Y_led, LOW);
+  }
+  if(event.acceleration.z >= 9.81*sin(89*3.141592653/180)){
+    digitalWrite(G_led, HIGH);
+  }
+  else{
+    digitalWrite(G_led, LOW);
+  }
 }
