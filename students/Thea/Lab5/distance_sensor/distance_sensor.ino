@@ -2,7 +2,7 @@
 //Lab 5
 
 const int pin = 0;
-char dist; 
+char dist[4]; 
 
 
 void setup() {
@@ -11,10 +11,16 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()){
-    dist = Serial.read();
-    Serial.print("Distance: ");
-    Serial.print(dist);
-    Serial.print("inches");
+  while(Serial.available()){Serial.read();}
+  while(Serial.read() !=82){
+    delayMicroseconds(1000);
+
   }
+  int nbytes = Serial.readBytes(dist,3);
+
+    Serial.println(" ");
+    //Serial.print("Distance: ");
+    Serial.print(dist);
+    //Serial.print(" inches");
+  
 }
