@@ -91,19 +91,22 @@ void loop() {
   // Modified output data setup so still readable on the serial monitor and gives names to each variable in the plotter
   Serial.print("X:");  Serial.print(event.acceleration.x);  Serial.print(","); 
   Serial.print("Y:");  Serial.print(event.acceleration.y);  Serial.print(",");
-  Serial.print("Z:");  Serial.println(event.acceleration.z);
+  Serial.print("Z:");  Serial.print(event.acceleration.z);  Serial.print(",");
+  Serial.print("totalAccelAVG:"); Serial.println(sqrt((event.acceleration.x)*(event.acceleration.x)+
+                                                      (event.acceleration.y)*(event.acceleration.y)+
+                                                      (event.acceleration.z)*(event.acceleration.z)));
 
   Serial.println();
 
   delay(500);
-
-  if(event.acceleration.z >= 9.81*sin(85*3.141592653/180)){
+            //convert degrees into radians to utilize the sin function of Arduino and multiply by the "g" or total AAVG acceleration the sensor observes
+  if(event.acceleration.z >= 10.08639*sin(85*3.141592653/180)){
     digitalWrite(Y_led, HIGH);
   }
   else{
     digitalWrite(Y_led, LOW);
   }
-  if(event.acceleration.z >= 9.81*sin(89*3.141592653/180)){
+  if(event.acceleration.z >= 10.08639*sin(89*3.141592653/180)){
     digitalWrite(G_led, HIGH);
   }
   else{
