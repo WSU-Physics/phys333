@@ -39,12 +39,12 @@ void loop() {
   Serial.println(angle);
 
   if(angle <= 10 && angle >= 0) {
-    digitalWrite(gLED, LOW);
-    digitalWrite(yLED, HIGH);
-  } else if(angle > 10 && angle <= 15) {
     digitalWrite(gLED, HIGH);
     digitalWrite(yLED, LOW);
-  } else if(angle > 15) {
+  } else if(angle > 10 && angle <= 20) {
+    digitalWrite(gLED, LOW);
+    digitalWrite(yLED, HIGH);
+  } else if(angle > 20) {
     digitalWrite(gLED, LOW);
     digitalWrite(yLED, LOW);
   }
