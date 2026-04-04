@@ -96,13 +96,33 @@ void loop() {
 
   float roll = atan2(Ay, Az) * 180 / PI;
   float pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az)) * 180 / PI;
-
+  
+  #if DEBUG
   Serial.print("\t\tRoll: "); Serial.print(roll);       //tilt along Y-axis
   Serial.print(" \tPitch: "); Serial.print(pitch);     //tilt along X-axis
 
   Serial.println();
+  #endif
 
+  // Serial Plotter output
+  Serial.print("X:");
+  Serial.print(Ax);
+  Serial.print(" ");
 
+  Serial.print("Y:");
+  Serial.print(Ay);
+  Serial.print(" ");
+
+  Serial.print("Z:");
+  Serial.print(Az);
+  Serial.print(" ");
+
+  Serial.print("Roll:");
+  Serial.print(roll);
+  Serial.print(" ");
+
+  Serial.print("Pitch:");
+  Serial.println(pitch);
 
 
   delay(200);
