@@ -22,6 +22,10 @@
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
+//LED yellow and green stuff
+const int YLED = 9;
+const int GLED = 10;
+
 void setup(void) {
   Serial.begin(115200);
   while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
@@ -62,6 +66,10 @@ void setup(void) {
     case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
     case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("1.6 Khz Low Power"); break;
   }
+
+  pinMode (YLED, OUTPUT);
+  pinMode (GLED, OUTPUT);
+
 }
 
 #define DEBUG 0 //enable or disable printing 
@@ -115,6 +123,7 @@ void loop() {
 
   Serial.print("Z:");
   Serial.print(Az);
+  //Serial.println(Az);
   Serial.print(" ");
 
   Serial.print("Roll:");
@@ -123,6 +132,19 @@ void loop() {
 
   Serial.print("Pitch:");
   Serial.println(pitch);
+
+  if ((roll > -2.5 && roll < 2.5) || (pitch > -2.5 && pitch < 2.5)){
+    analogWrite(GLED, 128);
+  } else {
+    analogWrite(GLED, 0);
+  }
+
+  if ((roll > 2.5 && roll < 10) || (roll > -10 && roll < -2.5) || (pitch > 2.5 && pitch < 10) || (pitch > -10 && pitch < -2.5)){
+    analogWrite(YLED, 128);
+  } else {
+    analogWrite(YLED, 0);
+  }
+  
 
 
   delay(200);
