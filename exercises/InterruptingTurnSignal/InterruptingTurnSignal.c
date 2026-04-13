@@ -66,6 +66,9 @@ uint8_t buttonCheck(void) {
 int updateState(int state){
   // handle the interrupt
   int result = buttonCheck(); // return 1 if R, 2 if L, 0 if neither
+  if (result){
+    LED_PORT = 0;
+  }
   // if Right button -> animate to the right? or turn off if already animating
   if (result == 1){
     // Right button pushed
