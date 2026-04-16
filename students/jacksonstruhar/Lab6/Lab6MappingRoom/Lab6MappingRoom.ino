@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <SD.h>
 #include <SPI.h>
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
@@ -11,6 +12,7 @@
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 RTC_DS1307 rtc;
 
+const int chipSelect = 10;
 const int pinRX = 0;
 char dist[4];
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -41,6 +43,19 @@ void setup() {
     Serial.println("RTC is NOT running, let's set the time!");
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
+
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(chipSelect)) {
+    Serial.println("initialization failed. Things to check:");
+    Serial.println("1. is a card inserted?");
+    Serial.println("2. is your wiring correct?");
+    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
+    Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
+    while (true);
+  }
+
+  Serial.println("initialization done.");
 }
 
 void loop() 
@@ -86,4 +101,21 @@ void loop()
     Serial.println();
     
     delay(1000);
+
+
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.print(dist);
+    dataFile.print("\t");
+    dataFile.println(tilt);    
+    dataFile.close();
+
+    // print to the serial port too:
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening datalog.txt");
+  }
 }
