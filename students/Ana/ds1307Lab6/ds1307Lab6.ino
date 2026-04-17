@@ -6,9 +6,7 @@
 //set up variables from RCT library
 RTC_DS1307 rtc;
 // set up variables using the SD utility library functions:
-Sd2Card card;
-SdVolume volume;
-SdFile root;
+
 const int chipSelect = 10;
 
 char dist[4];
@@ -18,23 +16,27 @@ void setup () {
   Serial.begin(9600);
   pinMode(0, INPUT);
 
-#ifndef ESP8266
-  while (!Serial); // wait for serial port to connect. Needed for native USB
-#endif
+// #ifndef ESP8266
+//   while (!Serial); // wait for serial port to connect. Needed for native USB
+// #endif
 
   // we'll use the initialization code from the utility libraries
   // since we're just testing if the card is working!
-  if (!card.init(SPI_HALF_SPEED, chipSelect)) {
+  while (!Serial);
+
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed. Things to check:");
-    Serial.println("* is a card inserted?");
-    Serial.println("* is your wiring correct?");
-    Serial.println("* did you change the chipSelect pin to match your shield or module?");
+    Serial.println("1. is a card inserted?");
+    Serial.println("2. is your wiring correct?");
+    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
     Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
-    while (1);
-  } else {
-    Serial.println();
-    Serial.println("Wiring is correct and a card is present.");
+    while (true);
   }
+
+  Serial.println("initialization done.");
+
   
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -66,7 +68,6 @@ void setup () {
 }
 
 void loop () {
-  String dataString = "";
 
   //Real Time Clock
     DateTime now = rtc.now();
@@ -99,6 +100,28 @@ void loop () {
   int nbytes = Serial.readBytes(dist, 3);
   Serial.println(dist);
 
+  String dataString = "";
+
+  // read three sensors and append to the string:
+    dataString += String(dist);
+    dataString += ",";
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+    Serial.println();
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening datalog.txt");
+  }
 
  
 }
