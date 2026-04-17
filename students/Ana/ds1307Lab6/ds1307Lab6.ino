@@ -11,12 +11,15 @@ SdVolume volume;
 SdFile root;
 const int chipSelect = 10;
 
+char dist[4];
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup () {
   Serial.begin(9600);
+  pinMode(0, INPUT);
 
 #ifndef ESP8266
+  while (!Serial); // wait for serial port to connect. Needed for native USB
 #endif
 
   // we'll use the initialization code from the utility libraries
@@ -29,6 +32,7 @@ void setup () {
     Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
     while (1);
   } else {
+    Serial.println();
     Serial.println("Wiring is correct and a card is present.");
   }
   
@@ -62,6 +66,9 @@ void setup () {
 }
 
 void loop () {
+  String dataString = "";
+
+  //Real Time Clock
     DateTime now = rtc.now();
 
     Serial.print(now.year(), DEC);
@@ -80,5 +87,18 @@ void loop () {
     Serial.println();
 
     Serial.println();
-    delay(3000);
+    delay(500);  
+
+  //Distance sensor
+  while(Serial.available()) {
+    Serial.read();
+  }
+  while(Serial.read() != 82) {
+    delayMicroseconds(1);
+  }
+  int nbytes = Serial.readBytes(dist, 3);
+  Serial.println(dist);
+
+
+ 
 }
