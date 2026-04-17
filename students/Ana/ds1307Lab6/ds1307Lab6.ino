@@ -121,7 +121,7 @@ void loop () {
 
   double angle_radian = atan(sqrt( sq(event.acceleration.x) + sq(event.acceleration.y) ) / event.acceleration.z);
   double angle = angle_radian * (180 / 3.13);
-  Serial.println(angle);
+  // Serial.println(angle);
 
 
   //Writing to the SD card
@@ -130,10 +130,12 @@ void loop () {
   // read three sensors and append to the string:
     dataString += String(dist);
     dataString += ",";
+    dataString += String(angle);
+    dataString += ",";
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
 
   // if the file is available, write to it:
   if (dataFile) {
