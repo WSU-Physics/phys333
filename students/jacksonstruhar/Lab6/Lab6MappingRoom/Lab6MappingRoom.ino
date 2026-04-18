@@ -103,19 +103,29 @@ void loop()
     delay(1000);
 
 
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
 
   // if the file is available, write to it:
   if (dataFile) {
     dataFile.print(dist);
-    dataFile.print("\t");
-    dataFile.println(tilt);    
+    dataFile.print(",");
+    dataFile.print(tilt);  
+    dataFile.print(",");
+    dataFile.print(now.month(), DEC);
+    dataFile.print('-');
+    dataFile.print(now.day(), DEC);
+    dataFile.print(",");
+    dataFile.print(now.hour(), DEC);
+    dataFile.print(':');
+    dataFile.print(now.minute(), DEC);
+    dataFile.print(':');
+    dataFile.println(now.second(), DEC);
     dataFile.close();
 
     // print to the serial port too:
   }
   // if the file isn't open, pop up an error:
   else {
-    Serial.println("error opening datalog.txt");
+    Serial.println("error opening datalog.csv");
   }
 }
