@@ -44,7 +44,7 @@ void setup() {
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 
-  Serial.print("Initializing SD card...");
+  Serial.print("Initializing SD card..."); 
 
   if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed. Things to check:");
@@ -60,14 +60,14 @@ void setup() {
 
 void loop() 
 {
-  while(Serial.available()){Serial.read();}
+  while(Serial.available()){Serial.read();} //distance sensor loop
   while(Serial.read() != 82)
   {
     delayMicroseconds(1);
   }
   int nbytes = Serial.readBytes(dist, 3);
 
-  sensors_event_t event;
+  sensors_event_t event; //accelerometer sensor
   lis.getEvent(&event);
 
   float ax = event.acceleration.x; //xyz values
@@ -76,7 +76,7 @@ void loop()
 
   float tilt = atan(sqrt(ax*ax + ay*ay) / az) * 180.0 / PI; //tangent theta equation for 3D space
 
-  DateTime now = rtc.now();
+  DateTime now = rtc.now(); //prints everything to serial monitor
 
     Serial.print(now.year(), DEC);
     Serial.print('/');
@@ -105,26 +105,22 @@ void loop()
 
   File dataFile = SD.open("datalog.csv", FILE_WRITE);
 
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.print(dist);
+  if (dataFile) { //comma separated csv file
+    dataFile.print(dist); //distance
     dataFile.print(",");
-    dataFile.print(tilt);  
+    dataFile.print(tilt);  //tile
     dataFile.print(",");
-    dataFile.print(now.month(), DEC);
+    dataFile.print(now.month(), DEC); //date
     dataFile.print('-');
     dataFile.print(now.day(), DEC);
     dataFile.print(",");
-    dataFile.print(now.hour(), DEC);
+    dataFile.print(now.hour(), DEC); //time
     dataFile.print(':');
     dataFile.print(now.minute(), DEC);
     dataFile.print(':');
     dataFile.println(now.second(), DEC);
     dataFile.close();
-
-    // print to the serial port too:
   }
-  // if the file isn't open, pop up an error:
   else {
     Serial.println("error opening datalog.csv");
   }
