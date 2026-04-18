@@ -1,3 +1,6 @@
+//Ensure Arduino rx pin is disconnected before uploading
+
+
 // Date and time functions using a DS1307 RTC connected via I2C and Wire lib
 #include "RTClib.h"
 #include <SPI.h>
@@ -8,7 +11,7 @@
 
 //set up variables from RCT library
 RTC_DS1307 rtc;
-// Used for software SPI and acc
+// Used for software SPI and accelermoter
 #define LIS3DH_CLK 13
 #define LIS3DH_MISO 12
 #define LIS3DH_MOSI 11
@@ -16,6 +19,7 @@ RTC_DS1307 rtc;
 #define LIS3DH_CS 10
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
+//chipSelect is 10 for Uno
 const int chipSelect = 10;
 
 char dist[4];
@@ -23,8 +27,8 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 
 void setup () {
   Serial.begin(9600);
+  //Setting up the Arduino pin for rx disconnect before uploading
   pinMode(0, INPUT);
-
 
   // we'll use the initialization code from the utility libraries
   // since we're just testing if the card is working!
@@ -40,7 +44,6 @@ void setup () {
     Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
     while (true);
   }
-
   Serial.println("initialization done.");
 
   //initialization of RTC
@@ -102,7 +105,7 @@ void loop () {
     Serial.println();
 
     Serial.println();
-    delay(500);  
+    delay(250);  
 
   //Distance sensor
   while(Serial.available()) {
@@ -112,7 +115,6 @@ void loop () {
     delayMicroseconds(1);
   }
   int nbytes = Serial.readBytes(dist, 3);
-  // Serial.println(dist);
 
 
   //Angle Sensor
@@ -121,7 +123,6 @@ void loop () {
 
   double angle_radian = atan(sqrt( sq(event.acceleration.x) + sq(event.acceleration.y) ) / event.acceleration.z);
   double angle = angle_radian * (180 / 3.13);
-  // Serial.println(angle);
 
 
   //Writing to the SD card
@@ -135,7 +136,7 @@ void loop () {
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.csv", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);  //save as excel file change name if wanted cant be more than 8 letters beside extension?
 
   // if the file is available, write to it:
   if (dataFile) {
