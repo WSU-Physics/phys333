@@ -19,17 +19,7 @@ char dist[4];
 // Used for hardware & software SPI
 #define LIS3DH_CS 10
 
-// software SPI
-//Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS, LIS3DH_MOSI, LIS3DH_MISO, LIS3DH_CLK);
-// hardware SPI
-//Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS);
-// Low Power 5Khz data rate needs faster SPI, and calling setPerformanceMode & setDataRate
-//Adafruit_LIS3DH lis = Adafruit_LIS3DH(LIS3DH_CS, 2000000);
-// I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
-
-const int YLED = 9;
-const int GLED = 11;
 
 /*---Date and Time---*/
 #include "RTClib.h"
@@ -50,11 +40,10 @@ void setup() {
 
 /*---Distance Sensor---*/
   pinMode(pin, INPUT);
-  Serial.begin(115200);       //baud rate
+  Serial.begin(9600);       //baud rate
 
 /*---Accelerometer---*/  
   //Serial.begin(115200);
-  while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
 
   Serial.println("LIS3DH test!");
 
@@ -93,15 +82,8 @@ void setup() {
     case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("1.6 Khz Low Power"); break;
   }
 
-  pinMode (YLED, OUTPUT);
-  pinMode (GLED, OUTPUT);
-
 /*---Date and Time---*/
   //Serial.begin(57600);
-
-#ifndef ESP8266
-  while (!Serial); // wait for serial port to connect. Needed for native USB
-#endif
 
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -111,26 +93,14 @@ void setup() {
 
   if (! rtc.isrunning()) {
     Serial.println("RTC is NOT running, let's set the time!");
-    // When time needs to be set on a new device, or after a power loss, the
-    // following line sets the RTC to the date & time this sketch was compiled
+
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // This line sets the RTC with an explicit date & time, for example to set
-    // January 21, 2014 at 3am you would call:
-    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
 
-  // When time needs to be re-set on a previously configured device, the
-  // following line sets the RTC to the date & time this sketch was compiled
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  // This line sets the RTC with an explicit date & time, for example to set
-  // January 21, 2014 at 3am you would call:
-  // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
 /*---Data Logger---*/
-  // Open serial communications and wait for port to open:
-  //Serial.begin(9600);
-  // wait for Serial Monitor to connect. Needed for native USB port boards only:
-  while (!Serial);
+
+  pinMode(10, OUTPUT);
 
   Serial.print("Initializing SD card...");
 
@@ -153,43 +123,39 @@ void setup() {
 void loop() {
 
 /*---Distance Sensor---*/
-  while(Serial.available()){Serial.read();}
-  while(Serial.read() !=82){
-    delayMicroseconds(1000);
 
+//chatgpt
+
+int nbytes = 0;
+dist[3] = '\0';
+int distance = -1;
+
+unsigned long startTime = millis();
+bool gotR = false;
+
+// wait for 'R'
+while (millis() - startTime < 500) {
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == 'R') {
+      gotR = true;
+      break;
+    }
   }
-  int nbytes = Serial.readBytes(dist,3);
+}
 
-    #if DEBUG
-    Serial.println(" ");
-    //Serial.print("Distance: ");
-    Serial.print(dist);
-    //Serial.print(" inches");
-    #endif
+if (gotR) {
+  nbytes = Serial.readBytes(dist, 3);
+  dist[3] = '\0';
+
+  if (nbytes == 3) {
+    distance = atoi(dist);
+  }
+}
 
 /*---Accelerometer---*/
-  lis.read();      // get X Y and Z data at once
-  // Then print out the raw data
-  #if DEBUG
-  Serial.print("X:  "); Serial.print(lis.x);
-  Serial.print("  \tY:  "); Serial.print(lis.y);
-  Serial.print("  \tZ:  "); Serial.print(lis.z);
-  #endif
-
-  /* Or....get a new sensor event, normalized */
   sensors_event_t event;
   lis.getEvent(&event);
-
-
-  #if DEBUG
-  /* Display the results (acceleration is measured in m/s^2) */
-  Serial.print("\t\tX: "); Serial.print(event.acceleration.x);
-  Serial.print(" \tY: "); Serial.print(event.acceleration.y);
-  Serial.print(" \tZ: "); Serial.print(event.acceleration.z);
-  Serial.println(" m/s^2 ");
-
-  Serial.println();
-  #endif
 
   float Ax = event.acceleration.x;
   float Ay = event.acceleration.y;
@@ -197,114 +163,12 @@ void loop() {
 
   float roll = atan2(Ay, Az) * 180 / PI;
   float pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az)) * 180 / PI;
-  
-  #if DEBUG
-  Serial.print("\t\tRoll: "); Serial.print(roll);       //tilt along Y-axis
-  Serial.print(" \tPitch: "); Serial.print(pitch);     //tilt along X-axis
-
-  Serial.println();
-
-  // Serial Plotter output
-  Serial.print("X:");
-  Serial.print(Ax);
-  Serial.print(" ");
-
-  Serial.print("Y:");
-  Serial.print(Ay);
-  Serial.print(" ");
-
-  Serial.print("Z:");
-  Serial.print(Az);
-  //Serial.println(Az);
-  Serial.print(" ");
-
-  Serial.print("Roll:");
-  Serial.print(roll);
-  Serial.print(" ");
-
-  Serial.print("Pitch:");
-  Serial.println(pitch);
-  #endif
-
-  #if DEBUG
-  if ((roll > -2.5 && roll < 2.5) || (pitch > -2.5 && pitch < 2.5)){
-    analogWrite(GLED, 128);
-  } else {
-    analogWrite(GLED, 0);
-  }
-
-  if ((roll > 2.5 && roll < 10) || (roll > -10 && roll < -2.5) || (pitch > 2.5 && pitch < 10) || (pitch > -10 && pitch < -2.5)){
-    analogWrite(YLED, 128);
-  } else {
-    analogWrite(YLED, 0);
-  }
-  #endif
-  
-  delay(200);
 
 /*---Date and Time---*/
     DateTime now = rtc.now();
 
-    #if DEBUG
-    Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.day(), DEC);
-    Serial.print(" (");
-    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-    Serial.print(") ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
-
-    Serial.print(" since midnight 1/1/1970 = ");
-    Serial.print(now.unixtime());
-    Serial.print("s = ");
-    Serial.print(now.unixtime() / 86400L);
-    Serial.println("d");
-    #endif
-
-    // calculate a date which is 7 days, 12 hours, 30 minutes, and 6 seconds into the future
-    DateTime future (now + TimeSpan(7,12,30,6));
-
-    #if DEBUG
-    Serial.print(" now + 7d + 12h + 30m + 6s: ");
-    Serial.print(future.year(), DEC);
-    Serial.print('/');
-    Serial.print(future.month(), DEC);
-    Serial.print('/');
-    Serial.print(future.day(), DEC);
-    Serial.print(' ');
-    Serial.print(future.hour(), DEC);
-    Serial.print(':');
-    Serial.print(future.minute(), DEC);
-    Serial.print(':');
-    Serial.print(future.second(), DEC);
-    Serial.println();
-    #endif
-
-    Serial.println();
-    delay(3000);
-
 /*---Data Logger---*/
- // make a string for assembling the data to log:
-  String dataString = "";
 
-  // read three sensors and append to the string:
-  for (int analogPin = 0; analogPin < 3; analogPin++) {
-    int sensor = analogRead(analogPin);
-    dataString += String(sensor);
-    if (analogPin < 2) {
-      dataString += ",";
-    }
-  }
-
-  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
   File dataFile = SD.open("lab6scan.csv", FILE_WRITE);
 
   // if the file is available, write to it:
@@ -315,27 +179,12 @@ void loop() {
     dataFile.print(now.hour()); dataFile.print(",");
     dataFile.print(now.minute()); dataFile.print(",");
     dataFile.print(now.second()); dataFile.print(",");
-    dataFile.print(dist); dataFile.print(",");
-    dataFile.print(roll); dataFile.print(",");
-    dataFile.print(pitch); dataFile.print(",");
-    dataFile.println(" ");
-
+    dataFile.print(distance); dataFile.print(",");
+    dataFile.print(roll, 2); dataFile.print(",");
+    dataFile.println(pitch, 2); 
     dataFile.close();
 
-  //Serial Print as well
-    Serial.print(now.year()); Serial.print(",");
-    Serial.print(now.month()); Serial.print(",");    
-    Serial.print(now.day()); Serial.print(",");
-    Serial.print(now.hour()); Serial.print(",");
-    Serial.print(now.minute()); Serial.print(",");
-    Serial.print(now.second()); Serial.print(",");
-    Serial.print(dist); Serial.print(",");
-    Serial.print(roll); Serial.print(",");
-    Serial.print(pitch); Serial.print(",");
-    Serial.println(" ");
   }
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening lab6scan.csv");
-  }
+
+  delay(200);
 }
