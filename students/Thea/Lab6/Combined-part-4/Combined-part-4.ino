@@ -1,14 +1,10 @@
 /* Lab 6 combine all pieces for part 4*/
 
+/*-------Preamble------*/
+
 /*----Distance Sensor---*/
 const int pin = 0;
 char dist[4];
-
-/*---Data Logger---*/
-#include <SPI.h>
-#include <SD.h>
-
-const int chipSelect = 10;
 
 /*---Accelerometer---*/
 #include <Wire.h>
@@ -33,7 +29,7 @@ const int chipSelect = 10;
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
 const int YLED = 9;
-const int GLED = 10;
+const int GLED = 11;
 
 /*---Date and Time---*/
 #include "RTClib.h"
@@ -42,36 +38,22 @@ RTC_DS1307 rtc;
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
+/*---Data Logger---*/
+#include <SPI.h>
+#include <SD.h>
 
-/* ------ Set Up----------*/
+const int chipSelect = 10;
+
+/*-------Set Up----------*/
 
 void setup() {
 
 /*---Distance Sensor---*/
   pinMode(pin, INPUT);
-  Serial.begin(9600);       //baud rate
-
-/*---Data Logger---*/
-  // Open serial communications and wait for port to open:
-  Serial.begin(9600);
-  // wait for Serial Monitor to connect. Needed for native USB port boards only:
-  while (!Serial);
-
-  Serial.print("Initializing SD card...");
-
-  if (!SD.begin(chipSelect)) {
-    Serial.println("initialization failed. Things to check:");
-    Serial.println("1. is a card inserted?");
-    Serial.println("2. is your wiring correct?");
-    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
-    Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
-    while (true);
-  }
-
-  Serial.println("initialization done.");
+  Serial.begin(115200);       //baud rate
 
 /*---Accelerometer---*/  
-  Serial.begin(115200);
+  //Serial.begin(115200);
   while (!Serial) delay(10);     // will pause Zero, Leonardo, etc until serial console opens
 
   Serial.println("LIS3DH test!");
@@ -115,7 +97,7 @@ void setup() {
   pinMode (GLED, OUTPUT);
 
 /*---Date and Time---*/
-  Serial.begin(57600);
+  //Serial.begin(57600);
 
 #ifndef ESP8266
   while (!Serial); // wait for serial port to connect. Needed for native USB
@@ -143,6 +125,25 @@ void setup() {
   // This line sets the RTC with an explicit date & time, for example to set
   // January 21, 2014 at 3am you would call:
   // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+
+/*---Data Logger---*/
+  // Open serial communications and wait for port to open:
+  //Serial.begin(9600);
+  // wait for Serial Monitor to connect. Needed for native USB port boards only:
+  while (!Serial);
+
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(chipSelect)) {
+    Serial.println("initialization failed. Things to check:");
+    Serial.println("1. is a card inserted?");
+    Serial.println("2. is your wiring correct?");
+    Serial.println("3. did you change the chipSelect pin to match your shield or module?");
+    Serial.println("Note: press reset button on the board and reopen this Serial Monitor after fixing your issue!");
+    while (true);
+  }
+
+  Serial.println("initialization done.");
 } 
 
 #define DEBUG 0 //enable or disable printing 
@@ -159,39 +160,12 @@ void loop() {
   }
   int nbytes = Serial.readBytes(dist,3);
 
+    #if DEBUG
     Serial.println(" ");
     //Serial.print("Distance: ");
     Serial.print(dist);
     //Serial.print(" inches");
-
-/*---Data Logger---*/
- // make a string for assembling the data to log:
-  String dataString = "";
-
-  // read three sensors and append to the string:
-  for (int analogPin = 0; analogPin < 3; analogPin++) {
-    int sensor = analogRead(analogPin);
-    dataString += String(sensor);
-    if (analogPin < 2) {
-      dataString += ",";
-    }
-  }
-
-  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
-
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
-    // print to the serial port too:
-    Serial.println(dataString);
-  }
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening datalog.txt");
-  }
+    #endif
 
 /*---Accelerometer---*/
   lis.read();      // get X Y and Z data at once
@@ -229,7 +203,6 @@ void loop() {
   Serial.print(" \tPitch: "); Serial.print(pitch);     //tilt along X-axis
 
   Serial.println();
-  #endif
 
   // Serial Plotter output
   Serial.print("X:");
@@ -251,6 +224,7 @@ void loop() {
 
   Serial.print("Pitch:");
   Serial.println(pitch);
+  #endif
 
   #if DEBUG
   if ((roll > -2.5 && roll < 2.5) || (pitch > -2.5 && pitch < 2.5)){
@@ -271,6 +245,7 @@ void loop() {
 /*---Date and Time---*/
     DateTime now = rtc.now();
 
+    #if DEBUG
     Serial.print(now.year(), DEC);
     Serial.print('/');
     Serial.print(now.month(), DEC);
@@ -291,10 +266,12 @@ void loop() {
     Serial.print("s = ");
     Serial.print(now.unixtime() / 86400L);
     Serial.println("d");
+    #endif
 
     // calculate a date which is 7 days, 12 hours, 30 minutes, and 6 seconds into the future
     DateTime future (now + TimeSpan(7,12,30,6));
 
+    #if DEBUG
     Serial.print(" now + 7d + 12h + 30m + 6s: ");
     Serial.print(future.year(), DEC);
     Serial.print('/');
@@ -308,7 +285,57 @@ void loop() {
     Serial.print(':');
     Serial.print(future.second(), DEC);
     Serial.println();
+    #endif
 
     Serial.println();
     delay(3000);
+
+/*---Data Logger---*/
+ // make a string for assembling the data to log:
+  String dataString = "";
+
+  // read three sensors and append to the string:
+  for (int analogPin = 0; analogPin < 3; analogPin++) {
+    int sensor = analogRead(analogPin);
+    dataString += String(sensor);
+    if (analogPin < 2) {
+      dataString += ",";
+    }
+  }
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  File dataFile = SD.open("lab6scan.csv", FILE_WRITE);
+
+  // if the file is available, write to it:
+  if (dataFile) {
+    dataFile.print(now.year()); dataFile.print(",");
+    dataFile.print(now.month()); dataFile.print(",");    
+    dataFile.print(now.day()); dataFile.print(",");
+    dataFile.print(now.hour()); dataFile.print(",");
+    dataFile.print(now.minute()); dataFile.print(",");
+    dataFile.print(now.second()); dataFile.print(",");
+    dataFile.print(dist); dataFile.print(",");
+    dataFile.print(roll); dataFile.print(",");
+    dataFile.print(pitch); dataFile.print(",");
+    dataFile.println(" ");
+
+    dataFile.close();
+
+  //Serial Print as well
+    Serial.print(now.year()); Serial.print(",");
+    Serial.print(now.month()); Serial.print(",");    
+    Serial.print(now.day()); Serial.print(",");
+    Serial.print(now.hour()); Serial.print(",");
+    Serial.print(now.minute()); Serial.print(",");
+    Serial.print(now.second()); Serial.print(",");
+    Serial.print(dist); Serial.print(",");
+    Serial.print(roll); Serial.print(",");
+    Serial.print(pitch); Serial.print(",");
+    Serial.println(" ");
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening lab6scan.csv");
+  }
 }
