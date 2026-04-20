@@ -1,10 +1,8 @@
-// Basic demo for accelerometer readings from Adafruit LIS3DH
-
+//////////includes for accelerometer///////////////
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
-
 // Used for software SPI
 #define LIS3DH_CLK 13
 #define LIS3DH_MISO 12
@@ -14,11 +12,14 @@
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
+//////////////Includes for SD card datalogger//////////////
+#include <SD.h>
+const int chipSelect = 10;
+
+//////////////Includes for RTC/////////////////////////
 // Date and time functions using a DS1307 RTC connected via I2C and Wire lib
 #include "RTClib.h"
-
 RTC_DS1307 rtc;
-
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,60 +119,33 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   //////////////RTC Code Here///////////////
-
    DateTime now = rtc.now();
+    String time = "";
+    time += (now.year());
+    time += "/";
+    time += (now.month());
+    time += "/";
+    time += (now.day());
+    time += " ";
+    time += (now.hour());
+    time += ":";
+    time += (now.minute());
+    time += ":";
+    time += (now.second());
 
-    Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.day(), DEC);
-    Serial.print(" (");
-    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-    Serial.print(") ");
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.println();
-    
-    delay(3000);
-
-
+  Serial.println(time);
   ///////////Accelerometer Code for Angle///////////////
-
   lis.read();      // get X Y and Z data at once
 
   /*get a new sensor event, normalized*/
   sensors_event_t event;
   lis.getEvent(&event);
+                            //angle formula = arctan(sqrt(x^2+y^2)/z)  - I'm just squaring x and y by multiplying by itself
+  double angleFromVert_rad = atan(sqrt((event.acceleration.x)*(event.acceleration.x)+(event.acceleration.y)*(event.acceleration.y))/event.acceleration.z); 
+  double angleFromVertical = angleFromVert_rad*(180/3.141592653);   //Convert radians into degrees
 
-  // Modified output data setup so still readable on the serial monitor and gives names to each variable in the plotter
-  Serial.print("X:");  Serial.print(event.acceleration.x);  Serial.print(","); 
-  Serial.print("Y:");  Serial.print(event.acceleration.y);  Serial.print(",");
-  Serial.print("Z:");  Serial.print(event.acceleration.z);  Serial.print(",");
-  Serial.print("totalAccelAVG:"); Serial.println(sqrt((event.acceleration.x)*(event.acceleration.x)+
-                                                      (event.acceleration.y)*(event.acceleration.y)+
-                                                      (event.acceleration.z)*(event.acceleration.z)));
-
+  Serial.println(angleFromVertical);
   Serial.println();
-
-  delay(500);
-            //convert degrees into radians to utilize the sin function of Arduino and multiply by the "g" or total AAVG acceleration the sensor observes
-  if(event.acceleration.z >= 10.08639*sin(85*3.141592653/180)){
-    digitalWrite(Y_led, HIGH);
-  }
-  else{
-    digitalWrite(Y_led, LOW);
-  }
-  if(event.acceleration.z >= 10.08639*sin(89*3.141592653/180)){
-    digitalWrite(G_led, HIGH);
-  }
-  else{
-    digitalWrite(G_led, LOW);
-  }
-
 
 
   //////////////Distance Sensor Code//////////////
@@ -190,18 +164,11 @@ void loop() {
 
 
   /////////////Data Logger Code/////////////////
-
    // make a string for assembling the data to log:
   String dataString = "";
-
-  // read three sensors and append to the string:
-  for (int analogPin = 0; analogPin < 3; analogPin++) {
-    int sensor = analogRead(analogPin);
-    dataString += String(sensor);
-    if (analogPin < 2) {
-      dataString += ",";
-    }
-  }
+  dataString += String(angleFromVertical);
+  dataString += ",";
+  dataString += String(distance);
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
@@ -219,5 +186,6 @@ void loop() {
     Serial.println("error opening datalog.txt");
   }
 
+  delay(250); //every quarter second repeat the main loop 
 }
 
