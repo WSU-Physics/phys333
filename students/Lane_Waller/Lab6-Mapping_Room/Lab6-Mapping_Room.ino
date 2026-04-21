@@ -28,7 +28,7 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 
 void setup() {
   // put your setup code here, to run once:
-    Serial.begin(115200);     //initiate the serial monitor with the proper baud 
+    Serial.begin(9600);     //initiate the serial monitor with the proper baud 
 
       ///////////////Setup for RTC//////////////////////
 
@@ -108,7 +108,6 @@ void setup() {
   }
 
   Serial.println("initialization done.");
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,20 +119,20 @@ void loop() {
 
   //////////////RTC Code Here///////////////
    DateTime now = rtc.now();
-    String time = "";
-    time += (now.year());
-    time += "/";
-    time += (now.month());
-    time += "/";
-    time += (now.day());
-    time += " ";
+   String time = "";
     time += (now.hour());
     time += ":";
     time += (now.minute());
     time += ":";
     time += (now.second());
-
-  Serial.println(time);
+    time += " ";
+    time += (now.month());
+    time += "/";
+    time += (now.day());
+    time += "/";
+    time += (now.year());
+  //Serial.println("yo");
+  //Serial.println(now.year());
   ///////////Accelerometer Code for Angle///////////////
   lis.read();      // get X Y and Z data at once
 
@@ -143,9 +142,11 @@ void loop() {
                             //angle formula = arctan(sqrt(x^2+y^2)/z)  - I'm just squaring x and y by multiplying by itself
   double angleFromVert_rad = atan(sqrt((event.acceleration.x)*(event.acceleration.x)+(event.acceleration.y)*(event.acceleration.y))/event.acceleration.z); 
   double angleFromVertical = angleFromVert_rad*(180/3.141592653);   //Convert radians into degrees
-
-  Serial.println(angleFromVertical);
-  Serial.println();
+  
+  //Serial.print("yo");
+  //Serial.println(angleFromVertical);
+  //Serial.print("yo");
+  //Serial.println();
 
 
   //////////////Distance Sensor Code//////////////
@@ -160,32 +161,34 @@ void loop() {
   }
   int distanceBytes = Serial.readBytes(distance, 3);
   distance[3] = '\0'; //terminate character string
-  Serial.println(distance);
+  //Serial.println(distance);
 
 
   /////////////Data Logger Code/////////////////
    // make a string for assembling the data to log:
   String dataString = "";
   dataString += String(angleFromVertical);
-  dataString += ",";
+  dataString += ", ";
   dataString += String(distance);
+  dataString += ", ";
+  dataString += time;
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  //File dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
+   //if (dataFile) {
+    // dataFile.println(dataString);
+    // dataFile.close();
     // print to the serial port too:
     Serial.println(dataString);
-  }
+   //}
   // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening datalog.txt");
-  }
+   //else {
+   //  Serial.println("error opening datalog.txt");
+   //}
 
-  delay(250); //every quarter second repeat the main loop 
+  delay(500); //every quarter second repeat the main loop 
 }
 
