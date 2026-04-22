@@ -4,11 +4,11 @@
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 // Used for software SPI
-#define LIS3DH_CLK 13
-#define LIS3DH_MISO 12
-#define LIS3DH_MOSI 11
+//#define LIS3DH_CLK 13
+//#define LIS3DH_MISO 12
+//#define LIS3DH_MOSI 11
 // Used for hardware & software SPI
-#define LIS3DH_CS 10
+//#define LIS3DH_CS 10
 // I2C
 Adafruit_LIS3DH lis = Adafruit_LIS3DH();
 
@@ -20,7 +20,7 @@ const int chipSelect = 10;
 // Date and time functions using a DS1307 RTC connected via I2C and Wire lib
 #include "RTClib.h"
 RTC_DS1307 rtc;
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+// char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,10 +44,10 @@ void setup() {
 
   // When time needs to be re-set on a previously configured device, the
   // following line sets the RTC to the date & time this sketch was compiled
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  // This line sets the RTC with an explicit date & time, for example to set
-  // January 21, 2014 at 3am you would call:
-  // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  //This line sets the RTC with an explicit date & time, for example to set
+  //January 21, 2014 at 3am you would call:
+  //rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
 
       ///////////////Setup for Accelerometer////////////
@@ -76,20 +76,20 @@ void setup() {
   }
 
   // lis.setDataRate(LIS3DH_DATARATE_50_HZ);
-  Serial.print("Data rate set to: ");
-  switch (lis.getDataRate()) {
-    case LIS3DH_DATARATE_1_HZ: Serial.println("1 Hz"); break;
-    case LIS3DH_DATARATE_10_HZ: Serial.println("10 Hz"); break;
-    case LIS3DH_DATARATE_25_HZ: Serial.println("25 Hz"); break;
-    case LIS3DH_DATARATE_50_HZ: Serial.println("50 Hz"); break;
-    case LIS3DH_DATARATE_100_HZ: Serial.println("100 Hz"); break;
-    case LIS3DH_DATARATE_200_HZ: Serial.println("200 Hz"); break;
-    case LIS3DH_DATARATE_400_HZ: Serial.println("400 Hz"); break;
+  // Serial.print("Data rate set to: ");
+  // switch (lis.getDataRate()) {
+  //   case LIS3DH_DATARATE_1_HZ: Serial.println("1 Hz"); break;
+  //   case LIS3DH_DATARATE_10_HZ: Serial.println("10 Hz"); break;
+  //   case LIS3DH_DATARATE_25_HZ: Serial.println("25 Hz"); break;
+  //   case LIS3DH_DATARATE_50_HZ: Serial.println("50 Hz"); break;
+  //   case LIS3DH_DATARATE_100_HZ: Serial.println("100 Hz"); break;
+  //   case LIS3DH_DATARATE_200_HZ: Serial.println("200 Hz"); break;
+  //   case LIS3DH_DATARATE_400_HZ: Serial.println("400 Hz"); break;
 
-    case LIS3DH_DATARATE_POWERDOWN: Serial.println("Powered Down"); break;
-    case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
-    case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("1.6 Khz Low Power"); break;
-  }
+  //   case LIS3DH_DATARATE_POWERDOWN: Serial.println("Powered Down"); break;
+  //   case LIS3DH_DATARATE_LOWPOWER_5KHZ: Serial.println("5 Khz Low Power"); break;
+  //   case LIS3DH_DATARATE_LOWPOWER_1K6HZ: Serial.println("1.6 Khz Low Power"); break;
+  // }
 
   ////Setup for Datalogger////
 
@@ -108,6 +108,7 @@ void setup() {
   }
 
   Serial.println("initialization done.");
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,19 +176,20 @@ void loop() {
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  //File dataFile = SD.open("datalog.txt", FILE_WRITE);
 
+  File dataFile = SD.open("DATALOG.TXT", FILE_WRITE);
+ 
   // if the file is available, write to it:
-   //if (dataFile) {
-    // dataFile.println(dataString);
-    // dataFile.close();
+   if (dataFile) {
+     dataFile.println(dataString);
+     dataFile.close();
     // print to the serial port too:
     Serial.println(dataString);
-   //}
+   }
   // if the file isn't open, pop up an error:
-   //else {
-   //  Serial.println("error opening datalog.txt");
-   //}
+   else {
+     Serial.println("error opening datalog.txt");
+   }
 
   delay(500); //every quarter second repeat the main loop 
 }
