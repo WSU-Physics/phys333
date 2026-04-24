@@ -13,7 +13,10 @@ void loop() {
   if(Serial.available() > 0) {  //is equal to -1 if not data I think
     in_bytes = Serial.readStringUntil('\n');  //read until new line
     // Serial.write("current song");
-    Serial.println(in_bytes); //this prints in visual studio terminal    
+
+    if(prev_song != in_bytes){
+      Serial.print(in_bytes); //this prints in visual studio terminal  
+    }
 
     prev_song = in_bytes;
   }
