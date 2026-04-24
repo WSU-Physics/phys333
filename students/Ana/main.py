@@ -34,15 +34,16 @@ while True:
         # print(artist_name)   
 
     else: 
-        print("UH OH! we it's broken")
-        print("gwa") 
+        print("UH OH! we it's broken - Not playing song!")
+
     serialcomm.write(song_name.encode())
     serialcomm.write(divider.encode())
     serialcomm.write(artist_name.encode())
 
-    #this is very much needed or no response from the uno
+        #this is very much needed or no response from the uno
     time.sleep(0.5)
     print(serialcomm.readline().decode('ascii'))
+ 
 
 serialcomm.close()
 
