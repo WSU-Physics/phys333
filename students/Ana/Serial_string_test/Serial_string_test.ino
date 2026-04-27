@@ -6,6 +6,7 @@ String prev_song;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(3, INPUT_PULLUP);
 
 }
 
