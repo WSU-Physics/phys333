@@ -124,6 +124,12 @@ void loop() {
 
 /*---Distance Sensor---*/
 
+//  while(Serial.available()){Serial.read();}
+  //while(Serial.read() !=82){
+   // delayMicroseconds(1000);
+
+  }
+  //int nbytes = Serial.readBytes(dist,3);
 //chatgpt
 
 int nbytes = 0;
