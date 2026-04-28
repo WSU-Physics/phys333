@@ -25,9 +25,16 @@ serialcomm.timeout = 1
 
 
 prev_song = ""
+current_track = sp.current_user_playing_track()
+if current_track is not None:
+        
+        song_name = current_track['item']['name']
+
+serialcomm.write(song_name.encode())
+time.sleep(0.5)
 
 while True:
-    current_track = sp.current_user_playing_track()
+    # current_track = sp.current_user_playing_track()
 
     if current_track is not None:
         current_track = sp.current_user_playing_track()
@@ -44,18 +51,17 @@ while True:
 
     #I need to change the encoding to only happen when the song changes so it's not outputting zeros or causing issues with arduino reading the serial
     #or do I even need to worry about that and just worry about updating it arduino side
-    # if prev_song != song_name:
+
+    if prev_song != song_name:
+
+        serialcomm.write(song_name.encode())
+        # serialcomm.write(divider.encode())
+        # serialcomm.write(artist_name.encode())
 
 
-    serialcomm.write(song_name.encode())
-    serialcomm.write(divider.encode())
-    serialcomm.write(artist_name.encode())
-    #board.digital[3].write(0) # Sets pin 3 to LOW pin 2 and 3 are attached the the attachInterupt()
-
-
-    #this is very much needed or no response from the uno
-    time.sleep(0.5)
-    print(serialcomm.readline().decode('utf-8'))    #using utf-8 instead of ascii allows all characters and doesn't error anymore
+        #this is very much needed or no response from the uno
+        time.sleep(0.5)
+    # print(serialcomm.readline().decode('utf-8'))    #using utf-8 instead of ascii allows all characters and doesn't error anymore
 
     prev_song = song_name
  
