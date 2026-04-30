@@ -1,68 +1,46 @@
-/*
-Exploring Arduino, Second Edition
-Code Listing 13-1: Hardware Interrupts for Multitasking
-https://www.exploringarduino.com/content2/ch13
-
-Copyright 2019 Jeremy Blum ( https://www.jeremyblum.com )
-Licensed under MIT ( https://github.com/sciguy14/Exploring-Arduino-2nd-Edition/blob/master/LICENSE.md )
-*/
-
 //Use a Hardware-Debounced Switch to Control an Interrupt
 
-//Button pins
-const int BTN   = 2;  //Output of debounced button on pin 2
-const int RED   = 11; //Red Cathode LED on pin 11
-const int GREEN = 10; //Green Cathode LED on pin 10
-const int BLUE  = 9;  //Blue Cathode LED on pin 9
+//Button pins             //Pin 2 has hardware interrupt capability thus will use this pin for sensor reading input
+const int IR_sensor = 2;  //Output of Infrared break beam laser sensor on pin 2
+
 
 //Volatile variables can change inside interrupts
-volatile int selectedLED = RED;
+volatile bool jump_complete = false;
+volatile unsigned long toeOff_time = 0;
+volatile unsigned long return_time = 0;
 
 void setup()
 {
-  pinMode(RED, OUTPUT);
-  pinMode(GREEN, OUTPUT);
-  pinMode(BLUE, OUTPUT);
-
-  //Turn the RGB LED off to start
-  //(Inverted because we are controlling the cathode)
-  digitalWrite(RED, HIGH);
-  digitalWrite(BLUE, HIGH);
-  digitalWrite(GREEN, HIGH);
-    
+  pinMode(IR_sensor, INPUT_PULLUP);
   //The pin is inverted, so we want to look at the rising edge
-  attachInterrupt(digitalPinToInterrupt(BTN), swap, RISING);
+  attachInterrupt(digitalPinToInterrupt(IR_sensor), beamChange, CHANGE); //which pin to attach the intterupt to, what ISR will be called, when will it be called
 }
 
-void swap()
+void beamChange()
 {
-  //Turn off the current LED (Common Anode, so HIGH is Off)
-  digitalWrite(selectedLED, HIGH);
-  //Then, choose a new one.
-  if (selectedLED == GREEN)
-    selectedLED = RED;
-  else if (selectedLED == RED)
-    selectedLED = BLUE;
-  else if (selectedLED == BLUE)
-    selectedLED = GREEN;
+  
+  //ISR has been activated, read the sensor and time when beam is not broken
+  if (digitalRead(IR_sensor) == LOW) {
+    toeOff_time = micros();
+  }
+  else {
+    return_time = micros();   //record time when beam returns to broken state
+    jump_complete = true;     //switch jump variable to mark a complete jump
+  }
+    
 }
 
 void loop()
 {
-  //Ramp Brightness Up
-  //(Inverted because we are controlling the cathode)
-  for (int i=255; i>=0; i--)
-  {
-    analogWrite(selectedLED, i);
-    delay(10);
+  if(jump_complete = true){
+  //output flight time reading:
+  unsigned long flightTime = (return_time - toeOff_time)/1000000; //convert microseconds to seconds
+  Serial.print("Flight time: ");
+  Serial.print(flightTime);
+  Serial.println(" seconds");
+  jump_complete = false;                    //return variable to false so another jump may be tested
   }
-  //Ramp Brightness Down
-  //(Inverted because we are controlling the cathode)
-  for (int i=0; i<=255; i++)
-  {
-    analogWrite(selectedLED, i);
-    delay(10);
-  }
-  delay(1000);
+
+  else { }
 }
 
