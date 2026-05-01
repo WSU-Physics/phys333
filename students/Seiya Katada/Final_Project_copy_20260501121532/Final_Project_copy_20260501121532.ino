@@ -50,8 +50,8 @@ void loop () {
   readLine(L3, "789C" ); 
   readLine(L4, "*0#D" );
 
-    if (lockedOut) {
-    if (masterpassword.length() == 4) {
+    if (lockedOut == true) {
+    if (input.length() == 4) {
       if (input == masterpassword) {
         Serial.println("Detected the masterpassword, Unlocked");
         lockedOut = false;
@@ -65,7 +65,7 @@ void loop () {
       }
       input = "";
     }
-    return;
+    return;  
   }
 
   if (input.length() == 4) { 
@@ -93,16 +93,14 @@ void loop () {
     }
     input = ""; 
   }
-
-  delay(500);
-  //0.5 seconds between pushing the button
 }
 
 void readLine (int line, String characters) { 
   digitalWrite(line, LOW); 
   //When the line is LOW, the keypad will detect and read it.
 
-  char key ='\0';
+  char key = '\0';
+
     if (digitalRead(C1) == LOW) key = characters.charAt(0);
     else if (digitalRead(C2) == LOW) key = characters.charAt(1);
     else if (digitalRead(C3) == LOW) key = characters.charAt(2);
@@ -113,6 +111,11 @@ void readLine (int line, String characters) {
       input += key;
       //to add number in input
       lastKey = key;
+
+      while (digitalRead(C1) == LOW ||digitalRead(C2) == LOW ||digitalRead(C3) == LOW ||digitalRead(C4) == LOW ) {
+        delay(10);
+      }
+      // this code is to make interval between pushing buttons for 10 ms.
     } 
 
     if (key == '\0') {
