@@ -33,7 +33,7 @@ void loop()
 {
   if(jump_complete == true){
     //Below: this if loop detects whether or not it's a human jump (i.e return time must be greater than toe off and <=1sec flight time)
-    if(return_time > toeOff_time && (return_time-toeOff_time)/1000000.0 <= 1){
+    if(return_time > toeOff_time && (return_time-toeOff_time)/1000000.0 <= 1 && (return_time-toeOff_time)/1000000.0 >= 0.1){
       //output flight time reading and Jump height:
       float flightTime = (return_time - toeOff_time) / 1000000.0;          //convert microseconds to seconds
       float jumpHeight_meters = (9.80665*flightTime*flightTime) / 8.0;     //Bosco Protocol formula outputs jump height (in m)
