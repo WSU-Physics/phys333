@@ -20,6 +20,10 @@ String password = "37C#";
 char lastKey = '\0'; 
 //this code is to ignore the number if it is exactly the same as the one entered immediately before. 
 //Needed only one number that is why char is used.
+String masterpassword = "##CA";
+
+int failedAttempts = 0;  //If I mistype the password for 5 times, the box will be locked until I typed the masterpassword, not password.    
+bool lockedOut = false;
 
 void setup ( ) { 
   Serial.begin ( 9600 ); 
@@ -37,6 +41,7 @@ void setup ( ) {
   digitalWrite(L4, HIGH); 
   pinMode (LED_Green, OUTPUT);
   pinMode (LED_Red, OUTPUT);
+  Serial.println("Enter password");
 } 
 
 void loop () { 
@@ -44,18 +49,47 @@ void loop () {
   readLine(L2, "456B" ); 
   readLine(L3, "789C" ); 
   readLine(L4, "*0#D" );
-  
+
+    if (lockedOut) {
+    if (masterpassword.length() == 4) {
+      if (input == masterpassword) {
+        Serial.println("Detected the masterpassword, Unlocked");
+        lockedOut = false;
+        failedAttempts = 0;
+        digitalWrite(LED_Green, HIGH);
+        digitalWrite(LED_Red, LOW);
+      } else {
+        Serial.println("Still locking, you need to type masterpassword");
+        digitalWrite(LED_Green, LOW);
+        digitalWrite(LED_Red, HIGH);
+      }
+      input = "";
+    }
+    return;
+  }
+
   if (input.length() == 4) { 
     //to set the input number as 4 digit number
+  
     if (input == password) { 
       // once the input is same as password, the serial monitor will say "Correct". otherwise wrong
-      Serial.println("Correct");
+      Serial.println("Unlocked");
       digitalWrite(LED_Green, HIGH);
       digitalWrite(LED_Red, LOW);
+      failedAttempts = 0;
     } else {
-      Serial.println("Incorrect");
+      failedAttempts++;
+      Serial.println("Incorrect password");
       digitalWrite(LED_Green, LOW);
       digitalWrite(LED_Red, HIGH);
+
+      if (failedAttempts >= 5) {
+        Serial.println("You missed 5 times, please type the masterpassword");
+        //once mistyping the password for 5 times, this box will be unlocked unless you typed the masterpassword.
+        lockedOut = true;
+        digitalWrite(LED_Green, LOW);
+        digitalWrite(LED_Red, HIGH);
+      }
     }
     input = ""; 
   }
@@ -86,4 +120,4 @@ void readLine (int line, String characters) {
     }
 
     digitalWrite(line, HIGH); 
-}   
+}
