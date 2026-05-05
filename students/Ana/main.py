@@ -15,7 +15,7 @@ sp = spotipy.Spotify(
         client_id = CLIENT_ID,
         client_secret = CLIENT_SECRET,
         redirect_uri = REDIRECT_URI,
-        scope = 'user-read-currently-playing'
+        scope = 'user-read-currently-playing user-modify-playback-state' 
     )
 )
 
@@ -23,17 +23,25 @@ sp = spotipy.Spotify(
 serialcomm = serial.Serial('COM11', 9600)
 serialcomm.timeout = 1
 
-
 prev_song = ""
 current_track = sp.current_user_playing_track()
+
 if current_track is not None:    
     song_name = current_track['item']['name']
+
 
 serialcomm.write(song_name.encode())
 time.sleep(0.5)
 
+
 while True:
-    # current_track = sp.current_user_playing_track()
+    current_track = sp.current_user_playing_track()
+
+    skip = serialcomm.readline().decode('utf-8')
+    print(skip)
+    if skip is True:
+        sp.next_track()
+
 
     if current_track is not None:
         current_track = sp.current_user_playing_track()
