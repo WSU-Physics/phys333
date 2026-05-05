@@ -37,10 +37,11 @@ time.sleep(0.5)
 while True:
     current_track = sp.current_user_playing_track()
 
-    skip = serialcomm.readline().decode('utf-8')
-    print(skip)
-    if skip is True:
+    skip = serialcomm.readline().decode('utf-8').strip()
+
+    if skip == "skip":
         sp.next_track()
+
 
 
     if current_track is not None:

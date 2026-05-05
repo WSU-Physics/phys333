@@ -1,4 +1,14 @@
-
+// Microprocessors: Phys 333 Final Project
+// Created as supplemental project to Electronics Final project Lyte Audio Visualizer
+// Github: https://github.com/freetronics/DMD/tree/master
+// Drawn from sample code -> adjusted for use
+// Adjusted library file DMD.h and DMD.cpp 
+// Changed drawMarquee from char to string
+// void DMD::drawMarquee(String bChars, byte length, int left, int top)
+// void drawMarquee( String bChars, byte length, int left, int top);
+// Display: P10 Red LED Panel Display Large Size 32cm X 16cm
+// Arduino Uno 
+// Ana S. Micro Final Project due 5/7/2026
 
 
 #include <SPI.h>       
@@ -13,12 +23,24 @@
 #define DISPLAYS_DOWN 1 //Number of P10 panels vertically
 DMD dmd(DISPLAYS_ACROSS, DISPLAYS_DOWN);
 
-String in_bytes;
-String song_name;
-String prev_song;
+String song_name = "";
+String prev_song = "";
+boolean lastButton = LOW;
+boolean currentButton = LOW;
+const int BUTTON = 2;
+
 
 void ScanDMD() { 
   dmd.scanDisplayBySPI();
+}
+
+boolean debounce(boolean last) {
+  boolean current = digitalRead(BUTTON);
+  if(last != current) {
+    delay(5);
+    current = digitalRead(BUTTON);
+  }
+  return current;
 }
 
 
@@ -28,49 +50,44 @@ long timer = start;
 
 void setup(void) {
   Serial.begin(9600);
+  pinMode(BUTTON, INPUT);
+
   Timer1.initialize(1000);          
   Timer1.attachInterrupt(ScanDMD);   
-  dmd.clearScreen(true);   
 
   // Other fonts
   //dmd.selectFont(Arial_Black_16_ISO_8859_1);
   // dmd.selectFont(Arial_Black_16);
   // dmd.selectFont(Arial_14);
   dmd.selectFont(SystemFont5x7);
-  dmd.drawMarquee(in_bytes,in_bytes.length(),(32*DISPLAYS_ACROSS)-1,4);
+  dmd.drawMarquee(song_name,song_name.length(),(32*DISPLAYS_ACROSS)-1,4);
 
 }
 
 void loop(void) {
 
+  currentButton = debounce(lastButton);
+  if (lastButton == LOW && currentButton == HIGH) {
+    Serial.println("skip");
+  }
+  lastButton = currentButton;
+
+
   if(Serial.available() > 0) {
-    in_bytes = Serial.readStringUntil('\n');
-    song_name = in_bytes;
-
-    if(prev_song != in_bytes){
-      Serial.print(song_name); //this prints in visual studio terminal  
-      song_name = "";
-      dmd.clearScreen(true);
-      
-    }
-
-    prev_song = in_bytes;
+    song_name = Serial.readStringUntil('\n');
+    dmd.clearScreen(true);
+    
   }
 
-
-  //-----------------------------------------------------------By using "millis()"
-
-  
-
   boolean ret = false;
-  int interval = 100;
+  int interval = 25;
 
     if ((timer+interval) < millis()) {
       ret = dmd.stepMarquee(-1,0);
       if (ret){
-        dmd.drawMarquee(in_bytes,in_bytes.length(),(32*DISPLAYS_ACROSS)-1,4);
+        dmd.drawMarquee(song_name,song_name.length(),(32*DISPLAYS_ACROSS)-1,4);
       }
-      timer=millis();
-      // Serial.println(ret);
+      timer = millis();
     }
+    prev_song = song_name;
 }
