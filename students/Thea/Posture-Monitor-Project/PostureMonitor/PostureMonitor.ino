@@ -24,7 +24,7 @@ void setup() {
     delay(10);
 
 /*---Is It Connected?---*/
-  if (!mpu.begin()) {
+  if (!mpu.begin(0x69)) {
     Serial.println("Not Found.");
     while (1) {
       delay(10);
@@ -52,9 +52,6 @@ void loop() {
   float Ax = accel.acceleration.x;
   float Ay = accel.acceleration.y;
   float Az = accel.acceleration.z;
-  float Gx = gyro.gyro.x;
-  float Gy = gyro.gyro.y;
-  float Gz = gyro.gyro.z;
   float T = temp.temperature;
 
 /*---Calculate Pitch/Roll---*/
@@ -62,14 +59,14 @@ void loop() {
   float Pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az)) * 180 / PI;
 
 /*---Print Data---*/
-  Serial.print("Ax:"); Serial.print(Ax); Serial.print(" ");
-  Serial.print("Ay:"); Serial.print(Ay); Serial.print(" ");
-  Serial.print("Az:"); Serial.print(Az); Serial.print(" ");
+  //Serial.print("Ax:"); Serial.print(Ax); Serial.print(" ");
+  //Serial.print("Ay:"); Serial.print(Ay); Serial.print(" ");
+  //Serial.print("Az:"); Serial.print(Az); Serial.print(" ");
 
-  Serial.print("R:"); Serial.print(Roll); Serial.print(" ");
-  Serial.print("P:"); Serial.print(Pitch); Serial.print(" ");
+  Serial.print("Roll:"); Serial.print(Roll); Serial.print(" ");
+  //Serial.print("P:"); Serial.print(Pitch); Serial.print(" ");
 
-  //Serial.print("T: "); Serial.println(T);
+  Serial.print("Temperature: "); Serial.println(T);
 
   Serial.println("");
   delay(1000);
