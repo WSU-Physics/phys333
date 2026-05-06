@@ -66,17 +66,10 @@ void loop() {
   Serial.print("Ay:"); Serial.print(Ay); Serial.print(" ");
   Serial.print("Az:"); Serial.print(Az); Serial.print(" ");
 
-  //Serial.print("Gx:"); Serial.print(Gx); Serial.print(" ");
-  //Serial.print("Gy:"); Serial.print(Gy); Serial.print(" ");
-  //Serial.print("Gz:"); Serial.print(Gz); Serial.print(" ");
-
   Serial.print("R:"); Serial.print(Roll); Serial.print(" ");
   Serial.print("P:"); Serial.print(Pitch); Serial.print(" ");
 
-  //Serial.print("Dev:"); Serial.print(deviate); Serial.print(" ");
-  //Serial.print("Bad:"); Serial.print(badPosture); Serial.print(" ");
-
-  Serial.print("T: "); Serial.println(T);
+  //Serial.print("T: "); Serial.println(T);
 
   Serial.println("");
   delay(1000);
