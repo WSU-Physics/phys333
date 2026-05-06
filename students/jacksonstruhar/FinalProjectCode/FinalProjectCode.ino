@@ -1,7 +1,11 @@
+/*
+Gym repetition counter designed for PHY 333 final project
+  - Uses distance sensor to detece number of repetitions and displays on 16x2 LCD
+  - 4 buttons allows user to select an exercise, amount of reps, and reset the menus
+*/
+
 #include <LiquidCrystal.h>
-
 const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8;
-
 const int btnLeft = 5; //button pins
 const int btnRight = 4;
 const int btnSelect = 3;
@@ -23,6 +27,7 @@ int topThreshold = 0; //thresholds initialize
 int bottomThreshold = 0;
 
 int currentReps = 0; //rep motion
+bool wentDown = false;
 
 char dist[4]; //distance sensor
 
@@ -73,7 +78,7 @@ void showExerciseMenu() { //exercise menu
   lcd.setCursor(0, 0);
   lcd.print("Exercise:");
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1); //sets cursor location for exercise
   for (int i = 0; i < 2; i++) {
     if (i == exerciseIndex) lcd.print(">");
     else lcd.print(" ");
@@ -83,6 +88,7 @@ void showExerciseMenu() { //exercise menu
 }
 
 void handleExerciseMenu() {
+  if (digitalRead(btnLeft) == LOW || digitalRead(btnRight) == LOW) { //updates excercise when L or R button
     exerciseIndex = !exerciseIndex;
     showExerciseMenu();
     delay(200);
@@ -100,7 +106,7 @@ void showRepMenu() { //repetition menu
   lcd.setCursor(0, 0);
   lcd.print("Select Reps");
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1); //sets cursor for repetition
   for (int i = 0; i < 3; i++) {
     if (i == repIndex) lcd.print(">");
     else lcd.print(" ");
@@ -110,21 +116,21 @@ void showRepMenu() { //repetition menu
 }
 
 void handleRepMenu() {
-  if (digitalRead(btnLeft) == LOW) {
+  if (digitalRead(btnLeft) == LOW) { //L button for repetition
     repIndex--;
     if (repIndex < 0) repIndex = 2;
     showRepMenu();
     delay(200);
   }
 
-  if (digitalRead(btnRight) == LOW) {
+  if (digitalRead(btnRight) == LOW) { //R button for repetiion
     repIndex++;
     if (repIndex > 2) repIndex = 0;
     showRepMenu();
     delay(200);
   }
 
-  if (digitalRead(btnSelect) == LOW) {
+  if (digitalRead(btnSelect) == LOW) { //select button for repetition
     selectedReps = repOptions[repIndex];
     setThresholds();
     currentState = CONFIRM;
@@ -145,7 +151,7 @@ void setThresholds() { //exercise thresholds inches
 
 int confirmIndex = 0;
 
-void showConfirm() {
+void showConfirm() { 
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(exercises[exerciseIndex]);
@@ -153,7 +159,7 @@ void showConfirm() {
   lcd.print(selectedReps);
 
   lcd.setCursor(0, 1);
-  lcd.print("Start? Yes No");
+  lcd.print("Start? Yes No"); //yes or no menu 
   updateConfirmCursor();
 }
 
@@ -164,7 +170,7 @@ void handleConfirm() {
     delay(200);
   }
 
-  if (digitalRead(btnSelect) == LOW) {
+  if (digitalRead(btnSelect) == LOW) { 
     if (confirmIndex == 0) {
       currentReps = 0;
       currentState = COUNTING;
@@ -195,12 +201,12 @@ void countReps() { //rep counter
     wentDown = true;
   }
 
-  if (distance >= topThreshold && wentDown) {
+  if (distance >= topThreshold && wentDown) { //adds 1 to rep count
     currentReps++;
     wentDown = false;
   }
 
-  if (currentReps >= selectedReps) {
+  if (currentReps >= selectedReps) { //set completed
     currentState = COMPLETE;
   }
 }
@@ -209,9 +215,10 @@ void showComplete() { //set completed
   lcd.clear();
   lcd.print("Set Completed!");
 
-  digitalWrite(motorPin, HIGH);
-  delay(500);
+  digitalWrite(motorPin, HIGH); //motor turns on when set is complete
+  delay(1000);
   digitalWrite(motorPin, LOW);
+  delay(10000); //longer delay so it gives the user time to reset the system
 }
 
 int readDistance() { //distance sensor
