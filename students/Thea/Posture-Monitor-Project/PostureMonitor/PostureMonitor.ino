@@ -168,7 +168,7 @@ if (badPosture) {
       logPosture("START", now, Roll);
     }
 
-    logPosture("BAD", now, Roll, Pitch, T, deviate);
+    logPosture("BAD", now, Roll);
 
     // Only buzz every few seconds, not constantly
     if (millis() - lastbuzzON >= buzzWAIT) {
@@ -203,7 +203,8 @@ void logPosture(String eventType, DateTime now, float Roll){
 
   if (dataFile) {
 
-    dataFile.println(eventType);
+    dataFile.print(eventType);
+    dataFile.print(",");
 
     dataFile.print(now.year());
     dataFile.print("/");
