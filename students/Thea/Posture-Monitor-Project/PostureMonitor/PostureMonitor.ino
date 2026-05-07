@@ -2,8 +2,13 @@
 #include <SPI.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include "RTClib.h"
 
 Adafruit_MPU6050 mpu;
+
+RTC_PCF8523 rtc;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
 
 /*---Vibration Motor---*/
 const int vibPin = 9;
@@ -41,6 +46,38 @@ void setup() {
   pinMode(vibPin, OUTPUT);
   analogWrite(vibPin, 0);
 
+/*---Clock---*/
+#ifndef ESP8266
+  while (!Serial); 
+#endif
+
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+    while (1) delay(10);
+  }
+
+  if (! rtc.initialized() || rtc.lostPower()) {
+    Serial.println("RTC is NOT initialized, let's set the time!");
+    //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    //rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+
+  }
+
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  //rtc.adjust(DateTime(2026, 5, 5, 10, 11, 0));
+  // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+
+  rtc.start();
+
+
+  float drift = 43; // seconds plus or minus over oservation period - set to 0 to cancel previous calibration.
+  float period_sec = (7 * 86400);  // total obsevation period in seconds (86400 = seconds in 1 day:  7 days = (7 * 86400) seconds )
+  float deviation_ppm = (drift / period_sec * 1000000); //  deviation in parts per million (μs)
+  float drift_unit = 4.34; // use with offset mode PCF8523_TwoHours
+  int offset = round(deviation_ppm / drift_unit);
+
+  Serial.print("Offset is "); Serial.println(offset); // Print to control offset
 }
 
 void loop() {
@@ -69,6 +106,25 @@ void loop() {
   Serial.print("Temperature: "); Serial.println(T);
 
   Serial.println("");
+
+/*---Clock---*/
+  DateTime now = rtc.now();
+
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(" (");
+  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+
   delay(1000);
 
 /*---Posture---*/
