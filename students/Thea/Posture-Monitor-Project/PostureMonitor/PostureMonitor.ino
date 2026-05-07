@@ -125,6 +125,29 @@ void loop() {
 /*---Clock---*/
   DateTime now = rtc.now();
 
+    Serial.print(now.year());
+    Serial.print("/");
+    Serial.print(now.month());
+    Serial.print("/");
+    Serial.print(now.day());
+    Serial.print(", ");
+
+    Serial.print(now.hour());
+    Serial.print(":");
+    Serial.print(now.minute());
+    Serial.print(":");
+    Serial.print(now.second());
+    Serial.print(", ");
+
+    Serial.print("Roll: ");
+    Serial.print(Roll);
+
+    if (badPosture) {
+      Serial.println(" BAD");
+    }
+    else {
+      Serial.println(" GOOD");
+    }
 
   delay(1000);
 
@@ -144,6 +167,8 @@ if (badPosture) {
       loggingBadPosture = true;
       logPosture("START", now, Roll);
     }
+
+    logPosture("BAD", now, Roll, Pitch, T, deviate);
 
     // Only buzz every few seconds, not constantly
     if (millis() - lastbuzzON >= buzzWAIT) {
