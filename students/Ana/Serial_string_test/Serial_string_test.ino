@@ -26,7 +26,7 @@ boolean debounce(boolean last) {
 void loop() {
   currentButton = debounce(lastButton);
   if (lastButton == LOW && currentButton == HIGH) {
-    Serial.println("gwa");
+    Serial.println("skip");
   }
   lastButton = currentButton;
 

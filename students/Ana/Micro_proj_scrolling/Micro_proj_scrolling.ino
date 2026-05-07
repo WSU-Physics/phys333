@@ -55,12 +55,8 @@ void setup(void) {
   Timer1.initialize(1000);          
   Timer1.attachInterrupt(ScanDMD);   
 
-  // Other fonts
-  //dmd.selectFont(Arial_Black_16_ISO_8859_1);
-  // dmd.selectFont(Arial_Black_16);
-  // dmd.selectFont(Arial_14);
   dmd.selectFont(SystemFont5x7);
-  dmd.drawMarquee(song_name,song_name.length(),(32*DISPLAYS_ACROSS)-1,4);
+  // dmd.drawMarquee(song_name,song_name.length(),(32*DISPLAYS_ACROSS)-1,4);
 
 }
 
@@ -74,13 +70,16 @@ void loop(void) {
 
 
   if(Serial.available() > 0) {
+    song_name = "gwa";
+    Serial.flush();
     song_name = Serial.readStringUntil('\n');
     dmd.clearScreen(true);
+    
     
   }
 
   boolean ret = false;
-  int interval = 25;
+  int interval = 30;
 
     if ((timer+interval) < millis()) {
       ret = dmd.stepMarquee(-1,0);
