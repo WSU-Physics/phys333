@@ -3,12 +3,15 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include "RTClib.h"
+#include <SD.h>
 
 Adafruit_MPU6050 mpu;
 
 RTC_PCF8523 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
+const int chipSelect = 10;
+File dataFile;
 
 /*---Vibration Motor---*/
 const int vibPin = 9;
@@ -78,6 +81,25 @@ void setup() {
   int offset = round(deviation_ppm / drift_unit);
 
   Serial.print("Offset is "); Serial.println(offset); // Print to control offset
+
+/*---SD Card---*/
+Serial.print("Initializing SD card...");
+
+if (!SD.begin(chipSelect)) {
+  Serial.println("FAILED");
+  while (1);
+}
+
+Serial.println("SUCCESS");
+
+dataFile = SD.open("posture.csv", FILE_WRITE);
+
+if (dataFile) {
+  dataFile.println("Date, Time, Roll, Posture");
+  dataFile.close();
+} else {
+  Serial.println("Could not open posture.csv");
+}
 }
 
 void loop() {
@@ -95,41 +117,71 @@ void loop() {
   float Roll = atan2(Ay, Az) * 180 / PI;
   float Pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az)) * 180 / PI;
 
+/*---Posture---*/
+float deviate = fabs(Roll - baseAngle);
+bool badPosture = deviate > limitAngle;
+
+
 /*---Print Data---*/
-  //Serial.print("Ax:"); Serial.print(Ax); Serial.print(" ");
-  //Serial.print("Ay:"); Serial.print(Ay); Serial.print(" ");
-  //Serial.print("Az:"); Serial.print(Az); Serial.print(" ");
 
-  Serial.print("Roll:"); Serial.print(Roll); Serial.print(" ");
-  //Serial.print("P:"); Serial.print(Pitch); Serial.print(" ");
+  // Serial.print("Roll:"); Serial.print(Roll); Serial.print(" ");
+  // Serial.print("Temperature: "); Serial.println(T);
 
-  Serial.print("Temperature: "); Serial.println(T);
-
-  Serial.println("");
+  // Serial.println("");
 
 /*---Clock---*/
   DateTime now = rtc.now();
 
-  Serial.print(now.year(), DEC);
-  Serial.print('/');
-  Serial.print(now.month(), DEC);
-  Serial.print('/');
-  Serial.print(now.day(), DEC);
-  Serial.print(" (");
-  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-  Serial.print(") ");
-  Serial.print(now.hour(), DEC);
-  Serial.print(':');
-  Serial.print(now.minute(), DEC);
-  Serial.print(':');
-  Serial.print(now.second(), DEC);
-  Serial.println();
+  // Serial.print(now.year(), DEC);
+  // Serial.print('/');
+  // Serial.print(now.month(), DEC);
+  // Serial.print('/');
+  // Serial.print(now.day(), DEC);
+  // Serial.print(" (");
+  // Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  // Serial.print(") ");
+  // Serial.print(now.hour(), DEC);
+  // Serial.print(':');
+  // Serial.print(now.minute(), DEC);
+  // Serial.print(':');
+  // Serial.print(now.second(), DEC);
+  // Serial.println();
+
+/*---SD Card---*/
+dataFile = SD.open("posture.csv", FILE_WRITE);
+
+if (dataFile) {
+  dataFile.print(now.year());
+  dataFile.print("/");
+  dataFile.print(now.month());
+  dataFile.print("/");
+  dataFile.print(now.day());
+  dataFile.print(",");
+
+  dataFile.print(now.hour());
+  dataFile.print(":");
+  dataFile.print(now.minute());
+  dataFile.print(":");
+  dataFile.print(now.second());
+  dataFile.print(",");
+
+  dataFile.print("Roll:");
+  dataFile.print(Roll);
+
+  dataFile.print("Posture: ");
+  if (badPosture) {
+    dataFile.println("BAD");
+  }
+  else {
+    dataFile.println("GOOD");
+  }
+
+  dataFile.close();
+} else {
+  Serial.println("Error opening posture.csv");
+}
 
   delay(1000);
-
-/*---Posture---*/
-float deviate = fabs(Roll - baseAngle);
-bool badPosture = deviate > limitAngle; 
 
 /*---Vibration Motor---*/
 if (badPosture) {
@@ -156,7 +208,6 @@ if (badPosture) {
   badStart = 0;
   analogWrite(vibPin, 0);
 }
-
 
 }
 
