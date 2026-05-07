@@ -13,6 +13,8 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 const int chipSelect = 10;
 File dataFile;
 
+bool loggingBadPosture = false;
+
 /*---Vibration Motor---*/
 const int vibPin = 9;
 const unsigned long badLimit = 5000;
@@ -147,39 +149,7 @@ bool badPosture = deviate > limitAngle;
   // Serial.print(now.second(), DEC);
   // Serial.println();
 
-/*---SD Card---*/
-dataFile = SD.open("posture.csv", FILE_WRITE);
 
-if (dataFile) {
-  dataFile.print(now.year());
-  dataFile.print("/");
-  dataFile.print(now.month());
-  dataFile.print("/");
-  dataFile.print(now.day());
-  dataFile.print(",");
-
-  dataFile.print(now.hour());
-  dataFile.print(":");
-  dataFile.print(now.minute());
-  dataFile.print(":");
-  dataFile.print(now.second());
-  dataFile.print(",");
-
-  dataFile.print("Roll:");
-  dataFile.print(Roll);
-
-  dataFile.print("Posture: ");
-  if (badPosture) {
-    dataFile.println("BAD");
-  }
-  else {
-    dataFile.println("GOOD");
-  }
-
-  dataFile.close();
-} else {
-  Serial.println("Error opening posture.csv");
-}
 
   delay(1000);
 
@@ -194,6 +164,11 @@ if (badPosture) {
 
   // Check if bad posture has lasted too long
   if (millis() - badStart >= badLimit) {
+\
+    if (!loggingBadPosture) {
+      loggingBadPosture = true;
+      logPosture("START", now, Roll);
+    }
 
     // Only buzz every few seconds, not constantly
     if (millis() - lastbuzzON >= buzzWAIT) {
@@ -204,6 +179,11 @@ if (badPosture) {
 
 } else {
   // Good posture again, so reset everything
+  if (loggingBadPosture) {
+    loggingBadPosture = false;
+    logPosture("END", now, Roll);
+  }
+
   timingBad = false;
   badStart = 0;
   analogWrite(vibPin, 0);
@@ -216,3 +196,34 @@ void vibAlarm() {
   delay(buzzON);
   analogWrite(vibPin, 0);
 }
+
+void logPosture(String eventType, DateTime now, float Roll){
+
+  dataFile = SD.open("posture.csv", FILE_WRITE);
+
+  if (dataFile) {
+
+    dataFile.println(eventType);
+
+    dataFile.print(now.year());
+    dataFile.print("/");
+    dataFile.print(now.month());
+    dataFile.print("/");
+    dataFile.print(now.day());
+    dataFile.print(",");
+
+    dataFile.print(now.hour());
+    dataFile.print(":");
+    dataFile.print(now.minute());
+    dataFile.print(":");
+    dataFile.print(now.second());
+    dataFile.print(",");
+
+    dataFile.print("Roll:");
+    dataFile.print(Roll);
+
+    dataFile.close();
+  } else {
+    Serial.println("Error opening posture.csv");
+  }
+  }
