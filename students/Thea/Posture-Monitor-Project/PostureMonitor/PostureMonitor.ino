@@ -70,7 +70,6 @@ void setup() {
   }
 
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  //rtc.adjust(DateTime(2026, 5, 5, 10, 11, 0));
   // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
   rtc.start();
@@ -120,35 +119,11 @@ void loop() {
   float Pitch = atan2(-Ax, sqrt(Ay * Ay + Az * Az)) * 180 / PI;
 
 /*---Posture---*/
-float deviate = fabs(Roll - baseAngle);
-bool badPosture = deviate > limitAngle;
-
-
-/*---Print Data---*/
-
-  // Serial.print("Roll:"); Serial.print(Roll); Serial.print(" ");
-  // Serial.print("Temperature: "); Serial.println(T);
-
-  // Serial.println("");
+  float deviate = fabs(Roll - baseAngle);
+  bool badPosture = deviate > limitAngle;
 
 /*---Clock---*/
   DateTime now = rtc.now();
-
-  // Serial.print(now.year(), DEC);
-  // Serial.print('/');
-  // Serial.print(now.month(), DEC);
-  // Serial.print('/');
-  // Serial.print(now.day(), DEC);
-  // Serial.print(" (");
-  // Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-  // Serial.print(") ");
-  // Serial.print(now.hour(), DEC);
-  // Serial.print(':');
-  // Serial.print(now.minute(), DEC);
-  // Serial.print(':');
-  // Serial.print(now.second(), DEC);
-  // Serial.println();
-
 
 
   delay(1000);
@@ -226,4 +201,4 @@ void logPosture(String eventType, DateTime now, float Roll){
   } else {
     Serial.println("Error opening posture.csv");
   }
-  }
+}
